@@ -58,28 +58,25 @@ Para mantener el repositorio limpio y seguro, varios archivos y carpetas locales
 
 Sigue estos pasos detallados para clonar, configurar y poner en marcha el sistema en cualquier entorno local.
 
-### Prerrequisitos
+### Prerrequisitos (Windows)
 
-Asegúrate de tener instaladas las siguientes herramientas en tu sistema operativo:
+Asegúrate de tener instaladas las siguientes herramientas en Windows:
 
-- **Git** ([Descargar Git](https://git-scm.com/))
-- **Python 3.12+** ([Descargar Python](https://www.python.org/))
+- **Git para Windows** ([Descargar Git](https://git-scm.com/))
+- **Python 3.12+** ([Descargar Python](https://www.python.org/)) *(asegúrate de marcar la casilla "Add python.exe to PATH" durante el instalador)*
 - **Node.js 18+ o 20+** con **npm** ([Descargar Node.js](https://nodejs.org/))
 - *(Recomendado)* **uv** (Gestor ultrarrápido de paquetes Python):
   ```powershell
-  # Windows (PowerShell):
   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-  # Linux/macOS:
-  curl -LsSf https://astral.sh/uv/install.sh | sh
   ```
 
 ---
 
 ### Paso 1: Clonar el Repositorio
 
-Abre una terminal y clona el proyecto en tu máquina local:
+Abre PowerShell o el Símbolo del sistema (CMD) y clona el proyecto en tu equipo:
 
-```bash
+```powershell
 git clone https://github.com/tu-usuario/sistema-textileria.git
 cd sistema-textileria
 ```
@@ -88,35 +85,28 @@ cd sistema-textileria
 
 ### Paso 2: Configuración del Backend (FastAPI)
 
-1. **Ingresa al directorio del backend:**
-   ```bash
+1. **Ingresa a la carpeta del backend:**
+   ```powershell
    cd backend
    ```
 
 2. **Crear el archivo de variables de entorno `.env`:**
-   Copia el archivo de ejemplo preconfigurado `.env.example`:
-   - **En Windows (PowerShell / CMD):**
-     ```powershell
-     copy .env.example .env
-     ```
-   - **En Linux / macOS:**
-     ```bash
-     cp .env.example .env
-     ```
+   Copia el archivo de plantilla `.env.example`:
+   ```powershell
+   copy .env.example .env
+   ```
 
-   *(Opcional: puedes revisar el `.env` generado para confirmar los valores por defecto como `DATABASE_URL=sqlite:///./textileria.db` y el puerto de conexión).*
+   *(Opcional: puedes revisar el `.env` generado para confirmar los valores por defecto como `DATABASE_URL=sqlite:///./textileria.db` y el puerto 8000).*
 
 3. **Instalar las dependencias de Python:**
    - **Opción recomendada (con `uv`):**
      ```powershell
      uv sync
      ```
-   - **Opción estándar (con `pip` y `venv` tradicional):**
+   - **Opción estándar (con `pip` y `venv` tradicional de Windows):**
      ```powershell
      python -m venv .venv
-     # Activar el entorno virtual:
-     # En Windows: .venv\Scripts\activate
-     # En Linux/macOS: source .venv/bin/activate
+     .\.venv\Scripts\activate
      pip install -e .
      ```
 
@@ -133,7 +123,7 @@ cd sistema-textileria
      ```
 
 5. **Regresar a la raíz del proyecto:**
-   ```bash
+   ```powershell
    cd ..
    ```
 
@@ -141,18 +131,18 @@ cd sistema-textileria
 
 ### Paso 3: Configuración del Frontend (React + Vite)
 
-1. **Ingresa al directorio del frontend:**
-   ```bash
+1. **Ingresa a la carpeta del frontend:**
+   ```powershell
    cd frontend
    ```
 
 2. **Instalar las dependencias de Node.js:**
-   ```bash
+   ```powershell
    npm install
    ```
 
 3. **Regresar a la raíz del proyecto:**
-   ```bash
+   ```powershell
    cd ..
    ```
 
@@ -160,7 +150,7 @@ cd sistema-textileria
 
 ### Paso 4: Ejecución del Sistema
 
-Tienes dos alternativas para levantar el sistema:
+Tienes dos alternativas para levantar el sistema en Windows:
 
 #### Alternativa A: Ejecución integrada en 1 solo comando (Recomendada)
 
@@ -170,12 +160,12 @@ Desde la **raíz del proyecto**, ejecuta el orquestador que inicia tanto el back
   ```powershell
   python dev.py
   ```
-- **O en Windows mediante el script por lotes:**
+- **O mediante el archivo ejecutable por lotes (`dev.bat`):**
   ```cmd
-  dev.bat
+  .\dev.bat
   ```
 - **O mediante npm:**
-  ```bash
+  ```powershell
   npm run dev
   ```
 
