@@ -5,6 +5,8 @@ import {
   Package,
   ShoppingCart,
   Receipt,
+  Scale,
+  BarChart3,
   LogOut,
   Scissors,
   CheckCircle2,
@@ -40,6 +42,19 @@ export const Sidebar: React.FC = () => {
       label: 'Historial de Ventas',
       icon: Receipt,
       mostrar: tieneRol('administrador', 'vendedor', 'gerente'),
+    },
+    {
+      to: '/conciliacion',
+      label: 'Conciliación de Stock',
+      icon: Scale,
+      mostrar: tieneRol('administrador', 'almacenero', 'gerente'),
+      badge: '2%',
+    },
+    {
+      to: '/reportes',
+      label: 'Reportes y Métricas',
+      icon: BarChart3,
+      mostrar: tieneRol('administrador', 'gerente'),
     },
   ]
 

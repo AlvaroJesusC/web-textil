@@ -150,21 +150,21 @@ export const LoginPage: React.FC = () => {
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => rellenarCredencial('admin', 'admin1234')}
+                onClick={() => rellenarCredencial('admin', 'Admin123!')}
                 className="px-2 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 text-center transition-colors"
               >
                 Admin
               </button>
               <button
                 type="button"
-                onClick={() => rellenarCredencial('vendedor1', 'vendedor1234')}
+                onClick={() => rellenarCredencial('vendedor1', 'Vendedor123!')}
                 className="px-2 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 text-center transition-colors"
               >
                 Vendedor
               </button>
               <button
                 type="button"
-                onClick={() => rellenarCredencial('almacen1', 'almacen1234')}
+                onClick={() => rellenarCredencial('almacen1', 'Almacen123!')}
                 className="px-2 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-200 text-center transition-colors"
               >
                 Almacén

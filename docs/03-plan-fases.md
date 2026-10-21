@@ -89,9 +89,9 @@ flowchart LR
 
 **Objetivo:** implementar el flujo que mide el indicador de stock de la empresa (semáforo del 2%) y reportes.
 
-- [ ] 3.1 Backend de conciliación (`POST /conteos`, `POST /conteos/{id}/calcular` con el cálculo de diferencia porcentual).
-- [ ] 3.2 Pantalla P-07: Interfaz de conteo físico de stock con indicador visual tipo semáforo (verde ≤ 2 %, rojo > 2 %).
-- [ ] 3.3 Backend y Pantalla P-08: Reportes de ventas con gráficos (Recharts) y productos más vendidos.
+- [x] 3.1 Backend de conciliación (`POST /conteos`, `POST /conteos/{id}/calcular` con el cálculo de diferencia porcentual, ajuste de inventario transaccional).
+- [x] 3.2 Pantalla P-07: Interfaz de conteo físico de stock con indicador visual tipo semáforo accesible (verde ≤ 2 %, rojo > 2 %, badges e íconos RNF-11).
+- [x] 3.3 Backend y Pantalla P-08: Reportes de ventas con gráficos analíticos (Recharts), productos más vendidos, rendimiento de vendedores y alertas críticas.
 
 ---
 
@@ -129,3 +129,4 @@ flowchart LR
 | 2026-10-21 | Fase 0 · Preparación | Inicialización de git, .gitignore, uv backend, pyproject.toml con ruff, pytest y pytest-cov, y README. |
 | 2026-10-21 | Fase 1 · Backend MVP | API REST modular completa con FastAPI + SQLAlchemy 2.0. Autenticación JWT y BCrypt, CRUD de productos, movimientos de stock, ventas transaccionales ACID con cálculo exacto (Decimal ROUND_HALF_UP). 69 pruebas unitarias e integración en PASSED. |
 | 2026-10-21 | Fase 2 · Frontend MVP | Frontend SPA completo con React 19 + TypeScript + Vite + Tailwind CSS. Identidad visual textil (azul índigo telar, bordes orillo, cifras tabulares). Implementadas pantallas P-01 (Login), P-02 (Dashboard con KPIs y accesos por rol), P-03 y P-04 (Catálogo de productos, buscador debounced, filtros y modales de producto, ingreso de stock, ajuste y kardex), P-05 (Caja/POS con atajos de teclado, cálculo en vivo y comprobante) y P-06 (Historial de ventas y anulación ACID). 0 errores de compilación y 0 advertencias de linter. |
+| 2026-10-21 | Fase 3 · Conciliación y Reportes | Backend analítico y de conciliación con semáforo exacto (RN-06/RN-07) y ajuste transaccional (RF-27 a RF-32). Pantallas P-07 (Conciliación física con captura inmutable, cálculo en vivo de conformidad, semáforo accesible e historial) y P-08 (Reportes gerenciales con gráficos Recharts de tendencias temporales, ranking top 10 productos, cobros por medio de pago, rendimiento por vendedor y alertas de stock crítico). Frontend 100% libre de advertencias y errores (0 lints, 0 TS errors). Backend 100% verificado con ruff. |

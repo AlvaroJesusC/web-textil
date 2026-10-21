@@ -9,8 +9,8 @@ import {
   Receipt,
   ArrowRight,
   Clock,
-  Layers,
   Sparkles,
+  Scale,
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { useAuth } from '@/features/auth'
@@ -77,9 +77,14 @@ export const DashboardPage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Tarjeta 1: Total ventas recientes */}
           {tieneRol('administrador', 'vendedor', 'gerente') && (
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
+            <div
+              onClick={() => navigate(tieneRol('administrador', 'gerente') ? '/reportes' : '/ventas')}
+              className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-emerald-300 transition-colors group"
+            >
               <div className="flex items-center justify-between text-slate-500 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider">Ventas Recientes</span>
+                <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-emerald-800 transition-colors">
+                  Ventas Recientes
+                </span>
                 <div className="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
                   <TrendingUp className="w-4 h-4" />
                 </div>
@@ -87,16 +92,22 @@ export const DashboardPage: React.FC = () => {
               <div className="text-2xl font-bold text-slate-900 tabular-nums">
                 {cargandoVentas ? '...' : formatearMoneda(totalVentasMonto)}
               </div>
-              <p className="text-xs text-slate-500 mt-1">
-                {ventasData?.total || 0} comprobantes emitidos
+              <p className="text-xs text-emerald-700 flex items-center gap-1 mt-1 font-medium">
+                <span>{tieneRol('administrador', 'gerente') ? 'Ver reportes analíticos' : 'Ver historial'}</span>
+                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
               </p>
             </div>
           )}
 
           {/* Tarjeta 2: Productos Activos */}
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
+          <div
+            onClick={() => navigate('/inventario')}
+            className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-blue-300 transition-colors group"
+          >
             <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider">Catálogo Textil</span>
+              <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-blue-800 transition-colors">
+                Catálogo Textil
+              </span>
               <div className="p-2 bg-blue-50 text-blue-700 rounded-lg">
                 <Package className="w-4 h-4" />
               </div>
@@ -104,12 +115,15 @@ export const DashboardPage: React.FC = () => {
             <div className="text-2xl font-bold text-slate-900 tabular-nums">
               {cargandoProductos ? '...' : productosActivos.length}
             </div>
-            <p className="text-xs text-slate-500 mt-1">Telas, hilos y avíos activos</p>
+            <p className="text-xs text-blue-700 flex items-center gap-1 mt-1 font-medium">
+              <span>Gestionar telas y avíos</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            </p>
           </div>
 
           {/* Tarjeta 3: Alertas de Stock */}
           <div
-            onClick={() => navigate('/inventario?filtro=alerta')}
+            onClick={() => navigate('/inventario')}
             className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-amber-300 transition-colors group"
           >
             <div className="flex items-center justify-between text-slate-500 mb-2">
@@ -129,18 +143,29 @@ export const DashboardPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Tarjeta 4: Rol actual */}
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs">
+          {/* Tarjeta 4: Conciliación / Semáforo de Calidad */}
+          <div
+            onClick={() => navigate('/conciliacion')}
+            className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-blue-300 transition-colors group"
+          >
             <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider">Estación de Trabajo</span>
-              <div className="p-2 bg-slate-100 text-slate-700 rounded-lg">
-                <Layers className="w-4 h-4" />
+              <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-blue-800 transition-colors">
+                Control de Stock
+              </span>
+              <div className="p-2 bg-indigo-50 text-indigo-700 rounded-lg">
+                <Scale className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-lg font-bold text-slate-900 capitalize">
-              {usuario?.rol || 'Operador'}
+            <div className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span>Semáforo ≤ 2%</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                RNF-02
+              </span>
             </div>
-            <p className="text-xs text-slate-500 mt-1">Permisos validados en servidor</p>
+            <p className="text-xs text-blue-700 flex items-center gap-1 mt-1 font-medium">
+              <span>Conteo físico de almacén</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            </p>
           </div>
         </div>
 

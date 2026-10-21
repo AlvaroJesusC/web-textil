@@ -5,6 +5,8 @@ import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
 import { InventarioPage } from '@/features/inventario/pages/InventarioPage'
 import { RegistrarVentaPage } from '@/features/ventas/pages/RegistrarVentaPage'
 import { HistorialVentasPage } from '@/features/ventas/pages/HistorialVentasPage'
+import { ConciliacionPage } from '@/features/conciliacion/pages/ConciliacionPage'
+import { ReportesPage } from '@/features/reportes/pages/ReportesPage'
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +32,14 @@ export const router = createBrowserRouter([
       {
         path: 'ventas/nueva',
         element: <RegistrarVentaPage />,
+      },
+      {
+        path: 'conciliacion',
+        element: <ConciliacionPage />,
+      },
+      {
+        path: 'reportes',
+        element: <ReportesPage />,
       },
       {
         path: '*',

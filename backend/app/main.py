@@ -6,11 +6,15 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+import app.auditoria.models  # noqa: F401
+import app.conciliacion.models  # noqa: F401
 from app.auth.router import router as auth_router
+from app.conciliacion.router import router as conciliacion_router
 from app.core.config import settings
 from app.core.database import Base, engine
 from app.core.excepciones import ErrorDeNegocio
 from app.inventario.router import router as inventario_router
+from app.reportes.router import router as reportes_router
 from app.usuarios.router import router as usuarios_router
 from app.ventas.router import router as ventas_router
 
@@ -84,6 +88,8 @@ app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(usuarios_router, prefix=settings.API_V1_PREFIX)
 app.include_router(inventario_router, prefix=settings.API_V1_PREFIX)
 app.include_router(ventas_router, prefix=settings.API_V1_PREFIX)
+app.include_router(conciliacion_router, prefix=settings.API_V1_PREFIX)
+app.include_router(reportes_router, prefix=settings.API_V1_PREFIX)
 
 
 @app.get("/", tags=["Sistema"])
