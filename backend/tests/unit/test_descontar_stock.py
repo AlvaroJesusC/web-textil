@@ -68,3 +68,15 @@ def test_descontar_stock_mensaje_claro_incluye_disponible_y_nombre():
     assert "10" in mensaje
     assert "disponible" in mensaje.lower()
     assert "Tela Algodón Pima" in mensaje
+
+
+@pytest.mark.unitaria
+@pytest.mark.parametrize(
+    "stock_invalido",
+    [-1, -10, 10.5, "10", True, False],
+    ids=["negativo", "negativo_grande", "decimal", "string", "booleano_true", "booleano_false"],
+)
+def test_descontar_stock_stock_actual_invalido_lanza_error(stock_invalido):
+    """CP-03-09 · Particiones inválidas · RN-05: stock actual no entero o negativo lanza error."""
+    with pytest.raises(DatosInvalidosError):
+        descontar_stock(stock_actual=stock_invalido, cantidad=1)  # type: ignore[arg-type]

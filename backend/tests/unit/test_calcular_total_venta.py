@@ -156,3 +156,63 @@ def test_calcular_total_venta_todos_los_montos_son_decimal_con_dos_decimales():
     for monto in [res.subtotal, res.descuento, res.base_imponible, res.igv, res.total]:
         assert isinstance(monto, Decimal)
         assert monto.as_tuple().exponent == -2
+
+
+@pytest.mark.unitaria
+def test_calcular_total_venta_descuento_no_decimal_convierte_correctamente():
+    """CP-02-15 · Tipos · RN-03: descuento pasado como entero o float es convertido."""
+
+    items = [ItemVenta(cantidad=2, precio_unitario=Decimal("50.00"))]
+    res_int = calcular_total_venta(items, descuento_pct=10)  # type: ignore[arg-type]
+    assert res_int.descuento == Decimal("10.00")
+
+    res_str = calcular_total_venta(items, descuento_pct="10.50")  # type: ignore[arg-type]
+    assert res_str.descuento == Decimal("10.50")
+
+
+@pytest.mark.unitaria
+def test_calcular_total_venta_descuento_no_numerico_lanza_error():
+    """CP-02-16 · Partición inválida · RN-03: descuento no convertible a número lanza error."""
+    items = [ItemVenta(cantidad=1, precio_unitario=Decimal("10.00"))]
+    with pytest.raises(DatosInvalidosError, match="porcentaje de descuento debe ser un valor"):
+        calcular_total_venta(items, descuento_pct="diez_porciento")  # type: ignore[arg-type]
+
+
+@pytest.mark.unitaria
+def test_calcular_total_venta_tope_no_decimal_convierte_correctamente():
+    """CP-02-17 · Conversión de tipos · RN-03: tope de descuento como entero es admitido."""
+    items = [ItemVenta(cantidad=1, precio_unitario=Decimal("100.00"))]
+    res = calcular_total_venta(
+        items,
+        descuento_pct=Decimal("10.00"),
+        tope_descuento_pct=10,  # type: ignore[arg-type]
+    )
+    assert res.descuento == Decimal("10.00")
+
+
+@pytest.mark.unitaria
+def test_calcular_total_venta_tope_no_numerico_lanza_error():
+    """CP-02-18 · Partición inválida · RN-03: tope no numérico lanza error."""
+    items = [ItemVenta(cantidad=1, precio_unitario=Decimal("100.00"))]
+    with pytest.raises(DatosInvalidosError, match="tope de descuento debe ser un valor"):
+        calcular_total_venta(
+            items,
+            descuento_pct=Decimal("5.00"),
+            tope_descuento_pct="tope_invalido",  # type: ignore[arg-type]
+        )
+
+
+@pytest.mark.unitaria
+def test_calcular_total_venta_precio_unitario_no_decimal_convierte_correctamente():
+    """CP-02-19 · Conversión de tipos · RN-04: precio unitario como float o int se convierte."""
+    items = [ItemVenta(cantidad=2, precio_unitario=25.50)]  # type: ignore[arg-type]
+    res = calcular_total_venta(items)
+    assert res.subtotal == Decimal("51.00")
+
+
+@pytest.mark.unitaria
+def test_calcular_total_venta_precio_unitario_no_numerico_lanza_error():
+    """CP-02-20 · Partición inválida · RN-04: precio unitario con texto no numérico lanza error."""
+    items = [ItemVenta(cantidad=1, precio_unitario="caro")]  # type: ignore[arg-type]
+    with pytest.raises(DatosInvalidosError, match="precio unitario debe ser un valor"):
+        calcular_total_venta(items)

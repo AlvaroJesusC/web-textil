@@ -1,0 +1,73 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.3, pytest-9.1.1, pluggy-1.7.0
+rootdir: C:\Users\AlvaroJ\Documents\Antigravity Projects\sistema-textileria\backend
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1, cov-7.1.0
+collected 111 items
+
+tests\integration\test_auth.py .....                                     [  4%]
+tests\integration\test_conciliacion.py ...                               [  7%]
+tests\integration\test_inventario.py .....                               [ 11%]
+tests\integration\test_reportes.py .......                               [ 18%]
+tests\integration\test_usuarios.py .....                                 [ 22%]
+tests\integration\test_ventas.py .....                                   [ 27%]
+tests\unit\test_calcular_porcentaje_diferencia.py ..................     [ 43%]
+tests\unit\test_calcular_total_venta.py ......................           [ 63%]
+tests\unit\test_descontar_stock.py ................                      [ 77%]
+tests\unit\test_validar_producto.py .........................            [100%]
+
+============================== warnings summary ===============================
+.venv\Lib\site-packages\fastapi\testclient.py:1
+  C:\Users\AlvaroJ\Documents\Antigravity Projects\sistema-textileria\backend\.venv\Lib\site-packages\fastapi\testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=============================== tests coverage ================================
+_______________ coverage: platform win32, python 3.14.3-final-0 _______________
+
+Name                             Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------------
+app\auditoria\models.py             14      0      0      0   100%
+app\auth\router.py                  16      2      0      0    88%   44-45
+app\auth\schemas.py                 10      0      0      0   100%
+app\auth\service.py                 48     18     20      3    54%   31, 35-40, 59, 86-98
+app\conciliacion\models.py          38      0      0      0   100%
+app\conciliacion\reglas.py          21      0      6      0   100%
+app\conciliacion\repository.py      26      1      4      1    93%   73
+app\conciliacion\router.py          31      0      0      0   100%
+app\conciliacion\schemas.py         28      0      0      0   100%
+app\conciliacion\service.py        134     15     46     17    81%   94, 124, 127, 131->130, 144, 150->149, 161, 172, 183, 186, 222, 228, 234, 237-238, 241->232, 245, 257
+app\core\config.py                  13      0      0      0   100%
+app\core\database.py                17      4      2      1    74%   18->21, 38-42
+app\core\dependencies.py            46     11     16      4    69%   43, 45-46, 52, 55, 60-65
+app\core\dinero.py                   6      1      2      1    75%   12
+app\core\excepciones.py             48      1      4      1    96%   25
+app\core\security.py                24      4      2      1    81%   24-25, 33, 43
+app\db_seed.py                     103    103     30      0     0%   1-401
+app\inventario\models.py            61      0      0      0   100%
+app\inventario\reglas.py            42      0     24      0   100%
+app\inventario\repository.py        49     11      6      3    75%   57, 60, 63-64, 89-95, 99-100, 106-108
+app\inventario\router.py            46     10      0      0    78%   34-35, 50-51, 93-94, 127-128, 176-177
+app\inventario\schemas.py           45      0      0      0   100%
+app\inventario\service.py          122     52     48     10    47%   79, 84-87, 103, 111, 115, 131->143, 150-185, 195, 200, 232, 235, 240, 264-267, 271-272, 275-282
+app\main.py                         46      8      2      0    79%   70-76, 97, 107
+app\reportes\repository.py          57      4      4      2    90%   25-26, 28-29
+app\reportes\router.py              29      0      0      0   100%
+app\reportes\schemas.py             13      0      0      0   100%
+app\reportes\service.py             40      5      6      2    80%   36, 88-93
+app\usuarios\models.py              26      0      0      0   100%
+app\usuarios\repository.py          26      2      4      2    87%   29, 31
+app\usuarios\router.py              29      2      0      0    93%   46-47
+app\usuarios\schemas.py             16      0      0      0   100%
+app\usuarios\service.py             52      9     18      8    73%   28-31, 35, 40, 58, 60->62, 62->64, 64->67, 74, 77
+app\ventas\models.py                41      0      0      0   100%
+app\ventas\reglas.py                45      0     18      0   100%
+app\ventas\repository.py            38     14      8      0    52%   35-54
+app\ventas\router.py                26      6      0      0    77%   65-74, 96-97
+app\ventas\schemas.py               28      0      0      0   100%
+app\ventas\service.py              100     13     26      5    83%   101, 104, 209, 212, 220->218, 261-272, 275-278
+----------------------------------------------------------------------------
+TOTAL                             1600    296    296     61    76%
+Coverage HTML written to dir ..\docs\evidencias\htmlcov
+======================= 111 passed, 1 warning in 9.15s ========================

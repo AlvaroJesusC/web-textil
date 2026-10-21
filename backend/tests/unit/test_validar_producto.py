@@ -127,3 +127,73 @@ def test_estado_stock_sobre_minimo_es_normal():
 def test_estado_stock_inactivo_tiene_prioridad():
     """CP-01-15 · estado_stock · RN-10: inactivo prevalece sobre stock."""
     assert estado_stock(stock=10, stock_minimo=5, activo=False) == EstadoStock.INACTIVO
+
+
+@pytest.mark.unitaria
+def test_validar_producto_precio_conversion_desde_float_o_str_valido():
+    """CP-01-16 · Conversión de tipos · RN-09: precio numérico en string o float es convertido."""
+    datos_str = DatosProducto(
+        sku="TEL-001",
+        nombre="Tela",
+        precio="15.50",
+        stock=10,  # type: ignore[arg-type]
+    )
+    assert "precio" not in validar_producto(datos_str)
+
+    datos_float = DatosProducto(
+        sku="TEL-001",
+        nombre="Tela",
+        precio=15.50,
+        stock=10,  # type: ignore[arg-type]
+    )
+    assert "precio" not in validar_producto(datos_float)
+
+
+@pytest.mark.unitaria
+def test_validar_producto_precio_no_numerico_genera_error():
+    """CP-01-17 · Partición inválida · RN-09: precio con texto no numérico genera error."""
+    datos = DatosProducto(
+        sku="TEL-001",
+        nombre="Tela",
+        precio="invalido",
+        stock=10,  # type: ignore[arg-type]
+    )
+    errores = validar_producto(datos)
+    assert "precio" in errores
+
+
+@pytest.mark.unitaria
+@pytest.mark.parametrize(
+    "stock_invalido",
+    ["10", 10.5, True, False],
+    ids=["string", "decimal", "booleano_true", "booleano_false"],
+)
+def test_validar_producto_stock_no_entero_genera_error(stock_invalido):
+    """CP-01-18 · Partición inválida · RN-09: stock que no es entero estricto genera error."""
+    datos = DatosProducto(
+        sku="TEL-001",
+        nombre="Tela",
+        precio=Decimal("15.00"),
+        stock=stock_invalido,  # type: ignore[arg-type]
+    )
+    errores = validar_producto(datos)
+    assert "stock" in errores
+
+
+@pytest.mark.unitaria
+@pytest.mark.parametrize(
+    "minimo_invalido",
+    ["5", 5.5, True, False],
+    ids=["string", "decimal", "booleano_true", "booleano_false"],
+)
+def test_validar_producto_stock_minimo_no_entero_genera_error(minimo_invalido):
+    """CP-01-19 · Partición inválida · RN-09: stock mínimo no entero estricto genera error."""
+    datos = DatosProducto(
+        sku="TEL-001",
+        nombre="Tela",
+        precio=Decimal("15.00"),
+        stock=10,
+        stock_minimo=minimo_invalido,  # type: ignore[arg-type]
+    )
+    errores = validar_producto(datos)
+    assert "stock_minimo" in errores

@@ -92,8 +92,26 @@ def test_calcular_diferencia_fisico_cero_sistema_positivo():
 @pytest.mark.unitaria
 @pytest.mark.parametrize(
     ("sistema", "fisico"),
-    [(-1, 100), (100, -1), (10.5, 100)],
-    ids=["sistema_negativo", "fisico_negativo", "sistema_decimal"],
+    [
+        (-1, 100),
+        (100, -1),
+        (10.5, 100),
+        (100, 10.5),
+        (True, 100),
+        (100, False),
+        ("100", 100),
+        (100, "100"),
+    ],
+    ids=[
+        "sistema_negativo",
+        "fisico_negativo",
+        "sistema_decimal",
+        "fisico_decimal",
+        "sistema_booleano",
+        "fisico_booleano",
+        "sistema_string",
+        "fisico_string",
+    ],
 )
 def test_calcular_diferencia_particiones_invalidas_lanza_error(sistema, fisico):
     """CP-04-11 · Particiones inválidas · RN-08: valores no válidos son rechazados."""

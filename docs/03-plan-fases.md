@@ -100,14 +100,14 @@ flowchart LR
 **Objetivo:** desarrollar y ejecutar la suite completa de pruebas unitarias con `pytest` para las 4 funciones críticas, generar el reporte de cobertura HTML y la matriz de casos de prueba para el informe académico.
 
 ### 4.A Las 4 Funciones Críticas Evaluadas
-- [ ] 4.1 Pruebas unitarias de `validar_producto` y `estado_stock` (`tests/unit/test_validar_producto.py`).
-- [ ] 4.2 Pruebas unitarias de `calcular_total_venta` (`tests/unit/test_calcular_total_venta.py` - exactitud de IGV, redondeo `ROUND_HALF_UP`, topes).
-- [ ] 4.3 Pruebas unitarias de `descontar_stock` (`tests/unit/test_descontar_stock.py` - validación de stock disponible, cantidades no válidas).
-- [ ] 4.4 Pruebas unitarias de `calcular_porcentaje_diferencia` (`tests/unit/test_calcular_porcentaje_diferencia.py` - umbral 2%, divisiones con 0).
+- [x] 4.1 Pruebas unitarias de `validar_producto` y `estado_stock` (`tests/unit/test_validar_producto.py`).
+- [x] 4.2 Pruebas unitarias de `calcular_total_venta` (`tests/unit/test_calcular_total_venta.py` - exactitud de IGV, redondeo `ROUND_HALF_UP`, topes).
+- [x] 4.3 Pruebas unitarias de `descontar_stock` (`tests/unit/test_descontar_stock.py` - validación de stock disponible, cantidades no válidas).
+- [x] 4.4 Pruebas unitarias de `calcular_porcentaje_diferencia` (`tests/unit/test_calcular_porcentaje_diferencia.py` - umbral 2%, divisiones con 0).
 
 ### 4.B Reportes y Evidencias Académicas
-- [ ] 4.5 Ejecución de suite completa con `pytest` y generación de reporte HTML (`pytest-cov`).
-- [ ] 4.6 Documentar `docs/evidencias/matriz-casos-prueba.md` con todos los casos ejecutados, valores de entrada, resultados obtenidos y estado de aprobación.
+- [x] 4.5 Ejecución de suite completa con `pytest` y generación de reporte HTML (`pytest-cov`).
+- [x] 4.6 Documentar `docs/evidencias/matriz-casos-prueba.md` con todos los casos ejecutados, valores de entrada, resultados obtenidos y estado de aprobación.
 
 **Criterio de salida:** 100% de pruebas aprobadas, cobertura de las funciones críticas ≥ 90%, y matriz lista para adjuntar en el informe o exponer al profesor.
 
@@ -130,3 +130,5 @@ flowchart LR
 | 2026-10-21 | Fase 1 · Backend MVP | API REST modular completa con FastAPI + SQLAlchemy 2.0. Autenticación JWT y BCrypt, CRUD de productos, movimientos de stock, ventas transaccionales ACID con cálculo exacto (Decimal ROUND_HALF_UP). 69 pruebas unitarias e integración en PASSED. |
 | 2026-10-21 | Fase 2 · Frontend MVP | Frontend SPA completo con React 19 + TypeScript + Vite + Tailwind CSS. Identidad visual textil (azul índigo telar, bordes orillo, cifras tabulares). Implementadas pantallas P-01 (Login), P-02 (Dashboard con KPIs y accesos por rol), P-03 y P-04 (Catálogo de productos, buscador debounced, filtros y modales de producto, ingreso de stock, ajuste y kardex), P-05 (Caja/POS con atajos de teclado, cálculo en vivo y comprobante) y P-06 (Historial de ventas y anulación ACID). 0 errores de compilación y 0 advertencias de linter. |
 | 2026-10-21 | Fase 3 · Conciliación y Reportes | Backend analítico y de conciliación con semáforo exacto (RN-06/RN-07) y ajuste transaccional (RF-27 a RF-32). Pantallas P-07 (Conciliación física con captura inmutable, cálculo en vivo de conformidad, semáforo accesible e historial) y P-08 (Reportes gerenciales con gráficos Recharts de tendencias temporales, ranking top 10 productos, cobros por medio de pago, rendimiento por vendedor y alertas de stock crítico). Frontend 100% libre de advertencias y errores (0 lints, 0 TS errors). Backend 100% verificado con ruff. |
+| 2026-10-21 | Fase 4 · Pruebas Unitarias y Calidad 🎯 | Suite formal de pruebas con pytest completada con 111 pruebas (81 unitarias + 30 integración) aprobadas al 100% (0 fallos). Cobertura del 100% en las 4 funciones críticas de reglas de negocio (`validar_producto`, `calcular_total_venta`, `descontar_stock`, `calcular_porcentaje_diferencia`) y 76% de cobertura total en la aplicación backend. Generados artefactos en `docs/evidencias/`: `matriz-casos-prueba.md`, `salida-pytest.txt`, `cobertura.txt`, `resultado-pruebas.xml` y reporte interactivo HTML en `docs/evidencias/htmlcov/`. Backend verificado con ruff (0 errores, 0 problemas de formato). Frontend verificado (0 errores TypeScript, 0 lints con oxlint). |
+
