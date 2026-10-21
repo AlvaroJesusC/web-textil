@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-azul-telar: #1E3A8A;
+    --color-azul-telar-hover: #172554;
+    --color-lienzo: #F8FAFC;
+    --color-panel: #FFFFFF;
+    --color-borde-orillo: #E2E8F0;
+    --color-tinta: #0F172A;
+    --color-trama-gris: #64748B;
+    --color-dorado-cinta: #D97706;
+    --color-verde-conforme: #15803D;
+    --color-rojo-alerta: #B91C1C;
+  }
+
+  body {
+    background-color: var(--color-lienzo);
+    color: var(--color-tinta);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+    min-height: 100vh;
+  }
+
+  /* Cifras tabulares obligatorias para precios y cantidades */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
