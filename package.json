@@ -1,0 +1,10 @@
+{
+  "name": "sistema-textileria",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sistema de ventas e inventario Textilería",
+  "scripts": {
+    "dev": "python dev.py",
+    "start": "python dev.py"
+  }
+}
