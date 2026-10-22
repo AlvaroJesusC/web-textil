@@ -1,4 +1,4 @@
-# ☕ ➔ 🐍 GUÍA Y REPORTE: PRUEBAS UNITARIAS (MIGRACIÓN JAVA A PYTHON)
+# GUÍA Y REPORTE: PRUEBAS UNITARIAS (MIGRACIÓN JAVA A PYTHON)
 ## Sistema Textil · Módulos de Ventas, Inventario y Reportes
 **Curso:** Calidad de Software · UCV 2026  
 **Estándar:** ISO/IEC 25010 (Adecuación Funcional, Exactitud y Tolerancia a Fallos)  
