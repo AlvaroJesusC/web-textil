@@ -159,7 +159,7 @@ export const DashboardPage: React.FC = () => {
             <div className="text-base font-bold text-slate-900 flex items-center gap-2">
               <span>Semáforo ≤ 2%</span>
               <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                RNF-02
+                Tolerancia
               </span>
             </div>
             <p className="text-xs text-blue-700 flex items-center gap-1 mt-1 font-medium">

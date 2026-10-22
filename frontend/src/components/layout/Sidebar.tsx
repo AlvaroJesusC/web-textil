@@ -66,9 +66,9 @@ export const Sidebar: React.FC = () => {
   }
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 select-none min-h-screen">
+    <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col border-r border-slate-800 select-none h-full shrink-0">
       {/* Brand Header */}
-      <div className="p-4 border-b border-slate-800 flex items-center gap-3">
+      <div className="p-4 border-b border-slate-800 flex items-center gap-3 shrink-0">
         <div className="w-10 h-10 rounded-lg bg-blue-700 flex items-center justify-center text-white shadow-sm ring-1 ring-white/20">
           <Scissors className="w-5 h-5 -rotate-45" />
         </div>
@@ -79,7 +79,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Usuario Info */}
-      <div className="p-3 mx-3 my-3 rounded-lg bg-slate-800/60 border border-slate-700/50">
+      <div className="p-3 mx-3 my-3 rounded-lg bg-slate-800/60 border border-slate-700/50 shrink-0">
         <div className="flex items-center gap-2 mb-1">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span className="text-xs font-medium text-slate-200 truncate">{usuario?.nombre || 'Usuario'}</span>
@@ -90,7 +90,7 @@ export const Sidebar: React.FC = () => {
       </div>
 
       {/* Navegación */}
-      <nav className="flex-1 px-3 space-y-1">
+      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
         <div className="px-2 pb-1 text-[11px] font-semibold tracking-wider text-slate-400 uppercase">
           Módulos
         </div>
@@ -102,7 +102,7 @@ export const Sidebar: React.FC = () => {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/'}
+                end
                 className={({ isActive }) =>
                   cn(
                     'flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
@@ -127,7 +127,7 @@ export const Sidebar: React.FC = () => {
       </nav>
 
       {/* Pie de Barra Lateral */}
-      <div className="p-3 border-t border-slate-800">
+      <div className="p-3 border-t border-slate-800 shrink-0">
         <div className="flex items-center justify-between px-2 py-1.5 text-xs text-slate-400 mb-2">
           <span className="flex items-center gap-1.5 text-emerald-400">
             <CheckCircle2 className="w-3.5 h-3.5" /> API Activa

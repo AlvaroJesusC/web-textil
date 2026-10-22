@@ -95,7 +95,6 @@ export const ReportesPage: React.FC = () => {
             <span className="px-2 py-0.5 rounded text-[11px] font-bold tracking-wider uppercase bg-blue-100 text-blue-900 border border-blue-200">
               Gestión Comercial e Inventario
             </span>
-            <span className="text-xs font-mono text-slate-500">Módulo P-08</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Reportes y Métricas de Ventas

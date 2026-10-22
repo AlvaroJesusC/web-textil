@@ -39,7 +39,7 @@ export const KardexModal: React.FC<KardexModalProps> = ({ abierto, producto, alC
           <div className="flex items-center gap-2">
             <History className="w-5 h-5 text-slate-700" />
             <div>
-              <h3 className="font-bold text-slate-900 text-sm">Kardex de Movimientos (RF-14)</h3>
+              <h3 className="font-bold text-slate-900 text-sm">Kardex de Movimientos</h3>
               <p className="text-xs text-slate-500 font-mono">
                 {producto.sku} · {producto.nombre}
               </p>

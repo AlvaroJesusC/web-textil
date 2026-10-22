@@ -99,7 +99,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
       <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
         <div>
           <h3 className="font-bold text-slate-900 text-base">
-            {esEdicion ? 'Editar Producto Textil' : 'Registrar Nuevo Producto (P-04)'}
+            {esEdicion ? 'Editar Producto Textil' : 'Registrar Nuevo Producto'}
           </h3>
           <p className="text-xs text-slate-500">
             {esEdicion

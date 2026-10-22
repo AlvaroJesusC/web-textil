@@ -201,7 +201,7 @@ export const InventarioPage: React.FC = () => {
     <div className="flex-1 flex flex-col">
       <Header
         titulo="Catálogo e Inventario Textil"
-        subtitulo="Gestión de rollos, conos de hilo, avíos y control de existencias en tiempo real (P-03)"
+        subtitulo="Gestión de rollos, conos de hilo, avíos y control de existencias en tiempo real"
       />
 
       <main className="p-6 space-y-4">
@@ -263,7 +263,7 @@ export const InventarioPage: React.FC = () => {
               className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-blue-900 hover:bg-blue-950 text-white text-xs font-semibold shadow-xs shrink-0 transition-colors"
             >
               <Plus className="w-4 h-4" />
-              <span>Nuevo Producto (P-04)</span>
+              <span>Nuevo Producto</span>
             </button>
           )}
         </div>

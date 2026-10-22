@@ -43,7 +43,7 @@ export const AjustarStockModal: React.FC<AjustarStockModalProps> = ({
             </div>
             <div>
               <h2 className="text-sm font-bold text-slate-900">Ajustar Stock al Conteo Físico</h2>
-              <p className="text-xs text-amber-700 font-medium">Acción exclusiva de Administrador (RF-29)</p>
+              <p className="text-xs text-amber-700 font-medium">Acción exclusiva de Administrador</p>
             </div>
           </div>
           <button

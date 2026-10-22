@@ -35,7 +35,7 @@ export const IniciarConteoModal: React.FC<IniciarConteoModalProps> = ({
             </div>
             <div>
               <h2 className="text-sm font-bold text-slate-900">Iniciar Conteo Físico</h2>
-              <p className="text-xs text-slate-500">Captura de stock del sistema (RF-27)</p>
+              <p className="text-xs text-slate-500">Captura de stock del sistema</p>
             </div>
           </div>
           <button

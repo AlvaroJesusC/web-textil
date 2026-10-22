@@ -13,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({ titulo, subtitulo }) => {
   const { tieneRol } = useAuth()
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-10">
+    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-10 shrink-0">
       <div>
         <h2 className="text-lg font-bold text-slate-900 leading-tight">
           {titulo || 'Sistema Textil'}

@@ -68,7 +68,7 @@ export const HistorialVentasPage: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col">
       <Header
-        titulo="Historial de Ventas (P-06)"
+        titulo="Historial de Ventas"
         subtitulo="Consulta de comprobantes emitidos, desglose de IGV y anulación transaccional"
       />
 

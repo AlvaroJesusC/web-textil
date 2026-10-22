@@ -175,9 +175,8 @@ export const ConciliacionPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2 py-0.5 rounded text-[11px] font-bold tracking-wider uppercase bg-blue-100 text-blue-900 border border-blue-200">
-              Control de Calidad · RNF-02
+              Control de Calidad
             </span>
-            <span className="text-xs font-mono text-slate-500">Módulo P-07</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Conciliación de Stock y Conteo Físico
@@ -320,7 +319,7 @@ export const ConciliacionPage: React.FC = () => {
                       onClick={calcularDiferencias}
                       disabled={calcularMutation.isPending}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-800 hover:bg-blue-900 text-white shadow-xs transition-colors"
-                      title="Calcula % de diferencia y aplica el semáforo (RN-06)"
+                      title="Calcula % de diferencia y aplica el semáforo"
                     >
                       <Calculator className="w-3.5 h-3.5" />
                       Calcular Diferencias
