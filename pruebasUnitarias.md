@@ -106,14 +106,14 @@ class SistemaTextil:
 class TestSistemaTextil(unittest.TestCase):
 
     def test_01_calcular_facturacion(self):
-        """PRUEBA 1: FACTURACIÓN CON IGV"""
-        # 100 metros x S/ 10.00 = S/ 1,000.00
-        # Descuento del 10% = S/ 100.00
-        # Valor de venta = S/ 900.00
-        # IGV del 18% = S/ 162.00
-        # Total esperado = S/ 1,062.00
-        resultado = SistemaTextil.calcular_facturacion(100.0, 10.0, 0.10)
-        self.assertEqual(resultado, 1062.0)
+        """PRUEBA 1: FACTURACIÓN CON IGV (10 m Tela Jersey a S/ 15.20 con 10% desc)"""
+        # 10 metros x S/ 15.20 = S/ 152.00
+        # Descuento del 10% = S/ 15.20
+        # Valor de venta = S/ 136.80
+        # IGV del 18% = S/ 24.62
+        # Total esperado = S/ 161.42
+        resultado = SistemaTextil.calcular_facturacion(10.0, 15.20, 0.10)
+        self.assertEqual(resultado, 161.42)
 
     def test_02_verificar_alerta_stock(self):
         """PRUEBA 2: ALERTA DE STOCK"""
@@ -142,15 +142,15 @@ class TestSistemaTextil(unittest.TestCase):
 
 ### 1️⃣ Prueba 1: `calcular_facturacion` (Ventas / Caja)
 * **¿Por qué se hizo?** Verifica que la liquidación económica aplique correctamente los descuentos y el **18% de IGV exigido por SUNAT**. Si falla, la empresa pierde dinero o sufre multas tributarias.
-* **¿Por qué estos datos? (Ejemplo)**
-  * `100 metros` a `S/ 10.00`: Pedido mayorista típico con monto redondo ($100 \times 10 = \text{S/ } 1,000.00$).
-  * `descuento = 0.10 (10%)`: Deducción por cliente frecuente ($\text{S/ } 100.00$).
-* **¿Por qué sale `S/ 1,062.00`?**
-  1. Subtotal: $100 \times 10 = \text{S/ } 1,000.00$
-  2. Descuento: $1,000 \times 0.10 = \text{S/ } 100.00$
-  3. Valor de venta (Base): $1,000 - 100 = \text{S/ } 900.00$
-  4. IGV (18%): $900 \times 0.18 = \text{S/ } 162.00$
-  5. Total: $900 + 162 = \mathbf{S/\ 1,062.00}$ (Exacto).
+* **¿Por qué estos datos? (Ejemplo idéntico a la pantalla del sistema)**
+  * `10 metros` de Tela Jersey a `S/ 15.20`: Pedido comercial real en mostrador ($10 \times 15.20 = \text{S/ } 152.00$).
+  * `descuento = 0.10 (10%)`: Deducción por cliente frecuente `Confecciones Gamarra S.A.C.` ($\text{S/ } 15.20$).
+* **¿Por qué sale `S/ 161.42`?**
+  1. Subtotal bruto: $10 \times 15.20 = \text{S/ } 152.00$
+  2. Descuento 10%: $152.00 \times 0.10 = \text{S/ } 15.20$
+  3. Valor de venta (Base): $152.00 - 15.20 = \text{S/ } 136.80$
+  4. IGV (18% SUNAT): $136.80 \times 0.18 = \text{S/ } 24.62$
+  5. Total liquidado: $136.80 + 24.62 = \mathbf{S/\ 161.42}$ (Exacto al comprobante en pantalla).
 
 ---
 
@@ -191,7 +191,7 @@ class TestSistemaTextil(unittest.TestCase):
 
 | N° | Módulo | Función / Método | Datos de Entrada | Resultado Esperado | Resultado Obtenido | Estado |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: |
-| **01** | **Ventas** | `calcular_facturacion` | 100 m $\times$ S/ 10.00, Desc: 10%, IGV: 18% | `1062.0` *(S/ 1,062.00)* | `1062.0` | 🟢 **APROBADO** |
+| **01** | **Ventas** | `calcular_facturacion` | 10 m $\times$ S/ 15.20, Desc: 10%, IGV: 18% | `161.42` *(S/ 161.42)* | `161.42` | 🟢 **APROBADO** |
 | **02** | **Inventario** | `verificar_alerta_stock` | Actual: 20 rollos, Mínimo: 50 rollos | `"ALERTA: Stock critico"` | `"ALERTA: Stock critico"` | 🟢 **APROBADO** |
 | **03** | **Inventario** | `registrar_despacho` | Inicial: 500, Despachado: 200 | `300 unidades` | `300` | 🟢 **APROBADO** |
 | **04** | **Reportes** | `calcular_rotacion_inventario` | Costo: S/ 50,000, Inv. Prom: S/ 10,000 | `5.0 veces` | `5.0` | 🟢 **APROBADO** |
@@ -200,10 +200,10 @@ class TestSistemaTextil(unittest.TestCase):
 
 ## 🚀 6. Cómo Ejecutarlo en Terminal
 
-Para correr esta versión migrada:
+Para correr esta versión:
 
 ```bash
-python ejemplo_pruebas_java.py
+python ejemplo_pruebas_unitarias.py
 ```
 
 ### Salida Obtenida en Consola:
@@ -212,9 +212,9 @@ python ejemplo_pruebas_java.py
  ACTIVIDAD: 4 PRUEBAS UNITARIAS (MIGRACION JAVA -> PYTHON)
 ================================================================================
 Modulo/Funcion : 1. Ventas: calcular_facturacion
-Entrada        : 100 m x S/ 10.00 | Desc: 10% (0.10) | IGV: 18%
-Esperado       : S/ 1,062.00
-Obtenido       : S/ 1,062.00
+Entrada        : 10 m x S/ 15.20 | Desc: 10% (0.10) | IGV: 18%
+Esperado       : S/ 161.42
+Obtenido       : S/ 161.42
 Resultado      : [APROBADO]
 --------------------------------------------------------------------------------
 Modulo/Funcion : 2. Inventario: verificar_alerta_stock

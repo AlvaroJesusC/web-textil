@@ -65,14 +65,14 @@ class SistemaTextil:
 class TestSistemaTextil(unittest.TestCase):
 
     def test_01_calcular_facturacion(self):
-        """PRUEBA 1: FACTURACION CON IGV"""
-        # 100 metros x S/ 10.00 = S/ 1,000.00
-        # Descuento del 10% = S/ 100.00
-        # Valor de venta = S/ 900.00
-        # IGV del 18% = S/ 162.00
-        # Total esperado = S/ 1,062.00
-        resultado = SistemaTextil.calcular_facturacion(100.0, 10.0, 0.10)
-        self.assertEqual(resultado, 1062.0)
+        """PRUEBA 1: FACTURACION CON IGV (10 m de Tela Jersey a S/ 15.20 con 10% desc)"""
+        # 10 metros x S/ 15.20 = S/ 152.00
+        # Descuento del 10% = S/ 15.20
+        # Valor de venta (Base) = S/ 136.80
+        # IGV del 18% = S/ 24.62
+        # Total esperado en pantalla = S/ 161.42
+        resultado = SistemaTextil.calcular_facturacion(10.0, 15.20, 0.10)
+        self.assertEqual(resultado, 161.42)
 
     def test_02_verificar_alerta_stock(self):
         """PRUEBA 2: ALERTA DE STOCK"""
@@ -102,7 +102,7 @@ def imprimir_resumen_visual():
     print(" ACTIVIDAD: 4 PRUEBAS UNITARIAS (MIGRACION JAVA -> PYTHON)")
     print("=" * 80)
 
-    res1 = SistemaTextil.calcular_facturacion(100.0, 10.0, 0.10)
+    res1 = SistemaTextil.calcular_facturacion(10.0, 15.20, 0.10)
     res2 = SistemaTextil.verificar_alerta_stock(20, 50)
     res3 = SistemaTextil.registrar_despacho(500, 200)
     res4 = SistemaTextil.calcular_rotacion_inventario(50000.0, 10000.0)
@@ -110,10 +110,10 @@ def imprimir_resumen_visual():
     casos = [
         (
             "1. Ventas: calcular_facturacion",
-            "100 m x S/ 10.00 | Desc: 10% (0.10) | IGV: 18%",
-            1062.0,
+            "10 m x S/ 15.20 | Desc: 10% (0.10) | IGV: 18%",
+            161.42,
             res1,
-            "S/ 1,062.00",
+            "S/ 161.42",
             f"S/ {res1:,.2f}",
         ),
         (
