@@ -1,359 +1,249 @@
-# 🧵 INFORME Y GUÍA VISUAL: 4 PRUEBAS UNITARIAS MULTI-MÓDULO
-## Sistema de Ventas e Inventario · Textilería (Lima - Perú)
+# ☕ ➔ 🐍 GUÍA Y REPORTE: PRUEBAS UNITARIAS (MIGRACIÓN JAVA A PYTHON)
+## Sistema Textil · Módulos de Ventas, Inventario y Reportes
 **Curso:** Calidad de Software · UCV 2026  
-**Estándar de Calidad:** ISO/IEC 25010 (Adecuación Funcional, Exactitud de Cálculo y Tolerancia a Fallos)  
-**Script Ejecutable:** [`ejemplo_pruebas_unitarias.py`](file:///c:/Users/AlvaroJ/Documents/Antigravity%20Projects/sistema-textileria/ejemplo_pruebas_unitarias.py)
+**Estándar:** ISO/IEC 25010 (Adecuación Funcional, Exactitud y Tolerancia a Fallos)  
+**Script Ejecutable en Python:** [`ejemplo_pruebas_java.py`](file:///c:/Users/AlvaroJ/Documents/Antigravity%20Projects/sistema-textileria/ejemplo_pruebas_java.py)
 
 ---
 
-## 📊 Panel General de Resultados (Dashboard de Calidad)
+## 📊 1. Resumen de Ejecución y Dashboard
 
-| Métrica | Valor Obtenido | Estado | Observación |
+| Métrica | Valor | Estado | Observación |
 | :--- | :---: | :---: | :--- |
-| **Módulos Evaluados** | `4` | 🟢 Multidisciplinario | Inventario, Ventas, Almacén y Conciliación |
-| **Pruebas Diseñadas** | `4` | 🟢 Listo | 1 función crítica por cada área clave |
-| **Pruebas Ejecutadas** | `4 / 4` | 🟢 100% | Ejecución limpia y aislada |
-| **Pruebas Aprobadas (`PASSED`)** | `4 / 4` | 🟢 100% | Todas las aserciones fueron exitosas |
-| **Pruebas Fallidas (`FAILED`)** | `0` | 🟢 Cero errores | Precisión matemática exacta |
-| **Tiempo de Ejecución** | `0.000s` | ⚡ Instantáneo | Pruebas unitarias sin dependencias externas |
-| **Framework Utilizado** | `unittest` | 🐍 Estándar Python | Nativo, sin necesidad de librerías extras |
+| **Pruebas Diseñadas** | `4` | 🟢 Listo | 1 por cada método del código original |
+| **Pruebas Aprobadas** | `4 / 4` | 🟢 100% | Todas las aserciones pasan |
+| **Tiempo de Ejecución** | `0.000s` | ⚡ Instantáneo | Sin dependencias externas pesadas |
+| **Framework en Java** | `JUnit 5` | ☕ JUnit Jupiter | `@Test`, `assertEquals` |
+| **Framework en Python** | `unittest` | 🐍 Estándar Python | `self.assertEqual`, `self.assertAlmostEqual` |
 
 ```mermaid
-pie title Cobertura por Módulo del Sistema
-    "Módulo 1: Inventario (Catálogo)" : 25
-    "Módulo 2: Ventas (Facturación)" : 25
-    "Módulo 3: Almacén (Control Stock)" : 25
-    "Módulo 4: Conciliación (Mermas)" : 25
+pie title Cobertura de las 4 Pruebas Unitarias
+    "1. Ventas (Facturación IGV 18%)" : 25
+    "2. Inventario (Alerta Stock Crítico)" : 25
+    "3. Inventario (Trazabilidad Despacho)" : 25
+    "4. Reportes (Rotación Inventario)" : 25
 ```
 
 ---
 
-## 🗺️ Mapa de los 4 Módulos y sus Funciones Críticas
+## 🔄 2. Tabla Comparativa de Sintaxis (Java vs. Python)
 
-En un sistema textil integral, cada módulo cumple un rol indispensable en la cadena de valor:
-
-```mermaid
-flowchart TD
-    subgraph M1["1. MÓDULO INVENTARIO"]
-        F1["validar_producto()\n(Catálogo de Telas)"]
-    end
-
-    subgraph M2["2. MÓDULO VENTAS"]
-        F2["calcular_total_venta()\n(Subtotal, Descuento, IGV 18%)"]
-    end
-
-    subgraph M3["3. MÓDULO ALMACÉN"]
-        F3["descontar_stock()\n(Salida física de rollos/metros)"]
-    end
-
-    subgraph M4["4. MÓDULO CONCILIACIÓN"]
-        F4["calcular_porcentaje_diferencia()\n(Control de mermas y auditoría)"]
-    end
-
-    F1 -->|Telas registradas| F2
-    F2 -->|Venta realizada| F3
-    F3 -->|Stock restante| F4
-
-    style M1 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0f172a
-    style M2 fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#0f172a
-    style M3 fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#0f172a
-    style M4 fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#0f172a
-```
+| Concepto | En Java (JUnit 5) | En Python (`unittest`) |
+| :--- | :--- | :--- |
+| **Definición de Clase** | `public class SistemaTextil { ... }` | `class SistemaTextil:` |
+| **Método Estático** | `public static double calcular(...)` | `@staticmethod`<br>`def calcular(...):` |
+| **Lanzar Excepción** | `throw new IllegalArgumentException("...");` | `raise ValueError("...")` |
+| **Redondeo Numérico** | `Math.round(val * 100.0) / 100.0` | `round(val, 2)` |
+| **Clase de Pruebas** | `public class SistemaTextilTest { ... }` | `class TestSistemaTextil(unittest.TestCase):` |
+| **Anotación / Test** | `@Test public void testX() { ... }` | `def test_01_x(self):` |
+| **Aserción de Igualdad**| `assertEquals(esperado, obtenido);` | `self.assertEqual(obtenido, esperado)` |
+| **Aserción con Delta** | `assertEquals(esperado, obtenido, 0.001);` | `self.assertAlmostEqual(obtenido, esperado, places=3)` |
 
 ---
 
-## 🔬 Detalle de las 4 Pruebas Unitarias
+## 💻 3. Código Completo en Python (`ejemplo_pruebas_java.py`)
 
----
-
-### 1️⃣ Módulo Inventario: `validar_producto`
-
-#### 📌 ¿Qué hace y por qué se prueba?
-Valida que un nuevo rollo o tela cumpla con los datos mínimos para ingresar al catálogo: SKU obligatorio, nombre, precio mayor a 0 y stock no negativo. Evita registros corruptos en el catálogo textil.
-
-#### 💻 Código Corto
 ```python
-# Función
-def validar_producto(sku: str, nombre: str, precio: float, stock: int) -> bool:
-    if not sku.strip() or not nombre.strip():
-        return False
-    if precio <= 0 or stock < 0:
-        return False
-    return True
+import unittest
 
-# Prueba Unitaria
-def test_01_validar_producto_inventario(self):
-    es_valido = validar_producto(sku="TEL-001", nombre="Tela Algodon Pima", precio=25.50, stock=40)
-    self.assertTrue(es_valido)
+
+class SistemaTextil:
+
+    # ==========================================
+    # 1. MÓDULO DE VENTAS: FACTURACIÓN
+    # ==========================================
+    @staticmethod
+    def calcular_facturacion(cantidad_metros: float, precio_unitario: float, descuento: float) -> float:
+        """Calcula el total de la venta incluyendo descuento e IGV (18%)."""
+        if cantidad_metros < 0 or precio_unitario < 0:
+            raise ValueError("Cantidades inválidas")
+
+        subtotal = cantidad_metros * precio_unitario
+        monto_descuento = subtotal * descuento
+        valor_venta = subtotal - monto_descuento
+        igv = valor_venta * 0.18
+        total = valor_venta + igv
+
+        return round(total, 2)
+
+    # ==========================================
+    # 2. MÓDULO DE INVENTARIO: ALERTA DE STOCK
+    # ==========================================
+    @staticmethod
+    def verificar_alerta_stock(stock_actual: int, stock_minimo: int) -> str:
+        """Verifica si el inventario está en el nivel mínimo o por debajo."""
+        if stock_actual <= stock_minimo:
+            return "ALERTA: Stock critico"
+        return "Stock normal"
+
+    # ==========================================
+    # 3. MÓDULO DE INVENTARIO: TRAZABILIDAD
+    # ==========================================
+    @staticmethod
+    def registrar_despacho(stock_actual: int, cantidad_despachada: int) -> int:
+        """Registra un despacho descontando las unidades del stock."""
+        if cantidad_despachada > stock_actual:
+            raise ValueError("Stock insuficiente")
+        return stock_actual - cantidad_despachada
+
+    # ==========================================
+    # 4. MÓDULO DE REPORTES: ROTACIÓN
+    # ==========================================
+    @staticmethod
+    def calcular_rotacion_inventario(costo_bienes_vendidos: float, inventario_promedio: float) -> float:
+        """Calcula la rotación del inventario."""
+        if inventario_promedio <= 0:
+            raise ValueError("Inventario promedio inválido")
+
+        rotacion = costo_bienes_vendidos / inventario_promedio
+        return round(rotacion, 2)
+
+
+# ==========================================
+# PRUEBAS UNITARIAS EQUIVALENTES A JUNIT
+# ==========================================
+
+class TestSistemaTextil(unittest.TestCase):
+
+    def test_01_calcular_facturacion(self):
+        """PRUEBA 1: FACTURACIÓN CON IGV"""
+        # 100 metros x S/ 10.00 = S/ 1,000.00
+        # Descuento del 10% = S/ 100.00
+        # Valor de venta = S/ 900.00
+        # IGV del 18% = S/ 162.00
+        # Total esperado = S/ 1,062.00
+        resultado = SistemaTextil.calcular_facturacion(100.0, 10.0, 0.10)
+        self.assertEqual(resultado, 1062.0)
+
+    def test_02_verificar_alerta_stock(self):
+        """PRUEBA 2: ALERTA DE STOCK"""
+        # Stock actual: 20 rollos | Stock mínimo: 50 rollos
+        resultado = SistemaTextil.verificar_alerta_stock(20, 50)
+        self.assertEqual(resultado, "ALERTA: Stock critico")
+
+    def test_03_registrar_despacho(self):
+        """PRUEBA 3: REGISTRO DE DESPACHO"""
+        # Stock inicial: 500 unidades | Despachado: 200 unidades
+        resultado = SistemaTextil.registrar_despacho(500, 200)
+        self.assertEqual(resultado, 300)
+
+    def test_04_calcular_rotacion_inventario(self):
+        """PRUEBA 4: ROTACIÓN DE INVENTARIO"""
+        # Costo de bienes vendidos: S/ 50,000 | Inventario promedio: S/ 10,000
+        resultado = SistemaTextil.calcular_rotacion_inventario(50000.0, 10000.0)
+        self.assertAlmostEqual(resultado, 5.0, places=3)
 ```
-
-#### 📊 Diagrama de Secuencia
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Test as Test Unitario
-    participant Func as validar_producto()
-    participant Assert as self.assertTrue()
-
-    Test->>Func: Enviar (SKU="TEL-001", Pima, S/ 25.50, Stock=40)
-    Note over Func: Comprueba precio > 0 y stock >= 0
-    Func-->>Test: Retorna True
-    Test->>Assert: Evalúa True == True
-    Assert-->>Test: 🟢 APROBADO (OK)
-```
-
-#### 🖥️ Resultado en Terminal
-```text
-Modulo     : 1. Inventario (Catalogo de Telas)
-Entrada    : SKU: 'TEL-001' | Pima | S/ 25.50 | Stock: 40
-Esperado   : True (Valido)
-Obtenido   : True (Valido)
-Resultado  : [APROBADO]
-```
-
-#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
-- **¿Por qué se hizo?** Previene que un usuario guarde telas con precio `S/ 0.00` (se venderían gratis) o stock negativo (`-5 metros`), lo cual dañaría la base de datos del negocio.
-- **¿Por qué estos datos?**
-  - `sku="TEL-001"` y `nombre="Tela Algodon Pima"`: Representa un producto real de confección en Lima.
-  - `precio=25.50`: Precio real de mercado por metro en Gamarra (positivo y con decimales).
-  - `stock=40`: Metros que contiene un fardo o rollo comercial estándar al llegar de fábrica.
-- **¿Por qué sale `True`?** Porque cumple las 4 reglas del catálogo (SKU válido, nombre válido, precio > 0 y stock >= 0).
 
 ---
 
-### 2️⃣ Módulo Ventas: `calcular_total_venta`
-
-#### 📌 ¿Qué hace y por qué se prueba?
-Orquesta el cálculo comercial completo: multiplica metraje por precio, aplica el porcentaje de descuento y suma el **18% de IGV (normativa SUNAT)**. Evita pérdidas económicas y descuadres tributarios.
-
-#### 💻 Código Corto
-```python
-# Función
-def calcular_total_venta(cantidad: int, precio_unitario: float, descuento_pct: float = 0.0) -> float:
-    subtotal = cantidad * precio_unitario
-    monto_descuento = subtotal * (descuento_pct / 100)
-    base_imponible = subtotal - monto_descuento
-    igv = base_imponible * 0.18
-    return round(base_imponible + igv, 2)
-
-# Prueba Unitaria
-def test_02_calcular_total_ventas(self):
-    # 2 rollos * S/ 50 = S/ 100 subtotal - 10% desc = S/ 90 base + 18% IGV (16.20) = 106.20
-    total = calcular_total_venta(cantidad=2, precio_unitario=50.00, descuento_pct=10.0)
-    self.assertEqual(total, 106.20)
-```
-
-#### 📊 Desglose de Cálculo
-```mermaid
-flowchart LR
-    A["2 rollos × S/ 50.00\nSubtotal = S/ 100.00"] --> B["-10% Descuento\nBase = S/ 90.00"]
-    B --> C["+18% IGV SUNAT\nIGV = S/ 16.20"]
-    C --> D["Total a Pagar:\nS/ 106.20 ✔"]
-
-    style A fill:#eff6ff,stroke:#3b82f6
-    style B fill:#fef3c7,stroke:#d97706
-    style C fill:#fee2e2,stroke:#ef4444
-    style D fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-```
-
-#### 🖥️ Resultado en Terminal
-```text
-Modulo     : 2. Ventas (Caja y Facturacion)
-Entrada    : Cant: 2 rollos | Precio: S/ 50.00 | Desc: 10% | IGV: 18%
-Esperado   : S/ 106.20
-Obtenido   : S/ 106.20
-Resultado  : [APROBADO]
-```
-
-#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
-- **¿Por qué se hizo?** Es el cálculo financiero central del negocio. Si falla el descuento o el impuesto, la textilería pierde dinero o la SUNAT aplica sanciones tributarias por emitir facturas/boletas erróneas.
-- **¿Por qué estos datos?**
-  - `2 rollos a S/ 50.00`: Pedido mayorista típico con números redondos para facilitar la auditoría y verificación manual ($2 \times 50 = \text{S/ } 100.00$).
-  - `descuento=10%`: Rebaja comercial habitual por volumen de compra.
-- **¿Por qué sale `S/ 106.20`?**
-  1. Subtotal bruto: $2 \times 50.00 = \text{S/ } 100.00$.
-  2. Descuento 10%: $100.00 \times 0.10 = \text{S/ } 10.00$.
-  3. Base imponible: $100.00 - 10.00 = \text{S/ } 90.00$.
-  4. IGV (18% SUNAT): $90.00 \times 0.18 = \text{S/ } 16.20$.
-  5. Total a pagar: $90.00 + 16.20 = \mathbf{S/\ 106.20}$.
+## 🔬 4. Justificación de Cada Prueba: ¿Por qué se hizo y por qué esos datos?
 
 ---
 
-### 3️⃣ Módulo Almacén: `descontar_stock`
-
-#### 📌 ¿Qué hace y por qué se prueba?
-Controla la salida física de rollos o metros del almacén tras un despacho. Garantiza que el inventario se actualice en tiempo real y rechaza salidas que dejen el stock en negativo.
-
-#### 💻 Código Corto
-```python
-# Función
-def descontar_stock(stock_actual: int, cantidad_a_descontar: int) -> int:
-    if cantidad_a_descontar <= 0:
-        raise ValueError("La cantidad a descontar debe ser mayor a 0.")
-    if cantidad_a_descontar > stock_actual:
-        raise ValueError("Stock insuficiente para despachar.")
-    return stock_actual - cantidad_a_descontar
-
-# Prueba Unitaria
-def test_03_descontar_stock_almacen(self):
-    # Stock inicial 50 m, se despachan 15 m -> deben quedar 35 m
-    nuevo_stock = descontar_stock(stock_actual=50, cantidad_a_descontar=15)
-    self.assertEqual(nuevo_stock, 35)
-```
-
-#### 📊 Diagrama de Flujo
-```mermaid
-flowchart TD
-    E["Stock Inicial: 50 rollos"] --> S["Despacho: 15 rollos"]
-    S --> V{"¿15 <= 50?"}
-    V -- Sí --> R["Nuevo Stock: 35 rollos"]
-    R --> A["self.assertEqual(35, 35) 🟢"]
-    V -- No --> F["Error: Stock Insuficiente 🔴"]
-
-    style E fill:#f1f5f9,stroke:#64748b
-    style R fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-```
-
-#### 🖥️ Resultado en Terminal
-```text
-Modulo     : 3. Almacen (Control de Stock)
-Entrada    : Stock inicial: 50 m | Salida despachada: 15 m
-Esperado   : 35 metros
-Obtenido   : 35 metros
-Resultado  : [APROBADO]
-```
-
-#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
-- **¿Por qué se hizo?** Asegura que tras una venta, el almacén se sincronice al instante. Si la función fallara, un vendedor podría prometer y vender rollos que físicamente ya no existen en estantería (quiebre de inventario).
-- **¿Por qué estos datos?**
-  - `stock_actual=50`: Lote de 50 metros disponibles en estantería.
-  - `cantidad_a_descontar=15`: Pedido de 15 metros para confección.
-- **¿Por qué sale `35`?**
-  - Resta directa: $50 - 15 = \mathbf{35\text{ metros}}$. Comprueba que el remanente en bodega es exacto y se mantiene positivo.
+### 1️⃣ Prueba 1: `calcular_facturacion` (Ventas / Caja)
+* **¿Por qué se hizo?** Verifica que la liquidación económica aplique correctamente los descuentos y el **18% de IGV exigido por SUNAT**. Si falla, la empresa pierde dinero o sufre multas tributarias.
+* **¿Por qué estos datos? (Ejemplo)**
+  * `100 metros` a `S/ 10.00`: Pedido mayorista típico con monto redondo ($100 \times 10 = \text{S/ } 1,000.00$).
+  * `descuento = 0.10 (10%)`: Deducción por cliente frecuente ($\text{S/ } 100.00$).
+* **¿Por qué sale `S/ 1,062.00`?**
+  1. Subtotal: $100 \times 10 = \text{S/ } 1,000.00$
+  2. Descuento: $1,000 \times 0.10 = \text{S/ } 100.00$
+  3. Valor de venta (Base): $1,000 - 100 = \text{S/ } 900.00$
+  4. IGV (18%): $900 \times 0.18 = \text{S/ } 162.00$
+  5. Total: $900 + 162 = \mathbf{S/\ 1,062.00}$ (Exacto).
 
 ---
 
-### 4️⃣ Módulo Conciliación: `calcular_porcentaje_diferencia`
-
-#### 📌 ¿Qué hace y por qué se prueba?
-Compara el stock registrado en el sistema contra el conteo físico en estantería para controlar **mermas textiles** por cortes o retazos. Si la diferencia es menor o igual al umbral del negocio (**2%**), se declara `CONFORME`.
-
-#### 💻 Código Corto
-```python
-# Función
-def calcular_porcentaje_diferencia(stock_sistema: int, conteo_fisico: int) -> dict:
-    diferencia = conteo_fisico - stock_sistema
-    porcentaje = round(abs(diferencia) / stock_sistema * 100, 2)
-    conforme = porcentaje <= 2.0  # Umbral de tolerancia textil: 2%
-    return {"diferencia": diferencia, "porcentaje": porcentaje, "conforme": conforme}
-
-# Prueba Unitaria
-def test_04_conciliacion_auditoria(self):
-    # 100 m en sistema vs 99 m físico = 1% de merma (dentro del límite del 2%)
-    resultado = calcular_porcentaje_diferencia(stock_sistema=100, conteo_fisico=99)
-    self.assertEqual(resultado["porcentaje"], 1.0)
-    self.assertTrue(resultado["conforme"])
-```
-
-#### 📊 Semáforo de Tolerancia de Mermas
-```mermaid
-graph LR
-    A["Merma Real: 1.00%"] --> B{"Tolerancia Máx: 2.00%"}
-    B -- "<= 2.0%" --> C["Estado: CONFORME 🟢 (Aceptable)"]
-    B -- "> 2.0%" --> D["Estado: CRÍTICO 🔴 (Auditoría Inmediata)"]
-
-    style A fill:#eff6ff,stroke:#3b82f6
-    style C fill:#dcfce7,stroke:#16a34a,stroke-width:2px
-    style D fill:#fee2e2,stroke:#ef4444
-```
-
-#### 🖥️ Resultado en Terminal
-```text
-Modulo     : 4. Conciliacion (Mermas y Auditoria)
-Entrada    : Sistema: 100 m | Conteo Fisico: 99 m (Tolerancia: <= 2%)
-Esperado   : Conforme (Merma: 1.00%)
-Obtenido   : Conforme (Merma: 1.00%)
-Resultado  : [APROBADO]
-```
-
-#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
-- **¿Por qué se hizo?** En la venta de telas por metros, al cortar de un rollo siempre hay mermas por orillos o retazos. Esta prueba audita si el faltante físico está dentro del margen normal admisible o si se trata de pérdidas sospechosas.
-- **¿Por qué estos datos?**
-  - `stock_sistema=100`: El software registra 100 metros en inventario.
-  - `conteo_fisico=99`: La medición física en tienda detectó 99 metros (falta 1 metro).
-- **¿Por qué sale `Conforme (1.00%)`?**
-  - Merma porcentual: $\frac{|99 - 100|}{100} \times 100 = \mathbf{1.00\%}$.
-  - Como $1.00\% \le 2.00\%$ (política de merma textil), el resultado concluye automáticamente en **`conforme = True`**.
+### 2️⃣ Prueba 2: `verificar_alerta_stock` (Inventario / Compras)
+* **¿Por qué se hizo?** Avisa al encargado de compras que debe reabastecer el almacén antes de quedarse sin rollos de tela y perder ventas.
+* **¿Por qué estos datos? (Ejemplo)**
+  * `stock_actual = 20` rollos.
+  * `stock_minimo = 50` rollos.
+* **¿Por qué sale `"ALERTA: Stock critico"`?**
+  * La condición evalúa: ¿$20 \le 50$? **Verdadero**.
+  * Al haber menos rollos que el umbral de seguridad, el sistema activa la alerta para ordenar nuevos pedidos al proveedor textil.
 
 ---
 
-## 📋 Cuadro Comparativo Resumen para Sustentación
-
-Copia y pega este cuadro directamente en tu informe, diapositiva o documento:
-
-| N° | Módulo del Sistema | Función Evaluada | Datos de Entrada | Resultado Esperado | Resultado Obtenido | Estado | Justificación de Negocio |
-| :---: | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
-| **01** | **Inventario** | `validar_producto` | SKU: `'TEL-001'`, Pima, Precio: S/ 25.50, Stock: 40 | `True` *(Válido)* | `True` *(Válido)* | 🟢 **APROBADO** | Valida atributos obligatorios antes del guardado en catálogo. |
-| **02** | **Ventas** | `calcular_total_venta` | 2 rollos a S/ 50.00, Descuento: 10%, IGV: 18% | `S/ 106.20` | `S/ 106.20` | 🟢 **APROBADO** | Liquida el comprobante aplicando descuento e IGV SUNAT. |
-| **03** | **Almacén** | `descontar_stock` | Stock actual: 50 m, Cantidad venta: 15 m | `35 metros` | `35 metros` | 🟢 **APROBADO** | Rebaja inventario físico y previene stock negativo. |
-| **04** | **Conciliación** | `calcular_porcentaje_diferencia` | Sistema: 100 m, Conteo físico: 99 m | `Conforme (1.00%)` | `Conforme (1.00%)` | 🟢 **APROBADO** | Control de mermas bajo el umbral de tolerancia del 2.0%. |
+### 3️⃣ Prueba 3: `registrar_despacho` (Inventario / Almacén)
+* **¿Por qué se hizo?** Controla la entrega física de mercadería. Cada vez que sale un camión con rollos, el inventario debe descontarse en el kardex para evitar sobreventas o tela faltante.
+* **¿Por qué estos datos? (Ejemplo)**
+  * `stock_actual = 500` fardos en bodega.
+  * `cantidad_despachada = 200` fardos enviados a una fábrica de confección.
+* **¿Por qué sale `300`?**
+  * Resta aritmética de almacén: $500 - 200 = \mathbf{300\text{ fardos restantes}}$.
+  * Como $200 \le 500$, la operación es válida y no se genera error de stock insuficiente.
 
 ---
 
-## 🚀 Cómo Ejecutar la Demostración en Vivo
+### 4️⃣ Prueba 4: `calcular_rotacion_inventario` (Reportes / Gerencia)
+* **¿Por qué se hizo?** Mide la eficiencia con la que la textilería vende y repone sus telas (KPI financiero esencial para no acumular tela pasada de moda o estancada).
+* **¿Por qué estos datos? (Ejemplo)**
+  * `costo_bienes_vendidos = S/ 50,000`: Lo que costó toda la tela vendida en el período.
+  * `inventario_promedio = S/ 10,000`: Valor promedio de telas guardadas en almacén.
+* **¿Por qué sale `5.0 veces`?**
+  * Fórmula de rotación contable: $\frac{50,000}{10,000} = \mathbf{5.0}$.
+  * Significa que el inventario se renovó **5 veces** durante el año, lo cual indica una excelente salud financiera para el negocio.
 
-En cualquier terminal dentro del proyecto:
+---
+
+## 📋 5. Cuadro Comparativo para la Exposición / Sustentación
+
+| N° | Módulo | Función / Método | Datos de Entrada | Resultado Esperado | Resultado Obtenido | Estado |
+| :---: | :--- | :--- | :--- | :---: | :---: | :---: |
+| **01** | **Ventas** | `calcular_facturacion` | 100 m $\times$ S/ 10.00, Desc: 10%, IGV: 18% | `1062.0` *(S/ 1,062.00)* | `1062.0` | 🟢 **APROBADO** |
+| **02** | **Inventario** | `verificar_alerta_stock` | Actual: 20 rollos, Mínimo: 50 rollos | `"ALERTA: Stock critico"` | `"ALERTA: Stock critico"` | 🟢 **APROBADO** |
+| **03** | **Inventario** | `registrar_despacho` | Inicial: 500, Despachado: 200 | `300 unidades` | `300` | 🟢 **APROBADO** |
+| **04** | **Reportes** | `calcular_rotacion_inventario` | Costo: S/ 50,000, Inv. Prom: S/ 10,000 | `5.0 veces` | `5.0` | 🟢 **APROBADO** |
+
+---
+
+## 🚀 6. Cómo Ejecutarlo en Terminal
+
+Para correr esta versión migrada:
 
 ```bash
-python ejemplo_pruebas_unitarias.py
+python ejemplo_pruebas_java.py
 ```
 
-### Salida Completa Obtenida:
+### Salida Obtenida en Consola:
 ```text
 ================================================================================
- ACTIVIDAD: 4 PRUEBAS UNITARIAS MULTI-MODULO - SISTEMA TEXTILERIA
+ ACTIVIDAD: 4 PRUEBAS UNITARIAS (MIGRACION JAVA -> PYTHON)
 ================================================================================
-Modulo     : 1. Inventario (Catalogo de Telas)
-Entrada    : SKU: 'TEL-001' | Pima | S/ 25.50 | Stock: 40
-Esperado   : True (Valido)
-Obtenido   : True (Valido)
-Resultado  : [APROBADO]
+Modulo/Funcion : 1. Ventas: calcular_facturacion
+Entrada        : 100 m x S/ 10.00 | Desc: 10% (0.10) | IGV: 18%
+Esperado       : S/ 1,062.00
+Obtenido       : S/ 1,062.00
+Resultado      : [APROBADO]
 --------------------------------------------------------------------------------
-Modulo     : 2. Ventas (Caja y Facturacion)
-Entrada    : Cant: 2 rollos | Precio: S/ 50.00 | Desc: 10% | IGV: 18%
-Esperado   : S/ 106.20
-Obtenido   : S/ 106.20
-Resultado  : [APROBADO]
+Modulo/Funcion : 2. Inventario: verificar_alerta_stock
+Entrada        : Stock actual: 20 rollos | Minimo: 50 rollos
+Esperado       : ALERTA: Stock critico
+Obtenido       : ALERTA: Stock critico
+Resultado      : [APROBADO]
 --------------------------------------------------------------------------------
-Modulo     : 3. Almacen (Control de Stock)
-Entrada    : Stock inicial: 50 m | Salida despachada: 15 m
-Esperado   : 35 metros
-Obtenido   : 35 metros
-Resultado  : [APROBADO]
+Modulo/Funcion : 3. Inventario: registrar_despacho
+Entrada        : Stock inicial: 500 | Despachado: 200
+Esperado       : 300 unidades
+Obtenido       : 300 unidades
+Resultado      : [APROBADO]
 --------------------------------------------------------------------------------
-Modulo     : 4. Conciliacion (Mermas y Auditoria)
-Entrada    : Sistema: 100 m | Conteo Fisico: 99 m (Tolerancia: <= 2%)
-Esperado   : Conforme (Merma: 1.00%)
-Obtenido   : Conforme (Merma: 1.00%)
-Resultado  : [APROBADO]
+Modulo/Funcion : 4. Reportes: calcular_rotacion_inventario
+Entrada        : Costo vendidos: S/ 50,000 | Inv. promedio: S/ 10,000
+Esperado       : 5.0 veces
+Obtenido       : 5.0 veces
+Resultado      : [APROBADO]
 --------------------------------------------------------------------------------
 
 Ejecutando verificacion formal con unittest:
-test_01_validar_producto_inventario (__main__.TestSistemaTextil.test_01_validar_producto_inventario) ... ok
-test_02_calcular_total_ventas (__main__.TestSistemaTextil.test_02_calcular_total_ventas) ... ok
-test_03_descontar_stock_almacen (__main__.TestSistemaTextil.test_03_descontar_stock_almacen) ... ok
-test_04_conciliacion_auditoria (__main__.TestSistemaTextil.test_04_conciliacion_auditoria) ... ok
+test_01_calcular_facturacion (__main__.TestSistemaTextil.test_01_calcular_facturacion) ... ok
+test_02_verificar_alerta_stock (__main__.TestSistemaTextil.test_02_verificar_alerta_stock) ... ok
+test_03_registrar_despacho (__main__.TestSistemaTextil.test_03_registrar_despacho) ... ok
+test_04_calcular_rotacion_inventario (__main__.TestSistemaTextil.test_04_calcular_rotacion_inventario) ... ok
 
 ----------------------------------------------------------------------
 Ran 4 tests in 0.000s
 
 OK
 ```
-
----
-
-## 🎯 Sustentación bajo Norma ISO/IEC 25010
-
-1. **Adecuación Funcional:** Se valida la completitud y exactitud de las 4 operaciones más sensibles del negocio textil (catálogo, liquidación de venta, movimiento de almacén y merma).
-2. **Confiabilidad:** Las funciones puras son deterministas: ante las mismas entradas siempre devuelven idénticos resultados esperados.
-3. **Mantenibilidad:** El código es modular, corto y desacoplado, lo que permite modificar reglas de negocio futuras (ej. cambio de tasa del IGV o tolerancia de merma) sin romper el resto del sistema.

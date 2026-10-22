@@ -66,3 +66,4 @@ dist-ssr/
 *.swo
 .DS_Store
 Thumbs.db
+.ejemplo_pruebas_unitariastest.py
