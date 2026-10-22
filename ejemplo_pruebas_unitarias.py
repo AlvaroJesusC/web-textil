@@ -1,139 +1,171 @@
 """
-ACTIVIDAD ACADÉMICA: PRUEBAS UNITARIAS EN PYTHON
+ACTIVIDAD ACADÉMICA: 4 PRUEBAS UNITARIAS EN PYTHON
 Curso: Calidad de Software (UCV 2026)
-Módulo Evaluado: VENTAS Y FACTURACIÓN (Sistema Textilería)
+Sistema de Información: Sistema de Ventas e Inventario Textil (Multi-Módulo)
 
-4 funciones esenciales + 4 pruebas unitarias para verificar resultados esperados.
+4 funciones representativas de los 4 módulos esenciales del negocio:
+1. Módulo Inventario/Catálogo   : validar_producto()
+2. Módulo Ventas y Caja         : calcular_total_venta()
+3. Módulo Almacén/Stock         : descontar_stock()
+4. Módulo Conciliación/Auditoría: calcular_porcentaje_diferencia()
+
 Ejecución directa:
     python ejemplo_pruebas_unitarias.py
 """
 
 import unittest
 
-# LAS 4 FUNCIONES DEL MÓDULO DE VENTAS
 
-def calcular_subtotal(cantidad: int, precio_unitario: float) -> float:
-    """1. Multiplica la cantidad por el precio unitario del producto textil."""
-    if cantidad <= 0 or precio_unitario <= 0:
-        raise ValueError("Cantidad y precio deben ser mayores a 0.")
-    return round(cantidad * precio_unitario, 2)
-
-
-def calcular_descuento(subtotal: float, porcentaje: float) -> float:
-    """2. Calcula el monto en soles a descontar según el porcentaje (0% a 100%)."""
-    if porcentaje < 0 or porcentaje > 100:
-        raise ValueError("El porcentaje de descuento debe estar entre 0 y 100.")
-    return round(subtotal * (porcentaje / 100), 2)
+# ===========================================================================
+# 1. MÓDULO INVENTARIO: Validar datos al registrar un producto textil
+# ===========================================================================
+def validar_producto(sku: str, nombre: str, precio: float, stock: int) -> bool:
+    """Verifica que el producto textil tenga datos válidos (precio > 0, stock >= 0)."""
+    if not sku.strip() or not nombre.strip():
+        return False
+    if precio <= 0 or stock < 0:
+        return False
+    return True
 
 
-def calcular_igv(base_imponible: float) -> float:
-    """3. Calcula el 18% del Impuesto General a las Ventas (IGV en Perú)."""
-    if base_imponible < 0:
-        raise ValueError("La base imponible no puede ser negativa.")
-    return round(base_imponible * 0.18, 2)
+# ===========================================================================
+# 2. MÓDULO VENTAS: Calcular total de venta con IGV (18%) y descuento
+# ===========================================================================
+def calcular_total_venta(cantidad: int, precio_unitario: float, descuento_pct: float = 0.0) -> float:
+    """Calcula el total a pagar: (Subtotal - Descuento) + IGV (18%)."""
+    if cantidad <= 0 or precio_unitario <= 0 or descuento_pct < 0 or descuento_pct > 100:
+        raise ValueError("Valores inválidos para venta.")
+    subtotal = cantidad * precio_unitario
+    monto_descuento = subtotal * (descuento_pct / 100)
+    base_imponible = subtotal - monto_descuento
+    igv = base_imponible * 0.18
+    return round(base_imponible + igv, 2)
 
 
-def calcular_total_venta(cantidad: int, precio: float, porcentaje_descuento: float = 0.0) -> dict:
-    """4. Integra el cálculo total: Subtotal - Descuento + IGV (18%)."""
-    subtotal = calcular_subtotal(cantidad, precio)
-    descuento = calcular_descuento(subtotal, porcentaje_descuento)
-    base = round(subtotal - descuento, 2)
-    igv = calcular_igv(base)
-    total = round(base + igv, 2)
+# ===========================================================================
+# 3. MÓDULO ALMACÉN: Descontar stock al realizar una salida o despacho
+# ===========================================================================
+def descontar_stock(stock_actual: int, cantidad_a_descontar: int) -> int:
+    """Resta unidades del inventario evitando existencias negativas."""
+    if cantidad_a_descontar <= 0:
+        raise ValueError("La cantidad a descontar debe ser mayor a 0.")
+    if cantidad_a_descontar > stock_actual:
+        raise ValueError("Stock insuficiente para despachar.")
+    return stock_actual - cantidad_a_descontar
+
+
+# ===========================================================================
+# 4. MÓDULO CONCILIACIÓN: Evaluar merma entre conteo físico y sistema
+# ===========================================================================
+def calcular_porcentaje_diferencia(stock_sistema: int, conteo_fisico: int) -> dict:
+    """Calcula la desviación porcentual de inventario y si está dentro de la tolerancia (<= 2%)."""
+    if stock_sistema <= 0:
+        return {"diferencia": 0, "porcentaje": 0.0, "conforme": True}
+    diferencia = conteo_fisico - stock_sistema
+    porcentaje = round(abs(diferencia) / stock_sistema * 100, 2)
+    conforme = porcentaje <= 2.0  # Umbral de tolerancia de merma textil: 2%
     return {
-        "subtotal": subtotal,
-        "descuento": descuento,
-        "base_imponible": base,
-        "igv": igv,
-        "total": total,
+        "diferencia": diferencia,
+        "porcentaje": porcentaje,
+        "conforme": conforme,
     }
 
 
-# LAS 4 PRUEBAS UNITARIAS (Verificación de Funcionalidad y Resultados Esperados)
+# ===========================================================================
+# LAS 4 PRUEBAS UNITARIAS (1 POR CADA MÓDULO DEL SISTEMA)
+# ===========================================================================
 
-class TestModuloVentas(unittest.TestCase):
+class TestSistemaTextil(unittest.TestCase):
 
-    def test_01_calcular_subtotal(self):
-        """Prueba 1: 3 metros de tela a S/ 25.50 c/u debe dar S/ 76.50."""
-        # Datos de entrada
-        cantidad = 3
-        precio = 25.50
-        # Resultado esperado: 3 * 25.50 = 76.50
-        resultado_esperado = 76.50
-        resultado_obtenido = calcular_subtotal(cantidad, precio)
-        self.assertEqual(resultado_obtenido, resultado_esperado)
+    def test_01_validar_producto_inventario(self):
+        """Prueba 1 (Inventario): Validar registro correcto de 'Tela Algodon Pima'."""
+        es_valido = validar_producto(
+            sku="TEL-001",
+            nombre="Tela Algodon Pima",
+            precio=25.50,
+            stock=40
+        )
+        self.assertTrue(es_valido)
 
-    def test_02_calcular_descuento(self):
-        """Prueba 2: Descuento del 10% sobre un subtotal de S/ 200.00 debe ser S/ 20.00."""
-        subtotal = 200.00
-        porcentaje = 10.0
-        # Resultado esperado: 200.00 * (10 / 100) = 20.00
-        resultado_esperado = 20.00
-        resultado_obtenido = calcular_descuento(subtotal, porcentaje)
-        self.assertEqual(resultado_obtenido, resultado_esperado)
+    def test_02_calcular_total_ventas(self):
+        """Prueba 2 (Ventas): 2 rollos a S/ 50 con 10% desc + IGV 18% debe dar S/ 106.20."""
+        # Subtotal: 100 - Desc 10% = 90 base + IGV 18% (16.20) = 106.20
+        total = calcular_total_venta(cantidad=2, precio_unitario=50.00, descuento_pct=10.0)
+        self.assertEqual(total, 106.20)
 
-    def test_03_calcular_igv(self):
-        """Prueba 3: IGV (18%) sobre una base imponible de S/ 100.00 debe ser S/ 18.00."""
-        base = 100.00
-        # Resultado esperado: 100.00 * 0.18 = 18.00
-        resultado_esperado = 18.00
-        resultado_obtenido = calcular_igv(base)
-        self.assertEqual(resultado_obtenido, resultado_esperado)
+    def test_03_descontar_stock_almacen(self):
+        """Prueba 3 (Almacen): De 50 rollos en stock se despachan 15, deben quedar 35."""
+        nuevo_stock = descontar_stock(stock_actual=50, cantidad_a_descontar=15)
+        self.assertEqual(nuevo_stock, 35)
 
-    def test_04_calcular_total_venta(self):
-        """Prueba 4: Venta de 2 rollos a S/ 50.00 con 10% descuento debe totalizar S/ 106.20."""
-        # Entrada: 2 rollos * S/ 50 = S/ 100 subtotal, -10 desc = S/ 90 base + 16.20 IGV = 106.20
-        resumen = calcular_total_venta(cantidad=2, precio=50.00, porcentaje_descuento=10.0)
-        
-        self.assertEqual(resumen["subtotal"], 100.00)
-        self.assertEqual(resumen["descuento"], 10.00)
-        self.assertEqual(resumen["base_imponible"], 90.00)
-        self.assertEqual(resumen["igv"], 16.20)
-        self.assertEqual(resumen["total"], 106.20)
+    def test_04_conciliacion_auditoria(self):
+        """Prueba 4 (Conciliacion): Sistema 100 m vs Fisico 99 m (1% de merma) debe ser CONFORME."""
+        resultado = calcular_porcentaje_diferencia(stock_sistema=100, conteo_fisico=99)
+        self.assertEqual(resultado["porcentaje"], 1.0)
+        self.assertTrue(resultado["conforme"])
 
 
-# REPORTE VISUAL EN CONSOLA (Entrada vs Resultado Esperado vs Resultado Obtenido)
+# ===========================================================================
+# REPORTE VISUAL EN CONSOLA (Entrada vs Resultado Esperado vs Obtenido)
+# ===========================================================================
 
 def imprimir_resumen_visual():
-    print("=" * 75)
-    print(" ACTIVIDAD: 4 PRUEBAS UNITARIAS - MODULO DE VENTAS (TEXTILERIA)")
-    print("=" * 75)
+    print("=" * 80)
+    print(" ACTIVIDAD: 4 PRUEBAS UNITARIAS MULTI-MODULO - SISTEMA TEXTILERIA")
+    print("=" * 80)
+
+    # 1. Inventario
+    res1 = validar_producto("TEL-001", "Tela Algodon Pima", 25.50, 40)
+    # 2. Ventas
+    res2 = calcular_total_venta(2, 50.00, 10.0)
+    # 3. Almacen
+    res3 = descontar_stock(50, 15)
+    # 4. Conciliacion
+    res4 = calcular_porcentaje_diferencia(100, 99)
 
     casos = [
         (
-            "1. calcular_subtotal",
-            "Cantidad: 3 | Precio: S/ 25.50",
-            76.50,
-            calcular_subtotal(3, 25.50),
+            "1. Inventario (Catalogo de Telas)",
+            "SKU: 'TEL-001' | Pima | S/ 25.50 | Stock: 40",
+            True,
+            res1,
+            "True (Valido)",
+            "True (Valido)",
         ),
         (
-            "2. calcular_descuento",
-            "Subtotal: S/ 200.00 | Descuento: 10%",
-            20.00,
-            calcular_descuento(200.00, 10.0),
-        ),
-        (
-            "3. calcular_igv",
-            "Base Imponible: S/ 100.00 (Tasa 18%)",
-            18.00,
-            calcular_igv(100.00),
-        ),
-        (
-            "4. calcular_total_venta",
-            "Cant: 2 | Precio: S/ 50.00 | Desc: 10%",
+            "2. Ventas (Caja y Facturacion)",
+            "Cant: 2 rollos | Precio: S/ 50.00 | Desc: 10% | IGV: 18%",
             106.20,
-            calcular_total_venta(2, 50.00, 10.0)["total"],
+            res2,
+            "S/ 106.20",
+            f"S/ {res2:.2f}",
+        ),
+        (
+            "3. Almacen (Control de Stock)",
+            "Stock inicial: 50 m | Salida despachada: 15 m",
+            35,
+            res3,
+            "35 metros",
+            f"{res3} metros",
+        ),
+        (
+            "4. Conciliacion (Mermas y Auditoria)",
+            "Sistema: 100 m | Conteo Fisico: 99 m (Tolerancia: <= 2%)",
+            True,
+            res4["conforme"],
+            "Conforme (Merma: 1.00%)",
+            f"Conforme (Merma: {res4['porcentaje']:.2f}%)",
         ),
     ]
 
-    for nombre, entrada, esperado, obtenido in casos:
-        estado = "[APROBADO]" if esperado == obtenido else "[FALLIDO]"
-        print(f"Funcion   : {nombre}")
-        print(f"Entrada   : {entrada}")
-        print(f"Esperado  : {esperado}")
-        print(f"Obtenido  : {obtenido}")
-        print(f"Resultado : {estado}")
-        print("-" * 75)
+    for modulo, entrada, val_esp, val_obt, txt_esp, txt_obt in casos:
+        estado = "[APROBADO]" if val_esp == val_obt else "[FALLIDO]"
+        print(f"Modulo     : {modulo}")
+        print(f"Entrada    : {entrada}")
+        print(f"Esperado   : {txt_esp}")
+        print(f"Obtenido   : {txt_obt}")
+        print(f"Resultado  : {estado}")
+        print("-" * 80)
     import sys
     sys.stdout.flush()
 

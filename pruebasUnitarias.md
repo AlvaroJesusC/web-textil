@@ -1,7 +1,7 @@
-# 🧵 INFORME Y PRESENTACIÓN VISUAL: PRUEBAS UNITARIAS
-## Módulo de Ventas y Facturación · Sistema Textilería
+# 🧵 INFORME Y GUÍA VISUAL: 4 PRUEBAS UNITARIAS MULTI-MÓDULO
+## Sistema de Ventas e Inventario · Textilería (Lima - Perú)
 **Curso:** Calidad de Software · UCV 2026  
-**Estándar de Calidad:** ISO/IEC 25010 (Adecuación Funcional, Exactitud y Tolerancia a Fallos)  
+**Estándar de Calidad:** ISO/IEC 25010 (Adecuación Funcional, Exactitud de Cálculo y Tolerancia a Fallos)  
 **Script Ejecutable:** [`ejemplo_pruebas_unitarias.py`](file:///c:/Users/AlvaroJ/Documents/Antigravity%20Projects/sistema-textileria/ejemplo_pruebas_unitarias.py)
 
 ---
@@ -10,382 +10,313 @@
 
 | Métrica | Valor Obtenido | Estado | Observación |
 | :--- | :---: | :---: | :--- |
-| **Pruebas Diseñadas** | `4` | 🟢 Listo | Cobertura de cálculos esenciales |
-| **Pruebas Ejecutadas** | `4 / 4` | 🟢 100% | Sin omisiones ni bloqueos |
-| **Pruebas Aprobadas (`PASSED`)** | `4 / 4` | 🟢 100% | Todas las aserciones se cumplieron |
-| **Pruebas Fallidas (`FAILED`)** | `0` | 🟢 Cero errores | Tolerancia numérica exacta |
-| **Tiempo Total de Ejecución** | `0.000s` | ⚡ Instantáneo | Alta eficiencia computacional |
-| **Framework Utilizado** | `unittest` | 🐍 Estándar Python | Aislamiento y reproducibilidad |
+| **Módulos Evaluados** | `4` | 🟢 Multidisciplinario | Inventario, Ventas, Almacén y Conciliación |
+| **Pruebas Diseñadas** | `4` | 🟢 Listo | 1 función crítica por cada área clave |
+| **Pruebas Ejecutadas** | `4 / 4` | 🟢 100% | Ejecución limpia y aislada |
+| **Pruebas Aprobadas (`PASSED`)** | `4 / 4` | 🟢 100% | Todas las aserciones fueron exitosas |
+| **Pruebas Fallidas (`FAILED`)** | `0` | 🟢 Cero errores | Precisión matemática exacta |
+| **Tiempo de Ejecución** | `0.000s` | ⚡ Instantáneo | Pruebas unitarias sin dependencias externas |
+| **Framework Utilizado** | `unittest` | 🐍 Estándar Python | Nativo, sin necesidad de librerías extras |
 
 ```mermaid
-pie title Resultado de las Pruebas Unitarias
-    "Pruebas Aprobadas (100%)" : 4
-    "Pruebas Fallidas (0%)" : 0
+pie title Cobertura por Módulo del Sistema
+    "Módulo 1: Inventario (Catálogo)" : 25
+    "Módulo 2: Ventas (Facturación)" : 25
+    "Módulo 3: Almacén (Control Stock)" : 25
+    "Módulo 4: Conciliación (Mermas)" : 25
 ```
 
 ---
 
-## 🔄 Arquitectura del Flujo de Cálculo de Ventas
+## 🗺️ Mapa de los 4 Módulos y sus Funciones Críticas
 
-Antes de evaluar cada función de manera aislada, observamos cómo se ensamblan las 4 operaciones para generar una liquidación de venta en el negocio textil:
+En un sistema textil integral, cada módulo cumple un rol indispensable en la cadena de valor:
 
+```mermaid
+flowchart TD
+    subgraph M1["1. MÓDULO INVENTARIO"]
+        F1["validar_producto()\n(Catálogo de Telas)"]
+    end
+
+    subgraph M2["2. MÓDULO VENTAS"]
+        F2["calcular_total_venta()\n(Subtotal, Descuento, IGV 18%)"]
+    end
+
+    subgraph M3["3. MÓDULO ALMACÉN"]
+        F3["descontar_stock()\n(Salida física de rollos/metros)"]
+    end
+
+    subgraph M4["4. MÓDULO CONCILIACIÓN"]
+        F4["calcular_porcentaje_diferencia()\n(Control de mermas y auditoría)"]
+    end
+
+    F1 -->|Telas registradas| F2
+    F2 -->|Venta realizada| F3
+    F3 -->|Stock restante| F4
+
+    style M1 fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0f172a
+    style M2 fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#0f172a
+    style M3 fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#0f172a
+    style M4 fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#0f172a
+```
+
+---
+
+## 🔬 Detalle de las 4 Pruebas Unitarias
+
+---
+
+### 1️⃣ Módulo Inventario: `validar_producto`
+
+#### 📌 ¿Qué hace y por qué se prueba?
+Valida que un nuevo rollo o tela cumpla con los datos mínimos para ingresar al catálogo: SKU obligatorio, nombre, precio mayor a 0 y stock no negativo. Evita registros corruptos en el catálogo textil.
+
+#### 💻 Código Corto
+```python
+# Función
+def validar_producto(sku: str, nombre: str, precio: float, stock: int) -> bool:
+    if not sku.strip() or not nombre.strip():
+        return False
+    if precio <= 0 or stock < 0:
+        return False
+    return True
+
+# Prueba Unitaria
+def test_01_validar_producto_inventario(self):
+    es_valido = validar_producto(sku="TEL-001", nombre="Tela Algodon Pima", precio=25.50, stock=40)
+    self.assertTrue(es_valido)
+```
+
+#### 📊 Diagrama de Secuencia
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Test as Test Unitario
+    participant Func as validar_producto()
+    participant Assert as self.assertTrue()
+
+    Test->>Func: Enviar (SKU="TEL-001", Pima, S/ 25.50, Stock=40)
+    Note over Func: Comprueba precio > 0 y stock >= 0
+    Func-->>Test: Retorna True
+    Test->>Assert: Evalúa True == True
+    Assert-->>Test: 🟢 APROBADO (OK)
+```
+
+#### 🖥️ Resultado en Terminal
+```text
+Modulo     : 1. Inventario (Catalogo de Telas)
+Entrada    : SKU: 'TEL-001' | Pima | S/ 25.50 | Stock: 40
+Esperado   : True (Valido)
+Obtenido   : True (Valido)
+Resultado  : [APROBADO]
+```
+
+---
+
+### 2️⃣ Módulo Ventas: `calcular_total_venta`
+
+#### 📌 ¿Qué hace y por qué se prueba?
+Orquesta el cálculo comercial completo: multiplica metraje por precio, aplica el porcentaje de descuento y suma el **18% de IGV (normativa SUNAT)**. Evita pérdidas económicas y descuadres tributarios.
+
+#### 💻 Código Corto
+```python
+# Función
+def calcular_total_venta(cantidad: int, precio_unitario: float, descuento_pct: float = 0.0) -> float:
+    subtotal = cantidad * precio_unitario
+    monto_descuento = subtotal * (descuento_pct / 100)
+    base_imponible = subtotal - monto_descuento
+    igv = base_imponible * 0.18
+    return round(base_imponible + igv, 2)
+
+# Prueba Unitaria
+def test_02_calcular_total_ventas(self):
+    # 2 rollos * S/ 50 = S/ 100 subtotal - 10% desc = S/ 90 base + 18% IGV (16.20) = 106.20
+    total = calcular_total_venta(cantidad=2, precio_unitario=50.00, descuento_pct=10.0)
+    self.assertEqual(total, 106.20)
+```
+
+#### 📊 Desglose de Cálculo
 ```mermaid
 flowchart LR
-    A["Entrada:\nCantidad y Precio"] --> B["1. calcular_subtotal()\n(Multiplicación Base)"]
-    B --> C["Subtotal S/."]
-    C --> D["2. calcular_descuento()\n(Porcentaje %)"]
-    D --> E["Descuento S/."]
-    C & E --> F["Base Imponible = Subtotal - Descuento"]
-    F --> G["3. calcular_igv()\n(Tasa 18% SUNAT)"]
-    G --> H["IGV S/."]
-    F & H --> I["4. calcular_total_venta()\n(Orquestación Final)"]
-    I --> J["Comprobante de Venta Listo 🧾\n(Total a Pagar)"]
+    A["2 rollos × S/ 50.00\nSubtotal = S/ 100.00"] --> B["-10% Descuento\nBase = S/ 90.00"]
+    B --> C["+18% IGV SUNAT\nIGV = S/ 16.20"]
+    C --> D["Total a Pagar:\nS/ 106.20 ✔"]
 
-    style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0f172a
-    style B fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#0f172a
-    style D fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#0f172a
-    style G fill:#f1f5f9,stroke:#475569,stroke-width:2px,color:#0f172a
-    style I fill:#fef3c7,stroke:#d97706,stroke-width:2px,color:#0f172a
-    style J fill:#dcfce7,stroke:#16a34a,stroke-width:2px,color:#0f172a
+    style A fill:#eff6ff,stroke:#3b82f6
+    style B fill:#fef3c7,stroke:#d97706
+    style C fill:#fee2e2,stroke:#ef4444
+    style D fill:#dcfce7,stroke:#16a34a,stroke-width:2px
 ```
 
----
-
-## 🔬 Detalle de Cada Función y su Prueba Unitaria
-
----
-
-### 1️⃣ Función: `calcular_subtotal`
-
-#### 📌 ¿Por qué se hace esta función? (Propósito de Negocio)
-En el comercio textil (especialmente en emporios como Gamarra), las telas se comercializan por metros, rollos o fardos a un precio unitario determinado.  
-Esta función calcula el valor bruto de la compra antes de impuestos y promociones. Si un cliente pide `3` metros de tela denim a `S/ 25.50` cada metro, el sistema debe garantizar que el cálculo sea preciso al céntimo.
-
-#### 🛡️ Control de Calidad y Reglas de Negocio
-- La cantidad debe ser estrictamente entera positiva (`> 0`).
-- El precio no puede ser negativo ni cero (`> 0`).
-- Si se ingresan datos erróneos, dispara un `ValueError` preventivo para proteger la base de datos.
-
-#### 💻 Código de la Función y de la Prueba
-```python
-# 1. Código de la Función
-def calcular_subtotal(cantidad: int, precio_unitario: float) -> float:
-    """Multiplica la cantidad por el precio unitario del producto textil."""
-    if cantidad <= 0 or precio_unitario <= 0:
-        raise ValueError("Cantidad y precio deben ser mayores a 0.")
-    return round(cantidad * precio_unitario, 2)
-
-
-# 2. Código de la Prueba Unitaria
-def test_01_calcular_subtotal(self):
-    """Prueba 1: 3 metros de tela a S/ 25.50 c/u debe dar S/ 76.50."""
-    cantidad = 3
-    precio = 25.50
-    resultado_esperado = 76.50
-    resultado_obtenido = calcular_subtotal(cantidad, precio)
-    self.assertEqual(resultado_obtenido, resultado_esperado)
-```
-
-#### 📊 Diagrama del Caso de Prueba
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Tester as Prueba Unitaria (test_01)
-    participant Func as calcular_subtotal()
-    participant Assert as self.assertEqual()
-
-    Tester->>Func: Enviar (cantidad=3, precio_unitario=25.50)
-    Note over Func: 3 * 25.50 = 76.50
-    Func-->>Tester: Retorna 76.50 (resultado_obtenido)
-    Tester->>Assert: Comparar (obtenido=76.50, esperado=76.50)
-    Note over Assert: ¿76.50 == 76.50? -> VERDADERO
-    Assert-->>Tester: 🟢 PRUEBA SUPERADA (OK)
-```
-
-#### 🖥️ Resultado de la Ejecución
+#### 🖥️ Resultado en Terminal
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│ FUNCIÓN EVALUADA : 1. calcular_subtotal                                │
-├────────────────────────────────────────────────────────────────────────┤
-│ Entrada          : Cantidad = 3 metros | Precio Unitario = S/ 25.50    │
-│ Valor Esperado   : S/ 76.50                                            │
-│ Valor Obtenido   : S/ 76.50                                            │
-│ Estado           : [ APROBADO ] ✔                                      │
-└────────────────────────────────────────────────────────────────────────┘
-unittest log: test_01_calcular_subtotal (__main__.TestModuloVentas) ... ok
+Modulo     : 2. Ventas (Caja y Facturacion)
+Entrada    : Cant: 2 rollos | Precio: S/ 50.00 | Desc: 10% | IGV: 18%
+Esperado   : S/ 106.20
+Obtenido   : S/ 106.20
+Resultado  : [APROBADO]
 ```
-
-#### 💡 ¿Por qué salió este resultado?
-1. Se multiplicó $3 \times 25.50 = 76.5$.
-2. Se aplicó redondeo bancario a 2 decimales: `round(76.5, 2) = 76.50`.
-3. `self.assertEqual(76.50, 76.50)` confirma que el resultado obtenido coincide idénticamente con el valor contable esperado.
 
 ---
 
-### 2️⃣ Función: `calcular_descuento`
+### 3️⃣ Módulo Almacén: `descontar_stock`
 
-#### 📌 ¿Por qué se hace esta función? (Propósito de Negocio)
-En ventas mayoristas textiles se otorgan rebajas comerciales (ej. 5%, 10% o 15% por liquidación de temporada o volumen).  
-Esta función traduce un porcentaje de descuento en el **monto monetario real en soles** que se restará a la cuenta del cliente.
+#### 📌 ¿Qué hace y por qué se prueba?
+Controla la salida física de rollos o metros del almacén tras un despacho. Garantiza que el inventario se actualice en tiempo real y rechaza salidas que dejen el stock en negativo.
 
-#### 🛡️ Control de Calidad y Reglas de Negocio
-- El porcentaje de descuento debe estar acotado entre `0.0%` y `100.0%`.
-- Se prohíben descuentos negativos (que inflarían el precio ilegalmente) o mayores al 100% (que generarían saldos a favor del comprador imposibles en una venta normal).
-
-#### 💻 Código de la Función y de la Prueba
+#### 💻 Código Corto
 ```python
-# 1. Código de la Función
-def calcular_descuento(subtotal: float, porcentaje: float) -> float:
-    """Calcula el monto en soles a descontar según el porcentaje (0% a 100%)."""
-    if porcentaje < 0 or porcentaje > 100:
-        raise ValueError("El porcentaje de descuento debe estar entre 0 y 100.")
-    return round(subtotal * (porcentaje / 100), 2)
+# Función
+def descontar_stock(stock_actual: int, cantidad_a_descontar: int) -> int:
+    if cantidad_a_descontar <= 0:
+        raise ValueError("La cantidad a descontar debe ser mayor a 0.")
+    if cantidad_a_descontar > stock_actual:
+        raise ValueError("Stock insuficiente para despachar.")
+    return stock_actual - cantidad_a_descontar
 
-
-# 2. Código de la Prueba Unitaria
-def test_02_calcular_descuento(self):
-    """Prueba 2: Descuento del 10% sobre un subtotal de S/ 200.00 debe ser S/ 20.00."""
-    subtotal = 200.00
-    porcentaje = 10.0
-    resultado_esperado = 20.00
-    resultado_obtenido = calcular_descuento(subtotal, porcentaje)
-    self.assertEqual(resultado_obtenido, resultado_esperado)
+# Prueba Unitaria
+def test_03_descontar_stock_almacen(self):
+    # Stock inicial 50 m, se despachan 15 m -> deben quedar 35 m
+    nuevo_stock = descontar_stock(stock_actual=50, cantidad_a_descontar=15)
+    self.assertEqual(nuevo_stock, 35)
 ```
 
-#### 📊 Diagrama del Caso de Prueba
+#### 📊 Diagrama de Flujo
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Tester as Prueba Unitaria (test_02)
-    participant Func as calcular_descuento()
-    participant Assert as self.assertEqual()
+flowchart TD
+    E["Stock Inicial: 50 rollos"] --> S["Despacho: 15 rollos"]
+    S --> V{"¿15 <= 50?"}
+    V -- Sí --> R["Nuevo Stock: 35 rollos"]
+    R --> A["self.assertEqual(35, 35) 🟢"]
+    V -- No --> F["Error: Stock Insuficiente 🔴"]
 
-    Tester->>Func: Enviar (subtotal=200.00, porcentaje=10.0)
-    Note over Func: 200.00 * (10.0 / 100) = 20.00
-    Func-->>Tester: Retorna 20.00 (resultado_obtenido)
-    Tester->>Assert: Comparar (obtenido=20.00, esperado=20.00)
-    Note over Assert: ¿20.00 == 20.00? -> VERDADERO
-    Assert-->>Tester: 🟢 PRUEBA SUPERADA (OK)
+    style E fill:#f1f5f9,stroke:#64748b
+    style R fill:#dcfce7,stroke:#16a34a,stroke-width:2px
 ```
 
-#### 🖥️ Resultado de la Ejecución
+#### 🖥️ Resultado en Terminal
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│ FUNCIÓN EVALUADA : 2. calcular_descuento                               │
-├────────────────────────────────────────────────────────────────────────┤
-│ Entrada          : Subtotal = S/ 200.00 | Porcentaje = 10.0%           │
-│ Valor Esperado   : S/ 20.00                                            │
-│ Valor Obtenido   : S/ 20.00                                            │
-│ Estado           : [ APROBADO ] ✔                                      │
-└────────────────────────────────────────────────────────────────────────┘
-unittest log: test_02_calcular_descuento (__main__.TestModuloVentas) ... ok
+Modulo     : 3. Almacen (Control de Stock)
+Entrada    : Stock inicial: 50 m | Salida despachada: 15 m
+Esperado   : 35 metros
+Obtenido   : 35 metros
+Resultado  : [APROBADO]
 ```
-
-#### 💡 ¿Por qué salió este resultado?
-1. Se calcula la fracción decimal del porcentaje: $10 / 100 = 0.10$.
-2. Se multiplica por el subtotal: $200.00 \times 0.10 = 20.00$.
-3. El resultado obtenido es exactamente `20.00` soles, cumpliendo la aserción y evitando cobros indebidos.
 
 ---
 
-### 3️⃣ Función: `calcular_igv`
+### 4️⃣ Módulo Conciliación: `calcular_porcentaje_diferencia`
 
-#### 📌 ¿Por qué se hace esta función? (Propósito de Negocio)
-En el Perú, toda venta formal de bienes textiles está gravada con el **Impuesto General a las Ventas (IGV)** establecido por la SUNAT, con una tasa vigente del **18%** (16% IGV + 2% Impuesto de Promoción Municipal).  
-Cualquier discrepancia de céntimos en este impuesto generaría multas tributarias o inconsistencias en los libros contables electrónicos.
+#### 📌 ¿Qué hace y por qué se prueba?
+Compara el stock registrado en el sistema contra el conteo físico en estantería para controlar **mermas textiles** por cortes o retazos. Si la diferencia es menor o igual al umbral del negocio (**2%**), se declara `CONFORME`.
 
-#### 🛡️ Control de Calidad y Reglas de Negocio
-- La base imponible sobre la cual se calcula el impuesto nunca puede ser negativa.
-- La tasa tributaria del 18% ($0.18$) se aplica uniformemente con redondeo a 2 dígitos.
-
-#### 💻 Código de la Función y de la Prueba
+#### 💻 Código Corto
 ```python
-# 1. Código de la Función
-def calcular_igv(base_imponible: float) -> float:
-    """Calcula el 18% del Impuesto General a las Ventas (IGV en Perú)."""
-    if base_imponible < 0:
-        raise ValueError("La base imponible no puede ser negativa.")
-    return round(base_imponible * 0.18, 2)
+# Función
+def calcular_porcentaje_diferencia(stock_sistema: int, conteo_fisico: int) -> dict:
+    diferencia = conteo_fisico - stock_sistema
+    porcentaje = round(abs(diferencia) / stock_sistema * 100, 2)
+    conforme = porcentaje <= 2.0  # Umbral de tolerancia textil: 2%
+    return {"diferencia": diferencia, "porcentaje": porcentaje, "conforme": conforme}
 
-
-# 2. Código de la Prueba Unitaria
-def test_03_calcular_igv(self):
-    """Prueba 3: IGV (18%) sobre una base imponible de S/ 100.00 debe ser S/ 18.00."""
-    base = 100.00
-    resultado_esperado = 18.00
-    resultado_obtenido = calcular_igv(base)
-    self.assertEqual(resultado_obtenido, resultado_esperado)
+# Prueba Unitaria
+def test_04_conciliacion_auditoria(self):
+    # 100 m en sistema vs 99 m físico = 1% de merma (dentro del límite del 2%)
+    resultado = calcular_porcentaje_diferencia(stock_sistema=100, conteo_fisico=99)
+    self.assertEqual(resultado["porcentaje"], 1.0)
+    self.assertTrue(resultado["conforme"])
 ```
 
-#### 📊 Diagrama del Caso de Prueba
+#### 📊 Semáforo de Tolerancia de Mermas
 ```mermaid
-sequenceDiagram
-    autonumber
-    actor Tester as Prueba Unitaria (test_03)
-    participant Func as calcular_igv()
-    participant Assert as self.assertEqual()
+graph LR
+    A["Merma Real: 1.00%"] --> B{"Tolerancia Máx: 2.00%"}
+    B -- "<= 2.0%" --> C["Estado: CONFORME 🟢 (Aceptable)"]
+    B -- "> 2.0%" --> D["Estado: CRÍTICO 🔴 (Auditoría Inmediata)"]
 
-    Tester->>Func: Enviar (base_imponible=100.00)
-    Note over Func: 100.00 * 0.18 = 18.00
-    Func-->>Tester: Retorna 18.00 (resultado_obtenido)
-    Tester->>Assert: Comparar (obtenido=18.00, esperado=18.00)
-    Note over Assert: ¿18.00 == 18.00? -> VERDADERO
-    Assert-->>Tester: 🟢 PRUEBA SUPERADA (OK)
+    style A fill:#eff6ff,stroke:#3b82f6
+    style C fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style D fill:#fee2e2,stroke:#ef4444
 ```
 
-#### 🖥️ Resultado de la Ejecución
+#### 🖥️ Resultado en Terminal
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│ FUNCIÓN EVALUADA : 3. calcular_igv                                     │
-├────────────────────────────────────────────────────────────────────────┤
-│ Entrada          : Base Imponible = S/ 100.00 | Tasa Legal = 18.0%     │
-│ Valor Esperado   : S/ 18.00                                            │
-│ Valor Obtenido   : S/ 18.00                                            │
-│ Estado           : [ APROBADO ] ✔                                      │
-└────────────────────────────────────────────────────────────────────────┘
-unittest log: test_03_calcular_igv (__main__.TestModuloVentas) ... ok
+Modulo     : 4. Conciliacion (Mermas y Auditoria)
+Entrada    : Sistema: 100 m | Conteo Fisico: 99 m (Tolerancia: <= 2%)
+Esperado   : Conforme (Merma: 1.00%)
+Obtenido   : Conforme (Merma: 1.00%)
+Resultado  : [APROBADO]
 ```
-
-#### 💡 ¿Por qué salió este resultado?
-1. Se multiplica la base imponible por el factor fiscal: $100.00 \times 0.18 = 18.00$.
-2. No existen céntimos flotantes adicionales.
-3. El resultado `18.00` es exactamente igual al `resultado_esperado`, garantizando cumplimiento tributario.
 
 ---
 
-### 4️⃣ Función: `calcular_total_venta` (Prueba de Integración Unitaria)
+## 📋 Cuadro Comparativo Resumen para Sustentación
 
-#### 📌 ¿Por qué se hace esta función? (Propósito de Negocio)
-Es la función integradora del módulo de ventas. Su rol es orquestar todo el flujo comercial:
-1. Multiplica ítems $\rightarrow$ **Subtotal**.
-2. Aplica rebajas $\rightarrow$ **Descuento**.
-3. Deduce el neto comercial $\rightarrow$ **Base Imponible**.
-4. Liquida el gravamen $\rightarrow$ **IGV (18%)**.
-5. Suma la base imponible y el impuesto $\rightarrow$ **Total a Cobrar**.
+Copia y pega este cuadro directamente en tu informe, diapositiva o documento:
 
-Retorna una estructura de datos completa (diccionario) lista para imprimirse en la boleta, factura o guardarse en la base de datos.
+| N° | Módulo del Sistema | Función Evaluada | Datos de Entrada | Resultado Esperado | Resultado Obtenido | Estado | Justificación de Negocio |
+| :---: | :--- | :--- | :--- | :---: | :---: | :---: | :--- |
+| **01** | **Inventario** | `validar_producto` | SKU: `'TEL-001'`, Pima, Precio: S/ 25.50, Stock: 40 | `True` *(Válido)* | `True` *(Válido)* | 🟢 **APROBADO** | Valida atributos obligatorios antes del guardado en catálogo. |
+| **02** | **Ventas** | `calcular_total_venta` | 2 rollos a S/ 50.00, Descuento: 10%, IGV: 18% | `S/ 106.20` | `S/ 106.20` | 🟢 **APROBADO** | Liquida el comprobante aplicando descuento e IGV SUNAT. |
+| **03** | **Almacén** | `descontar_stock` | Stock actual: 50 m, Cantidad venta: 15 m | `35 metros` | `35 metros` | 🟢 **APROBADO** | Rebaja inventario físico y previene stock negativo. |
+| **04** | **Conciliación** | `calcular_porcentaje_diferencia` | Sistema: 100 m, Conteo físico: 99 m | `Conforme (1.00%)` | `Conforme (1.00%)` | 🟢 **APROBADO** | Control de mermas bajo el umbral de tolerancia del 2.0%. |
 
-#### 🛡️ Control de Calidad y Reglas de Negocio
-- La suma de los componentes debe cuadrar contablemente al 100%:  
-  $$\text{Total} = (\text{Subtotal} - \text{Descuento}) + \text{IGV}$$
-- Cada valor intermedio se valida de manera independiente para evitar arrastre de errores numéricos.
+---
 
-#### 💻 Código de la Función y de la Prueba
-```python
-# 1. Código de la Función
-def calcular_total_venta(cantidad: int, precio: float, porcentaje_descuento: float = 0.0) -> dict:
-    """Integra el cálculo total: Subtotal - Descuento + IGV (18%)."""
-    subtotal = calcular_subtotal(cantidad, precio)
-    descuento = calcular_descuento(subtotal, porcentaje_descuento)
-    base = round(subtotal - descuento, 2)
-    igv = calcular_igv(base)
-    total = round(base + igv, 2)
-    return {
-        "subtotal": subtotal,
-        "descuento": descuento,
-        "base_imponible": base,
-        "igv": igv,
-        "total": total,
-    }
+## 🚀 Cómo Ejecutar la Demostración en Vivo
 
+En cualquier terminal dentro del proyecto:
 
-# 2. Código de la Prueba Unitaria
-def test_04_calcular_total_venta(self):
-    """Prueba 4: Venta de 2 rollos a S/ 50.00 con 10% descuento debe totalizar S/ 106.20."""
-    resumen = calcular_total_venta(cantidad=2, precio=50.00, porcentaje_descuento=10.0)
-    
-    self.assertEqual(resumen["subtotal"], 100.00)
-    self.assertEqual(resumen["descuento"], 10.00)
-    self.assertEqual(resumen["base_imponible"], 90.00)
-    self.assertEqual(resumen["igv"], 16.20)
-    self.assertEqual(resumen["total"], 106.20)
+```bash
+python ejemplo_pruebas_unitarias.py
 ```
 
-#### 📊 Diagrama del Proceso de Integración
-```mermaid
-graph TD
-    subgraph Entrada
-        P1["Cantidad = 2 rollos"]
-        P2["Precio = S/ 50.00"]
-        P3["Descuento = 10%"]
-    end
-
-    subgraph Procesamiento
-        S["Subtotal:\n2 * 50 = S/ 100.00"]
-        D["Descuento:\n100 * 10% = S/ 10.00"]
-        B["Base Imponible:\n100 - 10 = S/ 90.00"]
-        I["IGV SUNAT (18%):\n90 * 0.18 = S/ 16.20"]
-        T["Total Final:\n90 + 16.20 = S/ 106.20"]
-    end
-
-    subgraph Verificacion_Aserciones
-        V1["assert subtotal == 100.00 ✔"]
-        V2["assert descuento == 10.00 ✔"]
-        V3["assert base == 90.00 ✔"]
-        V4["assert igv == 16.20 ✔"]
-        V5["assert total == 106.20 ✔"]
-    end
-
-    P1 & P2 --> S
-    S & P3 --> D
-    S & D --> B
-    B --> I
-    B & I --> T
-
-    S -.-> V1
-    D -.-> V2
-    B -.-> V3
-    I -.-> V4
-    T -.-> V5
-
-    style Entrada fill:#eff6ff,stroke:#3b82f6,color:#1e3a8a
-    style Procesamiento fill:#f8fafc,stroke:#64748b,color:#0f172a
-    style Verificacion_Aserciones fill:#f0fdf4,stroke:#22c55e,color:#14532d
-```
-
-#### 🖥️ Resultado de la Ejecución
+### Salida Completa Obtenida:
 ```text
-┌────────────────────────────────────────────────────────────────────────┐
-│ FUNCIÓN EVALUADA : 4. calcular_total_venta                             │
-├────────────────────────────────────────────────────────────────────────┤
-│ Entrada          : Cant = 2 rollos | Precio = S/ 50.00 | Desc = 10.0%  │
-│ Desglose Calculado:                                                    │
-│   • Subtotal Bruto       : S/ 100.00  (Esperado: S/ 100.00) -> OK      │
-│   • Descuento Otorgado   : S/  10.00  (Esperado: S/  10.00) -> OK      │
-│   • Base Imponible       : S/  90.00  (Esperado: S/  90.00) -> OK      │
-│   • IGV (18%)            : S/  16.20  (Esperado: S/  16.20) -> OK      │
-│   • TOTAL LIQUIDADO      : S/ 106.20  (Esperado: S/ 106.20) -> OK      │
-│ Estado Global    : [ APROBADO ] ✔                                      │
-└────────────────────────────────────────────────────────────────────────┘
-unittest log: test_04_calcular_total_venta (__main__.TestModuloVentas) ... ok
+================================================================================
+ ACTIVIDAD: 4 PRUEBAS UNITARIAS MULTI-MODULO - SISTEMA TEXTILERIA
+================================================================================
+Modulo     : 1. Inventario (Catalogo de Telas)
+Entrada    : SKU: 'TEL-001' | Pima | S/ 25.50 | Stock: 40
+Esperado   : True (Valido)
+Obtenido   : True (Valido)
+Resultado  : [APROBADO]
+--------------------------------------------------------------------------------
+Modulo     : 2. Ventas (Caja y Facturacion)
+Entrada    : Cant: 2 rollos | Precio: S/ 50.00 | Desc: 10% | IGV: 18%
+Esperado   : S/ 106.20
+Obtenido   : S/ 106.20
+Resultado  : [APROBADO]
+--------------------------------------------------------------------------------
+Modulo     : 3. Almacen (Control de Stock)
+Entrada    : Stock inicial: 50 m | Salida despachada: 15 m
+Esperado   : 35 metros
+Obtenido   : 35 metros
+Resultado  : [APROBADO]
+--------------------------------------------------------------------------------
+Modulo     : 4. Conciliacion (Mermas y Auditoria)
+Entrada    : Sistema: 100 m | Conteo Fisico: 99 m (Tolerancia: <= 2%)
+Esperado   : Conforme (Merma: 1.00%)
+Obtenido   : Conforme (Merma: 1.00%)
+Resultado  : [APROBADO]
+--------------------------------------------------------------------------------
+
+Ejecutando verificacion formal con unittest:
+test_01_validar_producto_inventario (__main__.TestSistemaTextil.test_01_validar_producto_inventario) ... ok
+test_02_calcular_total_ventas (__main__.TestSistemaTextil.test_02_calcular_total_ventas) ... ok
+test_03_descontar_stock_almacen (__main__.TestSistemaTextil.test_03_descontar_stock_almacen) ... ok
+test_04_conciliacion_auditoria (__main__.TestSistemaTextil.test_04_conciliacion_auditoria) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
 ```
 
-#### 💡 ¿Por qué salió este resultado?
-- **Paso 1 (Subtotal):** $2 \times 50.00 = \text{S/ } 100.00$.
-- **Paso 2 (Descuento):** $100.00 \times 10\% = \text{S/ } 10.00$.
-- **Paso 3 (Base Imponible):** $100.00 - 10.00 = \text{S/ } 90.00$.
-- **Paso 4 (IGV):** $90.00 \times 0.18 = \text{S/ } 16.20$.
-- **Paso 5 (Total a Pagar):** $90.00 + 16.20 = \text{S/ } 106.20$.
-
-Todas las 5 sub-aserciones se cumplieron exactamente en una sola ejecución.
-
 ---
 
-## 📋 Cuadro Comparativo Resumen para Exposición
+## 🎯 Sustentación bajo Norma ISO/IEC 25010
 
-Para una presentación rápida ante el profesor o jurado, este cuadro resume cada prueba unitaria:
-
-| N° | Función | Datos de Entrada | Resultado Esperado | Resultado Obtenido | Veredicto | Justificación Técnica |
-| :---: | :--- | :--- | :---: | :---: | :---: | :--- |
-| **01** | `calcular_subtotal` | Cantidad: 3<br>Precio: S/ 25.50 | **S/ 76.50** | **S/ 76.50** | `APROBADO` 🟢 | Multiplicación directa con precisión a 2 decimales para rollos/metros. |
-| **02** | `calcular_descuento` | Subtotal: S/ 200.00<br>Porcentaje: 10% | **S/ 20.00** | **S/ 20.00** | `APROBADO` 🟢 | Deducción porcentual acotada para promociones por mayor. |
-| **03** | `calcular_igv` | Base: S/ 100.00<br>Tasa: 18% | **S/ 18.00** | **S/ 18.00** | `APROBADO` 🟢 | Cálculo tributario estricto según normativa SUNAT Perú. |
-| **04** | `calcular_total_venta` | Cant: 2, Precio: 50<br>Descuento: 10% | **S/ 106.20** | **S/ 106.20** | `APROBADO` 🟢 | Integración del comprobante: Base (S/ 90) + IGV (S/ 16.20) = S/ 106.20. |
-
----
-
-## 🎯 Conclusión según la Norma ISO/IEC 25010
-
-1. **Adecuación Funcional:** Las 4 pruebas confirman que el sistema realiza los cálculos contables y comerciales exactamente como lo requiere el negocio de confección y venta de telas en Lima.
-2. **Exactitud:** No hay margen de error ni desbordamiento de punto flotante gracias a las políticas de redondeo bancario a 2 decimales.
-3. **Mantenibilidad:** Si las tasas impositivas cambian o se añaden nuevas políticas de descuento, las pruebas unitarias alertarán inmediatamente de cualquier regresión o error en el código.
+1. **Adecuación Funcional:** Se valida la completitud y exactitud de las 4 operaciones más sensibles del negocio textil (catálogo, liquidación de venta, movimiento de almacén y merma).
+2. **Confiabilidad:** Las funciones puras son deterministas: ante las mismas entradas siempre devuelven idénticos resultados esperados.
+3. **Mantenibilidad:** El código es modular, corto y desacoplado, lo que permite modificar reglas de negocio futuras (ej. cambio de tasa del IGV o tolerancia de merma) sin romper el resto del sistema.
