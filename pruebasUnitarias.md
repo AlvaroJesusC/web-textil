@@ -136,6 +136,50 @@ class TestSistemaTextil(unittest.TestCase):
 
 ---
 
+
+### Salida Obtenida en Consola:
+```text
+================================================================================
+ ACTIVIDAD: 4 PRUEBAS UNITARIAS (MIGRACION JAVA -> PYTHON)
+================================================================================
+Modulo/Funcion : 1. Ventas: calcular_facturacion
+Entrada        : 100 m x S/ 10.00 | Desc: 10% (0.10) | IGV: 18%
+Esperado       : S/ 1,062.00
+Obtenido       : S/ 1,062.00
+Resultado      : [APROBADO]
+--------------------------------------------------------------------------------
+Modulo/Funcion : 2. Inventario: verificar_alerta_stock
+Entrada        : Stock actual: 20 rollos | Minimo: 50 rollos
+Esperado       : ALERTA: Stock critico
+Obtenido       : ALERTA: Stock critico
+Resultado      : [APROBADO]
+--------------------------------------------------------------------------------
+Modulo/Funcion : 3. Inventario: registrar_despacho
+Entrada        : Stock inicial: 500 | Despachado: 200
+Esperado       : 300 unidades
+Obtenido       : 300 unidades
+Resultado      : [APROBADO]
+--------------------------------------------------------------------------------
+Modulo/Funcion : 4. Reportes: calcular_rotacion_inventario
+Entrada        : Costo vendidos: S/ 50,000 | Inv. promedio: S/ 10,000
+Esperado       : 5.0 veces
+Obtenido       : 5.0 veces
+Resultado      : [APROBADO]
+--------------------------------------------------------------------------------
+
+Ejecutando verificacion formal con unittest:
+test_01_calcular_facturacion (__main__.TestSistemaTextil.test_01_calcular_facturacion) ... ok
+test_02_verificar_alerta_stock (__main__.TestSistemaTextil.test_02_verificar_alerta_stock) ... ok
+test_03_registrar_despacho (__main__.TestSistemaTextil.test_03_registrar_despacho) ... ok
+test_04_calcular_rotacion_inventario (__main__.TestSistemaTextil.test_04_calcular_rotacion_inventario) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.000s
+
+OK
+```
+
+
 ## 🔬 4. Justificación de Cada Prueba: ¿Por qué se hizo y por qué esos datos?
 
 ---
@@ -206,44 +250,3 @@ Para correr esta versión migrada:
 python ejemplo_pruebas_java.py
 ```
 
-### Salida Obtenida en Consola:
-```text
-================================================================================
- ACTIVIDAD: 4 PRUEBAS UNITARIAS (MIGRACION JAVA -> PYTHON)
-================================================================================
-Modulo/Funcion : 1. Ventas: calcular_facturacion
-Entrada        : 100 m x S/ 10.00 | Desc: 10% (0.10) | IGV: 18%
-Esperado       : S/ 1,062.00
-Obtenido       : S/ 1,062.00
-Resultado      : [APROBADO]
---------------------------------------------------------------------------------
-Modulo/Funcion : 2. Inventario: verificar_alerta_stock
-Entrada        : Stock actual: 20 rollos | Minimo: 50 rollos
-Esperado       : ALERTA: Stock critico
-Obtenido       : ALERTA: Stock critico
-Resultado      : [APROBADO]
---------------------------------------------------------------------------------
-Modulo/Funcion : 3. Inventario: registrar_despacho
-Entrada        : Stock inicial: 500 | Despachado: 200
-Esperado       : 300 unidades
-Obtenido       : 300 unidades
-Resultado      : [APROBADO]
---------------------------------------------------------------------------------
-Modulo/Funcion : 4. Reportes: calcular_rotacion_inventario
-Entrada        : Costo vendidos: S/ 50,000 | Inv. promedio: S/ 10,000
-Esperado       : 5.0 veces
-Obtenido       : 5.0 veces
-Resultado      : [APROBADO]
---------------------------------------------------------------------------------
-
-Ejecutando verificacion formal con unittest:
-test_01_calcular_facturacion (__main__.TestSistemaTextil.test_01_calcular_facturacion) ... ok
-test_02_verificar_alerta_stock (__main__.TestSistemaTextil.test_02_verificar_alerta_stock) ... ok
-test_03_registrar_despacho (__main__.TestSistemaTextil.test_03_registrar_despacho) ... ok
-test_04_calcular_rotacion_inventario (__main__.TestSistemaTextil.test_04_calcular_rotacion_inventario) ... ok
-
-----------------------------------------------------------------------
-Ran 4 tests in 0.000s
-
-OK
-```
