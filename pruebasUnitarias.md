@@ -2,7 +2,7 @@
 ## Sistema Textil · Módulos de Ventas, Inventario y Reportes
 **Curso:** Calidad de Software · UCV 2026  
 **Estándar:** ISO/IEC 25010 (Adecuación Funcional, Exactitud y Tolerancia a Fallos)  
-**Script Ejecutable en Python:** [`ejemplo_pruebas_java.py`](file:///c:/Users/AlvaroJ/Documents/Antigravity%20Projects/sistema-textileria/ejemplo_pruebas_java.py)
+**Script Ejecutable en Python:** [`ejemplo_pruebas_unitarias.py`](file:///c:/Users/AlvaroJ/Documents/Antigravity%20Projects/sistema-textileria/ejemplo_pruebas_unitarias.py)
 
 ---
 
@@ -187,7 +187,22 @@ class TestSistemaTextil(unittest.TestCase):
 
 ---
 
-## 📋 5. Cuadro Comparativo para la Exposición / Sustentación
+## 📋 5. Ficha Técnica Formal de la Prueba #1 (Formato Diapositiva / PPT)
+
+| Campo | Detalle Técnico de la Prueba |
+| :--- | :--- |
+| **Nombre de la prueba** | **Cálculo de Facturación con Descuento e IGV (18%)** |
+| **Objetivo** | Verificar la exactitud matemática del subtotal, descuento comercial del 10% y el 18% de IGV en el comprobante de venta textil. |
+| **Precondiciones** | Producto registrado en catálogo ("Tela Jersey 30/1" a S/ 15.20) con stock disponible $\ge 10$ metros y cliente formal con RUC. |
+| **Datos de entrada** | `cantidad_metros = 10.0` \| `precio_unitario = 15.20` \| `descuento = 0.10` (10%) |
+| **Resultado esperado** | Subtotal: S/ 152.00 \| Descuento (10%): -S/ 15.20 \| Base: S/ 136.80 \| IGV (18%): S/ 24.62 \| **Total: S/ 161.42** |
+| **Resultado obtenido** | **Total calculado: S/ 161.42** (Coincidencia exacta al céntimo en código y pantalla) |
+| **Estado** | 🟢 **Exitoso (`PASSED`)** |
+| **Observaciones** | Cumple con la norma ISO/IEC 25010 (Exactitud de Cálculo) y normativa SUNAT con redondeo bancario a 2 decimales. |
+
+---
+
+## 📊 6. Cuadro Comparativo General para la Sustentación
 
 | N° | Módulo | Función / Método | Datos de Entrada | Resultado Esperado | Resultado Obtenido | Estado |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: |
@@ -198,7 +213,7 @@ class TestSistemaTextil(unittest.TestCase):
 
 ---
 
-## 🚀 6. Cómo Ejecutarlo en Terminal
+## 🚀 7. Cómo Ejecutarlo en Terminal
 
 Para correr esta versión:
 
