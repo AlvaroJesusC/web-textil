@@ -1,5 +1,4 @@
 """
-================================================================================
 ACTIVIDAD ACADÉMICA: PRUEBAS UNITARIAS EN PYTHON
 Curso: Calidad de Software (UCV 2026)
 Módulo Evaluado: VENTAS Y FACTURACIÓN (Sistema Textilería)
@@ -7,15 +6,11 @@ Módulo Evaluado: VENTAS Y FACTURACIÓN (Sistema Textilería)
 4 funciones esenciales + 4 pruebas unitarias para verificar resultados esperados.
 Ejecución directa:
     python ejemplo_pruebas_unitarias.py
-================================================================================
 """
 
 import unittest
 
-
-# ==============================================================================
-# LAS 4 FUNCIONES DEL MÓDULO DE VENTAS (CORTAS Y DIRECTAS)
-# ==============================================================================
+# LAS 4 FUNCIONES DEL MÓDULO DE VENTAS
 
 def calcular_subtotal(cantidad: int, precio_unitario: float) -> float:
     """1. Multiplica la cantidad por el precio unitario del producto textil."""
@@ -54,9 +49,7 @@ def calcular_total_venta(cantidad: int, precio: float, porcentaje_descuento: flo
     }
 
 
-# ==============================================================================
 # LAS 4 PRUEBAS UNITARIAS (Verificación de Funcionalidad y Resultados Esperados)
-# ==============================================================================
 
 class TestModuloVentas(unittest.TestCase):
 
@@ -99,9 +92,7 @@ class TestModuloVentas(unittest.TestCase):
         self.assertEqual(resumen["total"], 106.20)
 
 
-# ==============================================================================
 # REPORTE VISUAL EN CONSOLA (Entrada vs Resultado Esperado vs Resultado Obtenido)
-# ==============================================================================
 
 def imprimir_resumen_visual():
     print("=" * 75)
