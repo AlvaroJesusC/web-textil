@@ -77,7 +77,7 @@ Asegúrate de tener instaladas las siguientes herramientas en Windows:
 Abre PowerShell o el Símbolo del sistema (CMD) y clona el proyecto en tu equipo:
 
 ```powershell
-git clone https://github.com/tu-usuario/sistema-textileria.git
+git clone https://github.com/AlvaroJesusC/web-textil.git
 cd sistema-textileria
 ```
 
