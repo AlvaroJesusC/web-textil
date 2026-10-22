@@ -111,6 +111,14 @@ Obtenido   : True (Valido)
 Resultado  : [APROBADO]
 ```
 
+#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
+- **¿Por qué se hizo?** Previene que un usuario guarde telas con precio `S/ 0.00` (se venderían gratis) o stock negativo (`-5 metros`), lo cual dañaría la base de datos del negocio.
+- **¿Por qué estos datos?**
+  - `sku="TEL-001"` y `nombre="Tela Algodon Pima"`: Representa un producto real de confección en Lima.
+  - `precio=25.50`: Precio real de mercado por metro en Gamarra (positivo y con decimales).
+  - `stock=40`: Metros que contiene un fardo o rollo comercial estándar al llegar de fábrica.
+- **¿Por qué sale `True`?** Porque cumple las 4 reglas del catálogo (SKU válido, nombre válido, precio > 0 y stock >= 0).
+
 ---
 
 ### 2️⃣ Módulo Ventas: `calcular_total_venta`
@@ -156,6 +164,18 @@ Esperado   : S/ 106.20
 Obtenido   : S/ 106.20
 Resultado  : [APROBADO]
 ```
+
+#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
+- **¿Por qué se hizo?** Es el cálculo financiero central del negocio. Si falla el descuento o el impuesto, la textilería pierde dinero o la SUNAT aplica sanciones tributarias por emitir facturas/boletas erróneas.
+- **¿Por qué estos datos?**
+  - `2 rollos a S/ 50.00`: Pedido mayorista típico con números redondos para facilitar la auditoría y verificación manual ($2 \times 50 = \text{S/ } 100.00$).
+  - `descuento=10%`: Rebaja comercial habitual por volumen de compra.
+- **¿Por qué sale `S/ 106.20`?**
+  1. Subtotal bruto: $2 \times 50.00 = \text{S/ } 100.00$.
+  2. Descuento 10%: $100.00 \times 0.10 = \text{S/ } 10.00$.
+  3. Base imponible: $100.00 - 10.00 = \text{S/ } 90.00$.
+  4. IGV (18% SUNAT): $90.00 \times 0.18 = \text{S/ } 16.20$.
+  5. Total a pagar: $90.00 + 16.20 = \mathbf{S/\ 106.20}$.
 
 ---
 
@@ -203,6 +223,14 @@ Obtenido   : 35 metros
 Resultado  : [APROBADO]
 ```
 
+#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
+- **¿Por qué se hizo?** Asegura que tras una venta, el almacén se sincronice al instante. Si la función fallara, un vendedor podría prometer y vender rollos que físicamente ya no existen en estantería (quiebre de inventario).
+- **¿Por qué estos datos?**
+  - `stock_actual=50`: Lote de 50 metros disponibles en estantería.
+  - `cantidad_a_descontar=15`: Pedido de 15 metros para confección.
+- **¿Por qué sale `35`?**
+  - Resta directa: $50 - 15 = \mathbf{35\text{ metros}}$. Comprueba que el remanente en bodega es exacto y se mantiene positivo.
+
 ---
 
 ### 4️⃣ Módulo Conciliación: `calcular_porcentaje_diferencia`
@@ -247,6 +275,15 @@ Esperado   : Conforme (Merma: 1.00%)
 Obtenido   : Conforme (Merma: 1.00%)
 Resultado  : [APROBADO]
 ```
+
+#### 💡 ¿Por qué se hizo esta prueba y por qué estos datos?
+- **¿Por qué se hizo?** En la venta de telas por metros, al cortar de un rollo siempre hay mermas por orillos o retazos. Esta prueba audita si el faltante físico está dentro del margen normal admisible o si se trata de pérdidas sospechosas.
+- **¿Por qué estos datos?**
+  - `stock_sistema=100`: El software registra 100 metros en inventario.
+  - `conteo_fisico=99`: La medición física en tienda detectó 99 metros (falta 1 metro).
+- **¿Por qué sale `Conforme (1.00%)`?**
+  - Merma porcentual: $\frac{|99 - 100|}{100} \times 100 = \mathbf{1.00\%}$.
+  - Como $1.00\% \le 2.00\%$ (política de merma textil), el resultado concluye automáticamente en **`conforme = True`**.
 
 ---
 
