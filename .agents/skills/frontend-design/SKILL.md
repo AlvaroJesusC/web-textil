@@ -74,7 +74,21 @@ Keep the tone conversational: plain verbs, sentence case, no filler, with tone m
 
 ## Nota del proyecto Sistema Textilería (agregada localmente)
 
-- El brief de este proyecto está en `docs/04-brief-diseno.md` (sujeto, público, material del mundo textil y lista de lo que NO se quiere). Leerlo **antes** de proponer el plan de tokens.
-- El plan de tokens se presenta al usuario y se espera su confirmación antes de construir pantallas. La decisión final se registra en la sección 6 de ese documento.
-- Es una herramienta interna de trabajo (inventario y caja), no una landing page: la "audacia" se gasta en un solo lugar (por ejemplo, la pantalla P-05 Registrar venta o el semáforo de conciliación) y el resto se mantiene sobrio, denso y legible.
-- Stack: React + TypeScript + Tailwind + shadcn/ui. Los tokens se definen como variables CSS y reemplazan el tema por defecto de shadcn/ui.
+- **Directiva Obligatoria de Identidad Textil Moderna:** Leer obligatoriamente [docs/04-brief-diseno.md](../../../docs/04-brief-diseno.md).
+- **Paleta Oficial de 4 Pilares (Obligatoria):**
+  * **Primary (Índigo Telar):** `#1B2A4A` (Sidebar, cabeceras fuertes, textos principales y botones secundarios oscuros).
+  * **Secondary (Terracota Teja):** `#D95D39` (Color estrella de acción para botones principales como `+ Nueva Venta`, `Confirmar Venta`, `+ Nuevo Producto`, y acento activo en el Sidebar).
+  * **Tertiary (Azul Cobalto):** `#2452E8` (Enlaces interactivos, íconos de KPIs, anillos de foco, gráficos).
+  * **Neutral (Algodón Crudo):** `#F9F8F5` (Lienzo general de fondo para que las tarjetas `#FFFFFF` resalten con calidez y contraste natural, con bordes `#E6E3DC`).
+- **Geometría y Tipografía (PROHIBIDO el estilo cuadrado o gris triste):**
+  * Tarjetas y contenedores con `rounded-xl` (12px) o `rounded-2xl` y `shadow-sm` (nunca cajas cuadradas `rounded-md` sin vida).
+  * Cargar Google Fonts `Plus Jakarta Sans` (principal) y `JetBrains Mono` (solo para códigos SKU y números de comprobante). **PROHIBIDO usar `font-mono` en los montos grandes de los KPIs o títulos**; usar `Plus Jakarta Sans` con `font-bold tabular-nums`.
+  * Íconos de tarjetas KPI con color e intención (`#2452E8`, `#1B2A4A`, `#D95D39`, `#15803D`), nunca todos grises.
+- **Plan por Etapas Módulo por Módulo (Sección 4 de `docs/04-brief-diseno.md`):**
+  * **Etapa 0:** `index.css` (fuentes y variables), `Sidebar.tsx` (`#1B2A4A` con activo `#D95D39`) y `Header.tsx`.
+  * **Etapa 1:** `DashboardPage.tsx` (barra de mostrador con borde izquierdo `#D95D39`, KPIs con íconos a color y tarjetas `rounded-xl`).
+  * **Etapa 2:** `InventarioPage.tsx` y sus 4 modales.
+  * **Etapa 3:** `RegistrarVentaPage.tsx` (POS con ticket en `#1B2A4A` y botón de cobro en `#D95D39`) e `HistorialVentasPage.tsx`.
+  * **Etapa 4:** `ConciliacionPage.tsx` y sus modales.
+  * **Etapa 5:** `ReportesPage.tsx` y gráficos Recharts con `#1B2A4A`, `#D95D39`, `#2452E8`.
+  * **Etapa 6:** `LoginPage.tsx`.

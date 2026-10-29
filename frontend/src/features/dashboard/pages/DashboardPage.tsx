@@ -7,16 +7,22 @@ import {
   AlertTriangle,
   ShoppingCart,
   Receipt,
-  ArrowRight,
   Clock,
-  Sparkles,
   Scale,
+  Plus,
 } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { useAuth } from '@/features/auth'
 import { listarProductosApi } from '@/features/inventario/api'
 import { listarVentasApi } from '@/features/ventas/api'
 import { formatearMoneda, formatearFecha } from '@/lib/formato'
+
+const FECHA_HOY = new Date().toLocaleDateString('es-PE', {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+})
 
 export const DashboardPage: React.FC = () => {
   const navigate = useNavigate()
@@ -31,250 +37,311 @@ export const DashboardPage: React.FC = () => {
   // Consultar ventas recientes
   const { data: ventasData, isLoading: cargandoVentas } = useQuery({
     queryKey: ['ventas-dashboard'],
-    queryFn: () => listarVentasApi({ limit: 5 }),
+    queryFn: () => listarVentasApi({ limit: 6 }),
     enabled: tieneRol('administrador', 'vendedor', 'gerente'),
   })
 
   const productos = productosData?.items || []
-  const productosBajoStock = productos.filter((p) => p.estado_stock === 'bajo' || p.estado_stock === 'agotado')
+  const productosBajoStock = productos.filter(
+    (p) => p.estado_stock === 'bajo' || p.estado_stock === 'agotado'
+  )
+  const productosAgotados = productos.filter((p) => p.estado_stock === 'agotado')
   const productosActivos = productos.filter((p) => p.estado === 'activo')
 
   const ventas = ventasData?.items || []
-  const totalVentasMonto = ventas.reduce((acc, v) => acc + parseFloat(v.total || '0'), 0)
+  const ventasValidas = ventas.filter((v) => v.estado !== 'anulada')
+  const totalVentasMonto = ventasValidas.reduce((acc, v) => acc + parseFloat(v.total || '0'), 0)
+  const puedeVerConciliacion = tieneRol('administrador', 'almacenero', 'gerente')
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col bg-[#F9F8F5]">
       <Header
-        titulo="Panel de Control"
-        subtitulo={`Bienvenido, ${usuario?.nombre}. Sistema de Gestión Textil.`}
+        titulo="Panel de Control Operativo"
+        subtitulo="Visión consolidada de ventas en mostrador y disponibilidad de inventario textil"
       />
 
       <main className="p-6 space-y-6">
-        {/* Banner de Acción Rápida para Mostrador */}
-        {tieneRol('administrador', 'vendedor') && (
-          <div className="bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 rounded-2xl p-6 text-white shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-700/50">
+        {/* Barra de Mostrador Activo con presencia e identidad textil */}
+        <div className="rounded-xl bg-white border border-[#E6E3DC] border-l-4 border-l-[#D95D39] p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-11 h-11 rounded-xl bg-[#1B2A4A] text-white flex items-center justify-center shrink-0 shadow-xs">
+              <ShoppingCart className="w-5 h-5 text-white" />
+            </div>
             <div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-700 text-blue-100 mb-2">
-                <Sparkles className="w-3.5 h-3.5" /> Punto de Venta en Mostrador
+              <div className="flex items-center gap-2.5">
+                <h3 className="text-sm font-extrabold text-[#1B2A4A] tracking-tight">
+                  Mostrador y Caja Activa
+                </h3>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">
+                  Caja Abierta
+                </span>
               </div>
-              <h3 className="text-xl font-bold">Caja Rápida Textil (POS)</h3>
-              <p className="text-sm text-blue-200 mt-1 max-w-xl">
-                Registro acelerado de ventas con atajos de teclado, cálculo exacto de IGV (18%) y descuento de stock en línea.
+              <p className="text-xs text-slate-600 mt-1">
+                Operador en turno:{' '}
+                <span className="font-bold text-[#1B2A4A]">{usuario?.nombre}</span> · Fecha:{' '}
+                <span className="capitalize font-medium">{FECHA_HOY}</span>
               </p>
             </div>
-            <button
-              onClick={() => navigate('/ventas/nueva')}
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-blue-950 font-bold text-sm shadow-md hover:bg-blue-50 transition-colors shrink-0"
-            >
-              <ShoppingCart className="w-4 h-4 text-blue-800" />
-              <span>Abrir Caja de Ventas</span>
-              <ArrowRight className="w-4 h-4 text-slate-400" />
-            </button>
           </div>
-        )}
 
-        {/* Tarjetas de Indicadores Clave (KPIs) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Tarjeta 1: Total ventas recientes */}
-          {tieneRol('administrador', 'vendedor', 'gerente') && (
+          <div className="flex items-center gap-3 self-stretch md:self-auto shrink-0">
+            {tieneRol('administrador', 'vendedor') && (
+              <button
+                onClick={() => navigate('/ventas/nueva')}
+                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#D95D39] hover:bg-[#C24D2B] text-white text-xs font-bold shadow-sm transition-all duration-150 cursor-pointer"
+              >
+                <Plus className="w-4 h-4 stroke-[2.5]" />
+                <span>Registrar Venta (POS)</span>
+              </button>
+            )}
+            {tieneRol('administrador', 'almacenero') && (
+              <button
+                onClick={() => navigate('/conciliacion')}
+                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-[#1B2A4A] hover:bg-[#243861] text-white text-xs font-bold shadow-sm transition-all duration-150 cursor-pointer"
+              >
+                <Scale className="w-4 h-4" />
+                <span>Conteo Físico</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* 4 Tarjetas KPI con Iconografía Coloreada y Tipografía Plus Jakarta Sans */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {/* Tarjeta 1: Ventas Recientes (o Agotados para Almacenero) */}
+          {tieneRol('administrador', 'vendedor', 'gerente') ? (
             <div
               onClick={() => navigate(tieneRol('administrador', 'gerente') ? '/reportes' : '/ventas')}
-              className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-emerald-300 transition-colors group"
+              className="rounded-xl bg-white p-5 border border-[#E6E3DC] shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
             >
-              <div className="flex items-center justify-between text-slate-500 mb-2">
-                <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-emerald-800 transition-colors">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   Ventas Recientes
                 </span>
-                <div className="p-2 bg-emerald-50 text-emerald-700 rounded-lg">
+                <div className="w-9 h-9 rounded-lg bg-[#2452E8]/10 text-[#2452E8] flex items-center justify-center">
                   <TrendingUp className="w-4 h-4" />
                 </div>
               </div>
-              <div className="text-2xl font-bold text-slate-900 tabular-nums">
+              <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
                 {cargandoVentas ? '...' : formatearMoneda(totalVentasMonto)}
               </div>
-              <p className="text-xs text-emerald-700 flex items-center gap-1 mt-1 font-medium">
-                <span>{tieneRol('administrador', 'gerente') ? 'Ver reportes analíticos' : 'Ver historial'}</span>
-                <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+              <p className="text-xs text-[#2452E8] hover:underline mt-2 font-semibold">
+                {tieneRol('administrador', 'gerente') ? 'Ver reportes analíticos' : 'Ver historial de tickets'}
+              </p>
+            </div>
+          ) : (
+            <div
+              onClick={() => navigate('/inventario?estado_stock=agotado')}
+              className="rounded-xl bg-white p-5 border border-[#E6E3DC] shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                  Artículos Agotados
+                </span>
+                <div className="w-9 h-9 rounded-lg bg-[#2452E8]/10 text-[#2452E8] flex items-center justify-center">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+              </div>
+              <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+                {cargandoProductos ? '...' : `${productosAgotados.length} artículos`}
+              </div>
+              <p className="text-xs text-[#2452E8] hover:underline mt-2 font-semibold">
+                Filtrar agotados en almacén
               </p>
             </div>
           )}
 
-          {/* Tarjeta 2: Productos Activos */}
+          {/* Tarjeta 2: Catálogo Activo */}
           <div
             onClick={() => navigate('/inventario')}
-            className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-blue-300 transition-colors group"
+            className="rounded-xl bg-white p-5 border border-[#E6E3DC] shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
           >
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-blue-800 transition-colors">
-                Catálogo Textil
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Catálogo Activo
               </span>
-              <div className="p-2 bg-blue-50 text-blue-700 rounded-lg">
+              <div className="w-9 h-9 rounded-lg bg-[#1B2A4A]/10 text-[#1B2A4A] flex items-center justify-center">
                 <Package className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-slate-900 tabular-nums">
-              {cargandoProductos ? '...' : productosActivos.length}
+            <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+              {cargandoProductos ? '...' : `${productosActivos.length} artículos`}
             </div>
-            <p className="text-xs text-blue-700 flex items-center gap-1 mt-1 font-medium">
-              <span>Gestionar telas y avíos</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            <p className="text-xs text-slate-500 mt-2 font-medium">
+              Telas, conos y avíos habilitados
             </p>
           </div>
 
-          {/* Tarjeta 3: Alertas de Stock */}
+          {/* Tarjeta 3: Stock Crítico */}
           <div
-            onClick={() => navigate('/inventario')}
-            className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-amber-300 transition-colors group"
+            onClick={() => navigate('/inventario?estado_stock=bajo')}
+            className="rounded-xl bg-white p-5 border border-[#E6E3DC] shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
           >
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-amber-800 transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
                 Stock Crítico
               </span>
-              <div className="p-2 bg-amber-50 text-amber-700 rounded-lg">
+              <div className="w-9 h-9 rounded-lg bg-[#D95D39]/12 text-[#D95D39] flex items-center justify-center">
                 <AlertTriangle className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-2xl font-bold text-amber-900 tabular-nums">
-              {cargandoProductos ? '...' : productosBajoStock.length}
+            <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+              {cargandoProductos ? '...' : `${productosBajoStock.length} artículos`}
             </div>
-            <p className="text-xs text-amber-700 flex items-center gap-1 mt-1 font-medium">
-              <span>Ver productos por reponer</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            <p className="text-xs text-[#D95D39] mt-2 font-semibold">
+              {productosBajoStock.length > 0 ? 'Ver stock bajo en inventario' : 'Sin desabastecimiento'}
             </p>
           </div>
 
-          {/* Tarjeta 4: Conciliación / Semáforo de Calidad */}
+          {/* Tarjeta 4: Auditoría Física */}
           <div
-            onClick={() => navigate('/conciliacion')}
-            className="bg-white p-5 rounded-xl border border-slate-200 shadow-2xs cursor-pointer hover:border-blue-300 transition-colors group"
+            onClick={() => navigate(puedeVerConciliacion ? '/conciliacion' : '/inventario')}
+            className="rounded-xl bg-white p-5 border border-[#E6E3DC] shadow-sm hover:shadow-md transition-all duration-150 cursor-pointer"
           >
-            <div className="flex items-center justify-between text-slate-500 mb-2">
-              <span className="text-xs font-semibold uppercase tracking-wider group-hover:text-blue-800 transition-colors">
-                Control de Stock
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Auditoría Física
               </span>
-              <div className="p-2 bg-indigo-50 text-indigo-700 rounded-lg">
+              <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-700 flex items-center justify-center">
                 <Scale className="w-4 h-4" />
               </div>
             </div>
-            <div className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <span>Semáforo ≤ 2%</span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+            <div className="flex items-center gap-2.5">
+              <span className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+                ≤ 2.0%
+              </span>
+              <span className="text-[11px] font-bold px-2 py-0.5 rounded-md bg-[#DCFCE7] text-[#15803D]">
                 Tolerancia
               </span>
             </div>
-            <p className="text-xs text-blue-700 flex items-center gap-1 mt-1 font-medium">
-              <span>Conteo físico de almacén</span>
-              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            <p className="text-xs text-slate-500 mt-2 font-medium">
+              Control de merma y faltantes
             </p>
           </div>
         </div>
 
-        {/* Sección de dos columnas: Ventas Recientes y Alertas de Stock */}
+        {/* Sección de dos paneles inferiores con rounded-xl y cabeceras claras */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Columna 1: Últimas Ventas */}
+          {/* Columna 1: Últimas Ventas Emitidas */}
           {tieneRol('administrador', 'vendedor', 'gerente') && (
-            <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+            <div className="rounded-xl bg-white border border-[#E6E3DC] shadow-sm overflow-hidden">
+              <div className="px-5 py-3.5 border-b border-[#E6E3DC] bg-[#F2F0EA]/60 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Receipt className="w-4 h-4 text-slate-500" />
-                  <h4 className="font-bold text-sm text-slate-900">Últimas Ventas Emitidas</h4>
+                  <Receipt className="w-4 h-4 text-[#1B2A4A]" />
+                  <h4 className="font-bold text-xs text-[#1B2A4A] uppercase tracking-wider">
+                    Últimas Ventas Emitidas
+                  </h4>
                 </div>
                 <button
                   onClick={() => navigate('/ventas')}
-                  className="text-xs text-blue-800 hover:text-blue-900 font-semibold flex items-center gap-1"
+                  className="text-xs text-[#2452E8] hover:underline font-semibold cursor-pointer"
                 >
-                  <span>Ver todas</span>
-                  <ArrowRight className="w-3 h-3" />
+                  Ver historial
                 </button>
               </div>
 
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-[#E6E3DC]/60">
                 {ventas.length === 0 ? (
-                  <div className="p-8 text-center text-slate-400 text-sm">
-                    No hay ventas registradas aún.
+                  <div className="p-8 text-center text-slate-400 text-xs">
+                    No se registran ventas en la sesión actual.
                   </div>
                 ) : (
-                  ventas.map((v) => (
-                    <div
-                      key={v.id}
-                      onClick={() => navigate('/ventas')}
-                      className="p-4 flex items-center justify-between hover:bg-slate-50/80 cursor-pointer transition-colors"
-                    >
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-slate-900">{v.numero}</span>
-                          <span className="text-[11px] px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 font-medium">
-                            {v.metodo_pago}
-                          </span>
+                  ventas.map((v) => {
+                    const esAnulada = v.estado === 'anulada'
+                    return (
+                      <div
+                        key={v.id}
+                        onClick={() => navigate(`/ventas?venta_id=${v.id}`)}
+                        className="px-5 py-3 flex items-center justify-between hover:bg-[#F9F8F5] cursor-pointer transition-colors"
+                      >
+                        <div className="min-w-0 pr-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-mono font-bold text-[#1B2A4A]">{v.numero}</span>
+                            <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-[#F2F0EA] text-[#1B2A4A] capitalize">
+                              {v.metodo_pago.replace('_', ' / ')}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[11px] text-slate-500 mt-1 truncate">
+                            <Clock className="w-3 h-3 text-slate-400 shrink-0" />
+                            <span>{formatearFecha(v.fecha)}</span>
+                            {v.cliente_nombre && <span>· {v.cliente_nombre}</span>}
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
-                          <Clock className="w-3 h-3 text-slate-400" />
-                          <span>{formatearFecha(v.fecha)}</span>
-                          {v.cliente_nombre && <span>· {v.cliente_nombre}</span>}
+                        <div className="text-right shrink-0">
+                          <div
+                            className={`text-sm font-bold tabular-nums ${
+                              esAnulada ? 'line-through text-slate-400' : 'text-[#1B2A4A]'
+                            }`}
+                          >
+                            {formatearMoneda(v.total)}
+                          </div>
+                          {esAnulada ? (
+                            <span className="text-[11px] text-[#B91C1C] font-semibold">Anulada</span>
+                          ) : (
+                            <span className="text-[11px] text-[#15803D] font-semibold">Emitida</span>
+                          )}
                         </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-sm font-bold text-slate-900 tabular-nums">
-                          {formatearMoneda(v.total)}
-                        </div>
-                        <span className="text-[11px] text-emerald-700 font-medium">Completada</span>
-                      </div>
-                    </div>
-                  ))
+                    )
+                  })
                 )}
               </div>
             </div>
           )}
 
-          {/* Columna 2: Resumen de Stock Crítico */}
-          <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+          {/* Columna 2: Productos con Stock Crítico */}
+          <div className="rounded-xl bg-white border border-[#E6E3DC] shadow-sm overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-[#E6E3DC] bg-[#F2F0EA]/60 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-700" />
-                <h4 className="font-bold text-sm text-slate-900">Productos con Stock Mínimo o Agotado</h4>
+                <AlertTriangle className="w-4 h-4 text-[#D95D39]" />
+                <h4 className="font-bold text-xs text-[#1B2A4A] uppercase tracking-wider">
+                  Productos con Stock Crítico
+                </h4>
               </div>
               <button
-                onClick={() => navigate('/inventario')}
-                className="text-xs text-blue-800 hover:text-blue-900 font-semibold flex items-center gap-1"
+                onClick={() => navigate('/inventario?estado_stock=bajo')}
+                className="text-xs text-[#2452E8] hover:underline font-semibold cursor-pointer"
               >
-                <span>Ir al catálogo</span>
-                <ArrowRight className="w-3 h-3" />
+                Ver inventario
               </button>
             </div>
 
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-[#E6E3DC]/60">
               {productosBajoStock.length === 0 ? (
-                <div className="p-8 text-center text-slate-400 text-sm">
-                  Todos los productos cuentan con stock suficiente.
+                <div className="p-8 text-center text-slate-400 text-xs">
+                  Todos los productos cuentan con existencias sobre el umbral mínimo.
                 </div>
               ) : (
-                productosBajoStock.slice(0, 5).map((p) => (
+                productosBajoStock.slice(0, 6).map((p) => (
                   <div
                     key={p.id}
-                    onClick={() => navigate('/inventario')}
-                    className="p-4 flex items-center justify-between hover:bg-slate-50/80 cursor-pointer transition-colors"
+                    onClick={() => navigate(`/inventario?q=${encodeURIComponent(p.sku)}`)}
+                    className="px-5 py-3 flex items-center justify-between hover:bg-[#F9F8F5] cursor-pointer transition-colors"
                   >
-                    <div>
+                    <div className="min-w-0 pr-3">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono font-medium text-slate-500">{p.sku}</span>
-                        <span className="text-xs font-bold text-slate-900">{p.nombre}</span>
+                        <span className="text-xs font-mono font-semibold text-[#1B2A4A] bg-[#F2F0EA] px-1.5 py-0.5 rounded">
+                          {p.sku}
+                        </span>
+                        <span className="text-xs font-bold text-[#1B2A4A] truncate">{p.nombre}</span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-0.5">
-                        Mínimo: {p.stock_minimo} {p.unidad}(s)
+                      <p className="text-[11px] text-slate-500 mt-1">
+                        Mínimo establecido: <span className="font-semibold tabular-nums">{p.stock_minimo}</span>{' '}
+                        {p.unidad}(s)
                       </p>
                     </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-amber-900 tabular-nums">
+                    <div className="text-right shrink-0">
+                      <div className="text-sm font-bold text-[#1B2A4A] tabular-nums">
                         {p.stock_actual} {p.unidad}(s)
                       </div>
                       <span
-                        className={`text-[10px] uppercase font-bold px-1.5 py-0.5 rounded ${
+                        className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-md mt-0.5 ${
                           p.stock_actual === 0
-                            ? 'bg-rose-100 text-rose-800'
-                            : 'bg-amber-100 text-amber-800'
+                            ? 'bg-[#FEE2E2] text-[#B91C1C]'
+                            : 'bg-[#FEF3C7] text-[#B45309]'
                         }`}
                       >
-                        {p.stock_actual === 0 ? 'Agotado' : 'Bajo'}
+                        {p.stock_actual === 0 ? 'Agotado' : 'Stock Bajo'}
                       </span>
                     </div>
                   </div>

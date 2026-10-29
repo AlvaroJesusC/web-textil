@@ -72,7 +72,7 @@ export interface ProductoActualizarPeticion {
 }
 
 export type MetodoPago = 'efectivo' | 'yape_plin' | 'transferencia' | 'tarjeta'
-export type EstadoVenta = 'completada' | 'anulada'
+export type EstadoVenta = 'confirmada' | 'anulada'
 
 export interface DetalleVenta {
   id: number

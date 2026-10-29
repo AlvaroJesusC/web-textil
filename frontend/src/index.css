@@ -1,17 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
 
 @layer base {
   :root {
-    --color-azul-telar: #1E3A8A;
-    --color-azul-telar-hover: #172554;
-    --color-lienzo: #F8FAFC;
-    --color-panel: #FFFFFF;
-    --color-borde-orillo: #E2E8F0;
-    --color-tinta: #0F172A;
-    --color-trama-gris: #64748B;
-    --color-dorado-cinta: #D97706;
-    --color-verde-conforme: #15803D;
-    --color-rojo-alerta: #B91C1C;
+    --color-primary: #1B2A4A;
+    --color-primary-hover: #243861;
+    --color-secondary: #D95D39;
+    --color-secondary-hover: #C24D2B;
+    --color-tertiary: #2452E8;
+    --color-neutral: #F9F8F5;
+    --color-superficie: #FFFFFF;
+    --color-borde: #E6E3DC;
+    --color-lino: #F2F0EA;
+    --color-exito: #15803D;
+    --color-alerta: #D97706;
+    --color-peligro: #DC2626;
   }
 
   html, body, #root {
@@ -20,15 +28,31 @@
   }
 
   body {
-    background-color: var(--color-lienzo);
-    color: var(--color-tinta);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--color-neutral);
+    color: var(--color-primary);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Cifras tabulares obligatorias para precios y cantidades */
+  /* Cifras tabulares obligatorias para precios, cantidades y KPIs */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Barras de desplazamiento cálidas y discretas */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F2F0EA;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #D1CEC4;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A8A396;
   }
 }

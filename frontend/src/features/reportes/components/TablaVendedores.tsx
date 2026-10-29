@@ -1,5 +1,4 @@
 import React from 'react'
-import { UserCheck } from 'lucide-react'
 import { formatearMoneda } from '@/lib/formato'
 import type { VentaPorVendedorItem } from '@/types'
 
@@ -14,7 +13,7 @@ export const TablaVendedores: React.FC<TablaVendedoresProps> = ({
 }) => {
   if (estaCargando) {
     return (
-      <div className="p-8 text-center text-xs text-slate-400 font-mono">
+      <div className="p-8 text-center text-xs text-[#5A6578]">
         Cargando estadísticas del equipo de ventas...
       </div>
     )
@@ -22,7 +21,7 @@ export const TablaVendedores: React.FC<TablaVendedoresProps> = ({
 
   if (vendedores.length === 0) {
     return (
-      <div className="p-8 text-center text-xs text-slate-500 italic">
+      <div className="p-8 text-center text-xs text-[#5A6578] italic">
         No se registran ventas para los vendedores en este rango de fechas.
       </div>
     )
@@ -32,38 +31,33 @@ export const TablaVendedores: React.FC<TablaVendedoresProps> = ({
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse text-xs">
         <thead>
-          <tr className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
-            <th className="py-3 px-4">Vendedor / Asesor Comercial</th>
-            <th className="py-3 px-4 text-center">Tickets Emitidos</th>
-            <th className="py-3 px-4 text-right">Recaudación Total</th>
-            <th className="py-3 px-4 text-right">Promedio por Ticket</th>
+          <tr className="bg-[#F2F0EA] border-b border-[#E6E3DC] text-[#1B2A4A] font-bold text-[11px] uppercase tracking-wider">
+            <th className="py-3 px-4">Asesor de Mostrador</th>
+            <th className="py-3 px-4 w-36 text-center">Tickets Emitidos</th>
+            <th className="py-3 px-4 w-40 text-right">Recaudación Total</th>
+            <th className="py-3 px-4 w-40 text-right">Promedio por Ticket</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-slate-100">
+        <tbody className="divide-y divide-[#E6E3DC]/60">
           {vendedores.map((v) => {
             const total = parseFloat(v.total_recaudado) || 0
             const prom = v.cantidad_ventas > 0 ? total / v.cantidad_ventas : 0
 
             return (
-              <tr key={v.vendedor_id} className="hover:bg-slate-50/70 transition-colors">
-                <td className="py-3 px-4">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-900 flex items-center justify-center font-bold text-xs">
-                      <UserCheck className="w-3.5 h-3.5 text-blue-800" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-slate-900">{v.vendedor_nombre}</div>
-                      <div className="text-[11px] text-slate-400">ID #{v.vendedor_id}</div>
-                    </div>
+              <tr key={v.vendedor_id} className="hover:bg-[#F9F8F5] transition-colors h-11">
+                <td className="py-2.5 px-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-[#1B2A4A]">{v.vendedor_nombre}</span>
+                    <span className="text-[10px] text-[#5A6578] font-mono">#{v.vendedor_id}</span>
                   </div>
                 </td>
-                <td className="py-3 px-4 text-center font-mono font-bold text-slate-800 tabular-nums">
+                <td className="py-2.5 px-4 text-center font-bold text-[#1B2A4A] tabular-nums">
                   {v.cantidad_ventas}
                 </td>
-                <td className="py-3 px-4 text-right font-mono font-bold text-emerald-700 tabular-nums text-sm">
+                <td className="py-2.5 px-4 text-right font-extrabold text-[#1B2A4A] tabular-nums">
                   {formatearMoneda(v.total_recaudado)}
                 </td>
-                <td className="py-3 px-4 text-right font-mono text-slate-600 tabular-nums">
+                <td className="py-2.5 px-4 text-right font-semibold text-[#5A6578] tabular-nums">
                   {formatearMoneda(prom)}
                 </td>
               </tr>

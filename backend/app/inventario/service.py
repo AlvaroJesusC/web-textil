@@ -70,14 +70,11 @@ class InventarioService:
             limit=limit,
             termino_busqueda=termino_busqueda,
             categoria_id=categoria_id,
+            filtro_estado_stock=filtro_estado_stock,
             solo_activos=solo_activos,
         )
 
         respuestas = [self._convertir_a_respuesta(p) for p in items]
-
-        if filtro_estado_stock:
-            respuestas = [r for r in respuestas if r.estado_stock == filtro_estado_stock]
-
         return respuestas, total
 
     def obtener_producto(self, producto_id: int) -> ProductoRespuesta:

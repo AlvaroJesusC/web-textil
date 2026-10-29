@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, Check, Loader2, AlertTriangle, ShieldCheck } from 'lucide-react'
+import { X, Loader2, AlertTriangle, ShieldCheck } from 'lucide-react'
 
 interface AjustarStockModalProps {
   abierto: boolean
@@ -34,40 +34,43 @@ export const AjustarStockModal: React.FC<AjustarStockModalProps> = ({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
-      <div className="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-150">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 bg-amber-50/50">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-600 text-white flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#1B2A4A]/50 backdrop-blur-xs">
+      <div className="bg-white rounded-2xl shadow-xl border border-[#E6E3DC] w-full max-w-md overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#E6E3DC] bg-[#F2F0EA]/60">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#1B2A4A] text-white flex items-center justify-center shrink-0">
               <ShieldCheck className="w-4 h-4" />
             </div>
             <div>
-              <h2 className="text-sm font-bold text-slate-900">Ajustar Stock al Conteo Físico</h2>
-              <p className="text-xs text-amber-700 font-medium">Acción exclusiva de Administrador</p>
+              <h2 className="text-sm font-extrabold text-[#1B2A4A]">
+                Ajustar Inventario al Conteo Físico
+              </h2>
+              <p className="text-[11px] text-slate-500 font-medium">
+                Autorización requerida (Administrador)
+              </p>
             </div>
           </div>
           <button
             onClick={onCerrar}
             disabled={estaCargando}
-            className="text-slate-400 hover:text-slate-600 rounded-lg p-1 hover:bg-slate-200/60 transition-colors"
+            className="text-slate-400 hover:text-[#1B2A4A] rounded-lg p-1.5 hover:bg-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 flex items-start gap-2.5 text-xs text-amber-900 leading-relaxed">
-            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+          <div className="p-3.5 rounded-xl bg-[#FEF3C7]/70 border border-[#D97706]/30 flex items-start gap-2.5 text-xs text-[#B45309] leading-relaxed">
+            <AlertTriangle className="w-4 h-4 text-[#D97706] shrink-0 mt-0.5" />
             <p>
-              Se actualizará el stock actual de <strong>{cantidadProductos} producto(s)</strong> en
-              el inventario al valor verificado en físico. Cada ajuste quedará asentado en el
-              Kardex y en la bitácora de auditoría.
+              Se actualizarán los balances de <strong>{cantidadProductos} artículo(s)</strong> con
+              desviación comprobada. Cada sincronización generará un movimiento de ajuste en el Kardex.
             </p>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-              Motivo del Ajuste <span className="text-rose-500">*</span>
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+              Motivo del Ajuste Contable <span className="text-[#DC2626]">*</span>
             </label>
             <textarea
               rows={3}
@@ -78,39 +81,36 @@ export const AjustarStockModal: React.FC<AjustarStockModalProps> = ({
               }}
               placeholder="Ej.: Regularización por merma de retazos y deshilado en almacén central..."
               disabled={estaCargando}
-              className={`w-full px-3 py-2 text-sm rounded-lg border focus:outline-hidden transition ${
+              className={`w-full px-3 py-2 text-xs rounded-lg border text-[#1B2A4A] focus:outline-none transition-all ${
                 error
-                  ? 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500'
-                  : 'border-slate-300 focus:ring-2 focus:ring-blue-700 focus:border-transparent'
+                  ? 'border-[#DC2626] ring-2 ring-[#DC2626]/20'
+                  : 'border-[#E6E3DC] focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20'
               }`}
             />
-            {error && <p className="mt-1 text-xs text-rose-600 font-medium">{error}</p>}
+            {error && <p className="mt-1 text-xs text-[#DC2626] font-semibold">{error}</p>}
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#E6E3DC]">
             <button
               type="button"
               onClick={onCerrar}
               disabled={estaCargando}
-              className="px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              className="px-4 py-2 text-xs font-semibold text-[#1B2A4A] bg-white border border-[#E6E3DC] hover:bg-[#F9F8F5] rounded-lg transition-all"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              disabled={estaCargando || cantidadProductos === 0}
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold text-white bg-amber-700 hover:bg-amber-800 rounded-lg shadow-xs disabled:opacity-50 transition-colors"
+              disabled={estaCargando}
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm disabled:opacity-50 transition-all cursor-pointer"
             >
               {estaCargando ? (
                 <>
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Aplicando Ajustes...
+                  <span>Sincronizando Stock...</span>
                 </>
               ) : (
-                <>
-                  <Check className="w-3.5 h-3.5" />
-                  Confirmar y Ajustar Stock
-                </>
+                <span>Aplicar Ajuste</span>
               )}
             </button>
           </div>

@@ -22,6 +22,7 @@ import { GraficoMetodosPago } from '../components/GraficoMetodosPago'
 import { TablaTopProductos } from '../components/TablaTopProductos'
 import { TablaVendedores } from '../components/TablaVendedores'
 import { TablaAlertasStock } from '../components/TablaAlertasStock'
+import { Header } from '@/components/layout/Header'
 import { formatearMoneda } from '@/lib/formato'
 
 type RangoPredefinido = 'hoy' | '7dias' | '30dias' | 'esteMes'
@@ -54,7 +55,7 @@ export const ReportesPage: React.FC = () => {
     'tendencia' | 'topProductos' | 'metodosVendedores' | 'alertasStock'
   >('tendencia')
 
-  // Calcular fechas de inicio y fin memorizadas según el selector
+  // Calcular fechas de inicio y fin
   const filtros = useMemo(() => obtenerFiltrosRango(rango), [rango])
 
   // Queries TanStack Query
@@ -76,7 +77,9 @@ export const ReportesPage: React.FC = () => {
       p.cantidad_vendida,
       p.total_recaudado,
     ])
-    const csvContent = 'data:text/csv;charset=utf-8,' + [cabeceras.join(','), ...filas.map((f) => f.join(','))].join('\n')
+    const csvContent =
+      'data:text/csv;charset=utf-8,' +
+      [cabeceras.join(','), ...filas.map((f) => f.join(','))].join('\n')
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement('a')
     link.setAttribute('href', encodedUri)
@@ -87,54 +90,52 @@ export const ReportesPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* Header & Filtro de Rango */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2 py-0.5 rounded text-[11px] font-bold tracking-wider uppercase bg-blue-100 text-blue-900 border border-blue-200">
-              Gestión Comercial e Inventario
-            </span>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
-            Reportes y Métricas de Ventas
-          </h1>
-          <p className="text-xs text-slate-600">
-            Seguimiento de ingresos en soles (S/), rotación textil por metro/cono y rendimiento por vendedor.
-          </p>
-        </div>
+    <div className="flex-1 flex flex-col bg-[#F9F8F5]">
+      <Header
+        titulo="Reportes y Métricas Analíticas"
+        subtitulo="Rendimiento comercial en Soles (S/), rotación textil y auditoría de inventario"
+      />
 
-        {/* Selector de Rango & Botón Exportar */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="flex items-center gap-1 bg-slate-200/60 p-1 rounded-lg text-xs font-medium text-slate-700">
+      <main className="p-6 space-y-5">
+        {/* Barra superior: Selector de Rango & Botón Exportar */}
+        <div className="bg-white p-3.5 rounded-xl border border-[#E6E3DC] shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-1 bg-[#F2F0EA] p-1 rounded-lg text-xs font-medium text-[#5A6578]">
             <button
               onClick={() => setRango('hoy')}
-              className={`px-3 py-1.5 rounded-md transition-colors ${
-                rango === 'hoy' ? 'bg-white shadow-xs font-semibold text-blue-950' : 'hover:text-slate-900'
+              className={`px-3.5 py-1.5 rounded-md transition-all duration-150 ${
+                rango === 'hoy'
+                  ? 'bg-[#1B2A4A] text-white font-bold shadow-xs'
+                  : 'hover:text-[#1B2A4A]'
               }`}
             >
               Hoy
             </button>
             <button
               onClick={() => setRango('7dias')}
-              className={`px-3 py-1.5 rounded-md transition-colors ${
-                rango === '7dias' ? 'bg-white shadow-xs font-semibold text-blue-950' : 'hover:text-slate-900'
+              className={`px-3.5 py-1.5 rounded-md transition-all duration-150 ${
+                rango === '7dias'
+                  ? 'bg-[#1B2A4A] text-white font-bold shadow-xs'
+                  : 'hover:text-[#1B2A4A]'
               }`}
             >
               7 Días
             </button>
             <button
               onClick={() => setRango('30dias')}
-              className={`px-3 py-1.5 rounded-md transition-colors ${
-                rango === '30dias' ? 'bg-white shadow-xs font-semibold text-blue-950' : 'hover:text-slate-900'
+              className={`px-3.5 py-1.5 rounded-md transition-all duration-150 ${
+                rango === '30dias'
+                  ? 'bg-[#1B2A4A] text-white font-bold shadow-xs'
+                  : 'hover:text-[#1B2A4A]'
               }`}
             >
               30 Días
             </button>
             <button
               onClick={() => setRango('esteMes')}
-              className={`px-3 py-1.5 rounded-md transition-colors ${
-                rango === 'esteMes' ? 'bg-white shadow-xs font-semibold text-blue-950' : 'hover:text-slate-900'
+              className={`px-3.5 py-1.5 rounded-md transition-all duration-150 ${
+                rango === 'esteMes'
+                  ? 'bg-[#1B2A4A] text-white font-bold shadow-xs'
+                  : 'hover:text-[#1B2A4A]'
               }`}
             >
               Este Mes
@@ -143,226 +144,244 @@ export const ReportesPage: React.FC = () => {
 
           <button
             onClick={exportarCSV}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-300 rounded-lg shadow-xs transition"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#1B2A4A] bg-white hover:bg-[#F9F8F5] border border-[#E6E3DC] rounded-lg shadow-xs transition-all duration-150 shrink-0"
             title="Descargar ranking de productos en CSV"
           >
-            <Download className="w-3.5 h-3.5 text-slate-500" />
-            Exportar CSV
+            <Download className="w-3.5 h-3.5 text-[#2452E8]" />
+            <span>Exportar CSV</span>
           </button>
         </div>
-      </div>
 
-      {/* Tarjetas de KPIs Generales */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {/* Total Ingresos */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Total Ingresos</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center">
-              <DollarSign className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
-            {cargandoKPIs ? '...' : formatearMoneda(kpis?.total_ingresos)}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-1">Ventas confirmadas (con IGV 18%)</p>
-        </div>
-
-        {/* Total Transacciones */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Tickets Emitidos</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center">
-              <ShoppingCart className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
-            {cargandoKPIs ? '...' : kpis?.total_transacciones ?? 0}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-1">Comprobantes de venta</p>
-        </div>
-
-        {/* Ticket Promedio */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Ticket Promedio</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
-            {cargandoKPIs ? '...' : formatearMoneda(kpis?.ticket_promedio)}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-1">Por cliente atendido</p>
-        </div>
-
-        {/* Unidades Textiles Vendidas */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-2">
-            <span className="text-xs font-semibold uppercase tracking-wider">Unidades Vendidas</span>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center">
-              <Package className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="text-2xl font-bold font-mono text-slate-900 tabular-nums">
-            {cargandoKPIs ? '...' : kpis?.total_unidades ?? 0}
-          </div>
-          <p className="text-[11px] text-slate-400 mt-1">Metros, conos y prendas</p>
-        </div>
-      </div>
-
-      {/* Pestañas de Visualización */}
-      <div className="border-b border-slate-200 flex items-center gap-6 text-xs font-semibold">
-        <button
-          onClick={() => setPestanaActiva('tendencia')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition-colors ${
-            pestanaActiva === 'tendencia'
-              ? 'border-blue-800 text-blue-900'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <BarChart3 className="w-4 h-4" />
-          Tendencia de Ingresos Diarios
-        </button>
-
-        <button
-          onClick={() => setPestanaActiva('topProductos')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition-colors ${
-            pestanaActiva === 'topProductos'
-              ? 'border-blue-800 text-blue-900'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Package className="w-4 h-4" />
-          Top Productos Más Vendidos
-        </button>
-
-        <button
-          onClick={() => setPestanaActiva('metodosVendedores')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition-colors ${
-            pestanaActiva === 'metodosVendedores'
-              ? 'border-blue-800 text-blue-900'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          Vendedores y Métodos de Pago
-        </button>
-
-        <button
-          onClick={() => setPestanaActiva('alertasStock')}
-          className={`pb-3 flex items-center gap-2 border-b-2 transition-colors ${
-            pestanaActiva === 'alertasStock'
-              ? 'border-blue-800 text-blue-900'
-              : 'border-transparent text-slate-500 hover:text-slate-800'
-          }`}
-        >
-          <AlertTriangle className="w-4 h-4 text-amber-600" />
-          Alertas de Stock ({alertasStock.length})
-        </button>
-      </div>
-
-      {/* Contenido según la Pestaña Activa */}
-      {pestanaActiva === 'tendencia' && (
-        <div className="space-y-6">
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900">Evolución Diaria de Ventas</h3>
-                <p className="text-xs text-slate-500">Monto total facturado por día en Soles (S/)</p>
-              </div>
-              <span className="text-[11px] font-mono text-slate-400">
-                {ventasPorDia.length} días con actividad
+        {/* Tarjetas de KPIs Generales */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Total Ingresos */}
+          <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+            <div className="flex items-center justify-between text-[#5A6578] mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#5A6578]">
+                Total Ingresos
               </span>
+              <div className="w-9 h-9 rounded-lg bg-[#2452E8]/10 flex items-center justify-center text-[#2452E8]">
+                <DollarSign className="w-4 h-4" />
+              </div>
             </div>
-            <GraficoVentasTiempo datos={ventasPorDia} estaCargando={cargandoDias} />
+            <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+              {cargandoKPIs ? '...' : formatearMoneda(kpis?.total_ingresos)}
+            </div>
+            <p className="text-xs text-[#5A6578] mt-1">Con IGV 18% incluido</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-              <h3 className="text-sm font-bold text-slate-900 mb-1">Medios de Pago Utilizados</h3>
-              <p className="text-xs text-slate-500 mb-4">Participación de efectivo, Yape/Plin y tarjetas</p>
-              <GraficoMetodosPago datos={metodosPago} estaCargando={cargandoMetodos} />
+          {/* Total Transacciones */}
+          <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+            <div className="flex items-center justify-between text-[#5A6578] mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#5A6578]">
+                Tickets Emitidos
+              </span>
+              <div className="w-9 h-9 rounded-lg bg-[#1B2A4A]/10 flex items-center justify-center text-[#1B2A4A]">
+                <ShoppingCart className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+              {cargandoKPIs ? '...' : kpis?.total_transacciones ?? 0}
+            </div>
+            <p className="text-xs text-[#5A6578] mt-1">Comprobantes válidos</p>
+          </div>
+
+          {/* Ticket Promedio */}
+          <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+            <div className="flex items-center justify-between text-[#5A6578] mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#5A6578]">
+                Ticket Promedio
+              </span>
+              <div className="w-9 h-9 rounded-lg bg-[#D95D39]/10 flex items-center justify-center text-[#D95D39]">
+                <TrendingUp className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+              {cargandoKPIs ? '...' : formatearMoneda(kpis?.ticket_promedio)}
+            </div>
+            <p className="text-xs text-[#5A6578] mt-1">Por cliente atendido</p>
+          </div>
+
+          {/* Unidades Textiles Vendidas */}
+          <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+            <div className="flex items-center justify-between text-[#5A6578] mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#5A6578]">
+                Unidades Vendidas
+              </span>
+              <div className="w-9 h-9 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700">
+                <Package className="w-4 h-4" />
+              </div>
+            </div>
+            <div className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
+              {cargandoKPIs ? '...' : kpis?.total_unidades ?? 0}
+            </div>
+            <p className="text-xs text-[#5A6578] mt-1">Metros, conos y avíos</p>
+          </div>
+        </div>
+
+        {/* Pestañas de Visualización */}
+        <div className="border-b border-[#E6E3DC] flex items-center gap-6 text-xs font-semibold">
+          <button
+            onClick={() => setPestanaActiva('tendencia')}
+            className={`pb-3 flex items-center gap-1.5 border-b-2 transition-colors ${
+              pestanaActiva === 'tendencia'
+                ? 'border-[#D95D39] text-[#1B2A4A] font-bold'
+                : 'border-transparent text-[#5A6578] hover:text-[#1B2A4A]'
+            }`}
+          >
+            <BarChart3 className="w-4 h-4 text-[#2452E8]" />
+            <span>Tendencia de Ingresos</span>
+          </button>
+
+          <button
+            onClick={() => setPestanaActiva('topProductos')}
+            className={`pb-3 flex items-center gap-1.5 border-b-2 transition-colors ${
+              pestanaActiva === 'topProductos'
+                ? 'border-[#D95D39] text-[#1B2A4A] font-bold'
+                : 'border-transparent text-[#5A6578] hover:text-[#1B2A4A]'
+            }`}
+          >
+            <Package className="w-4 h-4 text-[#1B2A4A]" />
+            <span>Top Artículos Vendidos</span>
+          </button>
+
+          <button
+            onClick={() => setPestanaActiva('metodosVendedores')}
+            className={`pb-3 flex items-center gap-1.5 border-b-2 transition-colors ${
+              pestanaActiva === 'metodosVendedores'
+                ? 'border-[#D95D39] text-[#1B2A4A] font-bold'
+                : 'border-transparent text-[#5A6578] hover:text-[#1B2A4A]'
+            }`}
+          >
+            <Users className="w-4 h-4 text-[#2452E8]" />
+            <span>Vendedores y Medios de Pago</span>
+          </button>
+
+          <button
+            onClick={() => setPestanaActiva('alertasStock')}
+            className={`pb-3 flex items-center gap-1.5 border-b-2 transition-colors ${
+              pestanaActiva === 'alertasStock'
+                ? 'border-[#D95D39] text-[#1B2A4A] font-bold'
+                : 'border-transparent text-[#5A6578] hover:text-[#1B2A4A]'
+            }`}
+          >
+            <AlertTriangle className="w-4 h-4 text-[#D97706]" />
+            <span>Alertas de Stock ({alertasStock.length})</span>
+          </button>
+        </div>
+
+        {/* Contenido según la Pestaña Activa */}
+        {pestanaActiva === 'tendencia' && (
+          <div className="space-y-4">
+            <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider">
+                    Evolución Diaria de Ventas
+                  </h3>
+                  <p className="text-[11px] text-[#5A6578]">Monto total facturado por fecha en Soles (S/)</p>
+                </div>
+                <span className="text-[11px] font-semibold text-[#5A6578] tabular-nums">
+                  {ventasPorDia.length} fechas con transacciones
+                </span>
+              </div>
+              <GraficoVentasTiempo datos={ventasPorDia} estaCargando={cargandoDias} />
             </div>
 
-            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
-              <div>
-                <h3 className="text-sm font-bold text-slate-900 mb-1">Resumen Operativo Textil</h3>
-                <p className="text-xs text-slate-500 mb-4">Indicadores clave de inventario y rotación</p>
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                    <span className="text-slate-600 font-medium">Productos con Stock Crítico</span>
-                    <span className="font-bold font-mono text-amber-700">
-                      {kpis?.productos_stock_bajo ?? 0} artículos
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                    <span className="text-slate-600 font-medium">Productos Totalmente Agotados</span>
-                    <span className="font-bold font-mono text-rose-700">
-                      {kpis?.productos_agotados ?? 0} artículos
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                    <span className="text-slate-600 font-medium">Línea Textil más Vendida</span>
-                    <span className="font-bold text-blue-900">
-                      {topProductos[0]?.categoria ?? 'Sin datos'}
-                    </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+                <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-0.5">
+                  Participación por Medio de Pago
+                </h3>
+                <p className="text-[11px] text-[#5A6578] mb-3">Recaudación en efectivo, Yape/Plin, tarjetas y transferencias</p>
+                <GraficoMetodosPago datos={metodosPago} estaCargando={cargandoMetodos} />
+              </div>
+
+              <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-0.5">
+                    Resumen Operativo de Almacén
+                  </h3>
+                  <p className="text-[11px] text-[#5A6578] mb-3">Indicadores de rotación y disponibilidad textil</p>
+                  <div className="space-y-2.5 text-xs">
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-[#F9F8F5] border border-[#E6E3DC]">
+                      <span className="text-[#5A6578] font-medium">Artículos con Stock Crítico</span>
+                      <span className="font-bold text-[#B45309] tabular-nums">
+                        {kpis?.productos_stock_bajo ?? 0} artículos
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-[#F9F8F5] border border-[#E6E3DC]">
+                      <span className="text-[#5A6578] font-medium">Artículos Totalmente Agotados</span>
+                      <span className="font-bold text-[#B91C1C] tabular-nums">
+                        {kpis?.productos_agotados ?? 0} artículos
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-lg bg-[#F9F8F5] border border-[#E6E3DC]">
+                      <span className="text-[#5A6578] font-medium">Familia Textil con Mayor Demanda</span>
+                      <span className="font-bold text-[#1B2A4A]">
+                        {topProductos[0]?.categoria ?? 'Sin datos'}
+                      </span>
+                    </div>
                   </div>
                 </div>
+                <p className="text-[11px] text-[#5A6578] mt-3">
+                  Sincronizado en tiempo real con Kardex y ventas.
+                </p>
               </div>
-              <p className="text-[11px] text-slate-400 mt-4 italic">
-                * Las alertas se actualizan en tiempo real tras cada transacción o ajuste de almacén.
+            </div>
+          </div>
+        )}
+
+        {pestanaActiva === 'topProductos' && (
+          <div className="bg-white rounded-xl border border-[#E6E3DC] shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-[#E6E3DC] bg-[#F2F0EA]/60">
+              <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider">
+                Top 10 Artículos de Mayor Demanda
+              </h3>
+              <p className="text-[11px] text-[#5A6578]">
+                Ordenados por volumen de salida y monto de recaudación
               </p>
             </div>
+            <TablaTopProductos productos={topProductos} estaCargando={cargandoTop} />
           </div>
-        </div>
-      )}
+        )}
 
-      {pestanaActiva === 'topProductos' && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Top 10 Artículos con Mayor Demanda</h3>
-              <p className="text-xs text-slate-500">
-                Ordenados por cantidad de unidades vendidas y recaudación acumulada
+        {pestanaActiva === 'metodosVendedores' && (
+          <div className="space-y-4">
+            <div className="bg-white rounded-xl border border-[#E6E3DC] shadow-sm overflow-hidden">
+              <div className="p-4 border-b border-[#E6E3DC] bg-[#F2F0EA]/60">
+                <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider">
+                  Rendimiento por Asesor de Mostrador
+                </h3>
+                <p className="text-[11px] text-[#5A6578]">Comprobantes emitidos y recaudación por vendedor</p>
+              </div>
+              <TablaVendedores vendedores={ventasVendedor} estaCargando={cargandoVendedores} />
+            </div>
+
+            <div className="bg-white p-5 rounded-xl border border-[#E6E3DC] shadow-sm">
+              <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-0.5">
+                Distribución por Medio de Cobro
+              </h3>
+              <p className="text-[11px] text-[#5A6578] mb-3">Montos en Soles según modalidad de pago</p>
+              <GraficoMetodosPago datos={metodosPago} estaCargando={cargandoMetodos} />
+            </div>
+          </div>
+        )}
+
+        {pestanaActiva === 'alertasStock' && (
+          <div className="bg-white rounded-xl border border-[#E6E3DC] shadow-sm overflow-hidden">
+            <div className="p-4 border-b border-[#E6E3DC] bg-[#F2F0EA]/60">
+              <h3 className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider">
+                Artículos en Estado Crítico de Inventario
+              </h3>
+              <p className="text-[11px] text-[#5A6578]">
+                Existencias por debajo del stock de seguridad o en cero
               </p>
             </div>
+            <TablaAlertasStock alertas={alertasStock} estaCargando={cargandoAlertas} />
           </div>
-          <TablaTopProductos productos={topProductos} estaCargando={cargandoTop} />
-        </div>
-      )}
-
-      {pestanaActiva === 'metodosVendedores' && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-              <h3 className="text-sm font-bold text-slate-900">Ventas por Asesor Comercial</h3>
-              <p className="text-xs text-slate-500">Métricas individuales del equipo de mostrador</p>
-            </div>
-            <TablaVendedores vendedores={ventasVendedor} estaCargando={cargandoVendedores} />
-          </div>
-
-          <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-            <h3 className="text-sm font-bold text-slate-900 mb-1">Distribución por Método de Cobro</h3>
-            <p className="text-xs text-slate-500 mb-4">Montos en Soles según la modalidad de pago</p>
-            <GraficoMetodosPago datos={metodosPago} estaCargando={cargandoMetodos} />
-          </div>
-        </div>
-      )}
-
-      {pestanaActiva === 'alertasStock' && (
-        <div className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden">
-          <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Productos en Estado Crítico</h3>
-              <p className="text-xs text-slate-500">
-                Artículos que alcanzaron el stock mínimo o se encuentran completamente agotados
-              </p>
-            </div>
-          </div>
-          <TablaAlertasStock alertas={alertasStock} estaCargando={cargandoAlertas} />
-        </div>
-      )}
+        )}
+      </main>
     </div>
   )
 }

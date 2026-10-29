@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/layout/Header'
 import { useAuth } from '@/features/auth'
-import { listarVentasApi, anularVentaApi } from '../api'
+import { listarVentasApi, anularVentaApi, obtenerVentaApi } from '../api'
 import type { Venta, MetodoPago } from '@/types'
 import { formatearMoneda, formatearFecha } from '@/lib/formato'
 import { ComprobanteModal } from '../components/ComprobanteModal'
@@ -11,15 +12,15 @@ import {
   Receipt,
   FileText,
   Ban,
-  CheckCircle,
-  XCircle,
   Clock,
   Loader2,
 } from 'lucide-react'
 
 export const HistorialVentasPage: React.FC = () => {
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { tieneRol } = useAuth()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const [metodoPago, setMetodoPago] = useState<MetodoPago | undefined>(undefined)
   const [pagina, setPagina] = useState(1)
@@ -41,13 +42,38 @@ export const HistorialVentasPage: React.FC = () => {
       }),
   })
 
+  // Si se navega desde el Dashboard con ?venta_id=X, abrir automáticamente el comprobante
+  useEffect(() => {
+    const ventaIdParam = searchParams.get('venta_id')
+    if (!ventaIdParam) return
+    const idNum = Number(ventaIdParam)
+    if (isNaN(idNum) || idNum <= 0) return
+
+    obtenerVentaApi(idNum)
+      .then((v) => {
+        setVentaDetalle(v)
+        setModalComprobanteAbierto(true)
+      })
+      .catch(() => {
+        // Ignorar si la venta no existe o no es accesible
+      })
+  }, [searchParams])
+
   const anularMutation = useMutation({
     mutationFn: ({ id, motivo }: { id: number; motivo: string }) => anularVentaApi(id, motivo),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ventas'] })
+      queryClient.invalidateQueries({ queryKey: ['ventas-dashboard'] })
       queryClient.invalidateQueries({ queryKey: ['productos'] })
       queryClient.invalidateQueries({ queryKey: ['productos-pos'] })
       queryClient.invalidateQueries({ queryKey: ['productos-dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['kardex'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-kpis'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-ventas-dia'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-top-productos'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-vendedores'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-metodos-pago'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-alertas-stock'] })
     },
   })
 
@@ -66,26 +92,26 @@ export const HistorialVentasPage: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex-1 flex flex-col bg-[#F9F8F5]">
       <Header
-        titulo="Historial de Ventas"
-        subtitulo="Consulta de comprobantes emitidos, desglose de IGV y anulación transaccional"
+        titulo="Auditoría e Historial de Ventas"
+        subtitulo="Consulta de comprobantes emitidos, verificación de IGV 18% y anulaciones contables"
       />
 
-      <main className="p-6 space-y-4">
+      <main className="p-6 space-y-5">
         {/* Barra de Filtros */}
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <label className="text-xs font-semibold text-slate-700">Filtrar por Método de Pago:</label>
+        <div className="bg-white p-4 rounded-xl border border-[#E6E3DC] shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <label className="text-xs font-bold text-[#1B2A4A]">Medio de pago:</label>
             <select
               value={metodoPago || ''}
               onChange={(e) => {
                 setMetodoPago((e.target.value as MetodoPago) || undefined)
                 setPagina(1)
               }}
-              className="px-3 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none bg-white text-slate-700 font-medium"
+              className="px-3 py-2 text-xs font-medium border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none bg-white text-[#1B2A4A] transition-all"
             >
-              <option value="">Todos los métodos</option>
+              <option value="">Todos los medios</option>
               <option value="efectivo">Efectivo</option>
               <option value="yape_plin">Yape / Plin</option>
               <option value="tarjeta">Tarjeta Débito/Crédito</option>
@@ -93,36 +119,39 @@ export const HistorialVentasPage: React.FC = () => {
             </select>
           </div>
 
-          <div className="text-xs text-slate-500 font-medium">
-            Total de ventas: <span className="font-bold text-slate-900">{total}</span>
+          <div className="text-xs text-slate-600 font-medium">
+            Total comprobantes emitidos:{' '}
+            <span className="font-bold text-[#1B2A4A] tabular-nums">{total}</span>
           </div>
         </div>
 
         {/* Tabla de Historial de Ventas */}
-        <div className="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div className="bg-white rounded-xl border border-[#E6E3DC] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead className="bg-[#F2F0EA] border-b border-[#E6E3DC] text-[#1B2A4A] font-bold text-[11px] uppercase tracking-wider">
                 <tr>
-                  <th className="py-3 px-4">N° Comprobante</th>
-                  <th className="py-3 px-4">Fecha y Hora</th>
-                  <th className="py-3 px-4">Vendedor</th>
-                  <th className="py-3 px-4">Cliente</th>
-                  <th className="py-3 px-4">Método Pago</th>
-                  <th className="py-3 px-4 text-right">Subtotal</th>
-                  <th className="py-3 px-4 text-right">IGV (18%)</th>
-                  <th className="py-3 px-4 text-right">Total (S/)</th>
-                  <th className="py-3 px-4 text-center">Estado</th>
-                  <th className="py-3 px-4 text-center">Acciones</th>
+                  <th className="py-3 px-4 whitespace-nowrap">N° Comprobante</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Fecha y Hora</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Vendedor</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Cliente</th>
+                  <th className="py-3 px-4 whitespace-nowrap">Medio Pago</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">Subtotal</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">IGV (18%)</th>
+                  <th className="py-3 px-4 text-right whitespace-nowrap">Total (S/)</th>
+                  <th className="py-3 px-4 text-center whitespace-nowrap">Estado</th>
+                  <th className="py-3 px-4 text-center whitespace-nowrap">Acciones</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#E6E3DC]/60">
                 {isLoading ? (
                   <tr>
                     <td colSpan={10} className="py-12 text-center text-slate-500">
                       <div className="flex flex-col items-center justify-center gap-2">
-                        <Loader2 className="w-6 h-6 animate-spin text-blue-900" />
-                        <span>Cargando ventas...</span>
+                        <Loader2 className="w-6 h-6 animate-spin text-[#2452E8]" />
+                        <span className="font-semibold text-xs text-[#1B2A4A]">
+                          Cargando ventas...
+                        </span>
                       </div>
                     </td>
                   </tr>
@@ -130,7 +159,7 @@ export const HistorialVentasPage: React.FC = () => {
                   <tr>
                     <td colSpan={10} className="py-12 text-center text-slate-400">
                       <Receipt className="w-8 h-8 mx-auto mb-2 text-slate-300" />
-                      <p className="font-medium">No se encontraron ventas registradas.</p>
+                      <p className="font-bold text-[#1B2A4A]">Sin comprobantes de venta</p>
                     </td>
                   </tr>
                 ) : (
@@ -139,26 +168,28 @@ export const HistorialVentasPage: React.FC = () => {
                     return (
                       <tr
                         key={v.id}
-                        className={`hover:bg-slate-50/70 transition-colors ${
-                          esAnulada ? 'bg-rose-50/20 text-slate-500' : ''
+                        className={`hover:bg-[#F9F8F5] transition-colors h-11 ${
+                          esAnulada ? 'bg-[#FEE2E2]/30 text-slate-400' : ''
                         }`}
                       >
-                        <td className="py-3 px-4 font-mono font-bold text-slate-900">{v.numero}</td>
-                        <td className="py-3 px-4 text-slate-600">
-                          <div className="flex items-center gap-1.5">
+                        <td className="py-2.5 px-4 font-mono font-bold text-[#1B2A4A] text-xs">
+                          {v.numero}
+                        </td>
+                        <td className="py-2.5 px-4 text-slate-600">
+                          <div className="flex items-center gap-1.5 text-[11px] tabular-nums">
                             <Clock className="w-3.5 h-3.5 text-slate-400" />
                             <span>{formatearFecha(v.fecha)}</span>
                           </div>
                         </td>
-                        <td className="py-3 px-4 font-medium text-slate-800">
+                        <td className="py-2.5 px-4 text-[#1B2A4A] font-semibold">
                           {v.vendedor_nombre || `Vendedor #${v.vendedor_id}`}
                         </td>
-                        <td className="py-3 px-4 text-slate-700">
+                        <td className="py-2.5 px-4 text-slate-700">
                           {v.cliente_nombre ? (
                             <div>
-                              <p className="font-medium text-slate-900">{v.cliente_nombre}</p>
+                              <p className="font-semibold text-[#1B2A4A]">{v.cliente_nombre}</p>
                               {v.cliente_documento && (
-                                <p className="text-[10px] text-slate-400 font-mono">
+                                <p className="text-[10px] text-slate-500 font-mono">
                                   {v.cliente_documento}
                                 </p>
                               )}
@@ -167,49 +198,47 @@ export const HistorialVentasPage: React.FC = () => {
                             <span className="text-slate-400 italic">Cliente general</span>
                           )}
                         </td>
-                        <td className="py-3 px-4">
-                          <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-medium text-[11px] capitalize">
+                        <td className="py-2.5 px-4 whitespace-nowrap">
+                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-[#F2F0EA] border border-[#E6E3DC] text-[#1B2A4A] text-[11px] font-semibold capitalize whitespace-nowrap">
                             {v.metodo_pago.replace('_', ' ')}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-right tabular-nums text-slate-600">
+                        <td className="py-2.5 px-4 text-right tabular-nums text-slate-600 font-medium whitespace-nowrap">
                           {formatearMoneda(v.subtotal)}
                         </td>
-                        <td className="py-3 px-4 text-right tabular-nums text-slate-600">
+                        <td className="py-2.5 px-4 text-right tabular-nums text-slate-600 font-medium whitespace-nowrap">
                           {formatearMoneda(v.igv)}
                         </td>
-                        <td className="py-3 px-4 text-right font-bold text-slate-900 tabular-nums text-sm">
+                        <td className="py-2.5 px-4 text-right font-extrabold text-[#1B2A4A] tabular-nums whitespace-nowrap">
                           {formatearMoneda(v.total)}
                         </td>
-                        <td className="py-3 px-4 text-center">
+                        <td className="py-2.5 px-4 text-center whitespace-nowrap">
                           {esAnulada ? (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800">
-                              <XCircle className="w-3 h-3 text-rose-600" />
-                              <span>Anulada</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#FEE2E2] text-[#B91C1C] whitespace-nowrap">
+                              Anulada
                             </span>
                           ) : (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">
-                              <CheckCircle className="w-3 h-3 text-emerald-600" />
-                              <span>Completada</span>
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-[#DCFCE7] text-[#15803D] whitespace-nowrap">
+                              Emitida
                             </span>
                           )}
                         </td>
-                        <td className="py-3 px-4 text-center">
+                        <td className="py-2.5 px-4 text-center">
                           <div className="flex items-center justify-center gap-1">
                             <button
-                              title="Ver Comprobante / Detalle"
+                              title="Ver Comprobante"
                               onClick={() => abrirDetalle(v)}
-                              className="p-1.5 text-blue-700 hover:text-blue-900 hover:bg-blue-50 rounded-md transition-colors"
+                              className="p-1.5 text-[#2452E8] hover:bg-[#2452E8]/10 rounded-lg transition-colors cursor-pointer"
                             >
                               <FileText className="w-4 h-4" />
                             </button>
 
-                            {/* Botón Anular (Solo Administrador y si no está anulada) */}
+                            {/* Botón Anular */}
                             {tieneRol('administrador') && !esAnulada && (
                               <button
                                 title="Anular venta y reponer stock"
                                 onClick={() => abrirAnular(v)}
-                                className="p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 rounded-md transition-colors"
+                                className="p-1.5 text-[#DC2626] hover:bg-[#FEE2E2] rounded-lg transition-colors cursor-pointer"
                               >
                                 <Ban className="w-4 h-4" />
                               </button>
@@ -226,25 +255,26 @@ export const HistorialVentasPage: React.FC = () => {
 
           {/* Paginación */}
           {total > porPagina && (
-            <div className="p-3 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-xs text-slate-600">
+            <div className="p-3.5 bg-[#F2F0EA]/60 border-t border-[#E6E3DC] flex items-center justify-between text-xs text-slate-600">
               <div>
-                Mostrando {ventas.length} de {total} ventas
+                Mostrando <span className="font-bold text-[#1B2A4A]">{ventas.length}</span> de{' '}
+                <span className="font-bold text-[#1B2A4A]">{total}</span> ventas
               </div>
               <div className="flex items-center gap-2">
                 <button
                   disabled={pagina <= 1}
                   onClick={() => setPagina((p) => p - 1)}
-                  className="px-2.5 py-1 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50"
+                  className="px-3 py-1.5 bg-white border border-[#E6E3DC] rounded-lg text-xs font-semibold text-[#1B2A4A] hover:bg-[#F9F8F5] disabled:opacity-40 transition-colors"
                 >
                   Anterior
                 </button>
-                <span className="font-semibold text-slate-800">
+                <span className="font-bold text-[#1B2A4A] tabular-nums">
                   {pagina} / {totalPaginas}
                 </span>
                 <button
                   disabled={pagina >= totalPaginas}
                   onClick={() => setPagina((p) => p + 1)}
-                  className="px-2.5 py-1 bg-white border border-slate-300 rounded hover:bg-slate-50 disabled:opacity-50"
+                  className="px-3 py-1.5 bg-white border border-[#E6E3DC] rounded-lg text-xs font-semibold text-[#1B2A4A] hover:bg-[#F9F8F5] disabled:opacity-40 transition-colors"
                 >
                   Siguiente
                 </button>
@@ -258,10 +288,16 @@ export const HistorialVentasPage: React.FC = () => {
       <ComprobanteModal
         abierto={modalComprobanteAbierto}
         venta={ventaDetalle}
-        alCerrar={() => setModalComprobanteAbierto(false)}
+        alCerrar={() => {
+          setModalComprobanteAbierto(false)
+          if (searchParams.has('venta_id')) {
+            searchParams.delete('venta_id')
+            setSearchParams(searchParams, { replace: true })
+          }
+        }}
         alNuevaVenta={() => {
           setModalComprobanteAbierto(false)
-          window.location.href = '/ventas/nueva'
+          navigate('/ventas/nueva')
         }}
       />
 

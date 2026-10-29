@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.inventario.models import (
     Categoria,
     EstadoProducto,
+    EstadoStock,
     MovimientoInventario,
     Producto,
 )
@@ -49,6 +50,7 @@ class ProductoRepository:
         limit: int = 20,
         termino_busqueda: str | None = None,
         categoria_id: int | None = None,
+        filtro_estado_stock: EstadoStock | None = None,
         solo_activos: bool = False,
     ) -> tuple[list[Producto], int]:
         query = select(Producto).options(joinedload(Producto.categoria))
@@ -58,6 +60,25 @@ class ProductoRepository:
 
         if categoria_id:
             query = query.where(Producto.categoria_id == categoria_id)
+
+        if filtro_estado_stock == EstadoStock.INACTIVO:
+            query = query.where(Producto.estado == EstadoProducto.INACTIVO.value)
+        elif filtro_estado_stock == EstadoStock.AGOTADO:
+            query = query.where(
+                Producto.estado == EstadoProducto.ACTIVO.value,
+                Producto.stock_actual <= 0,
+            )
+        elif filtro_estado_stock == EstadoStock.BAJO:
+            query = query.where(
+                Producto.estado == EstadoProducto.ACTIVO.value,
+                Producto.stock_actual > 0,
+                Producto.stock_actual <= Producto.stock_minimo,
+            )
+        elif filtro_estado_stock == EstadoStock.NORMAL:
+            query = query.where(
+                Producto.estado == EstadoProducto.ACTIVO.value,
+                Producto.stock_actual > Producto.stock_minimo,
+            )
 
         if termino_busqueda and termino_busqueda.strip():
             patron = f"%{termino_busqueda.strip()}%"

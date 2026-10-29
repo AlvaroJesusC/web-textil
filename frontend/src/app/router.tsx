@@ -1,5 +1,5 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
-import { AppLayout } from '@/components/layout/AppLayout'
+import { AppLayout, RutaPorRol } from '@/components/layout/AppLayout'
 import { LoginPage } from '@/features/auth/pages/LoginPage'
 import { DashboardPage } from '@/features/dashboard/pages/DashboardPage'
 import { InventarioPage } from '@/features/inventario/pages/InventarioPage'
@@ -27,19 +27,35 @@ export const router = createBrowserRouter([
       },
       {
         path: 'ventas',
-        element: <HistorialVentasPage />,
+        element: (
+          <RutaPorRol roles={['administrador', 'vendedor', 'gerente']}>
+            <HistorialVentasPage />
+          </RutaPorRol>
+        ),
       },
       {
         path: 'ventas/nueva',
-        element: <RegistrarVentaPage />,
+        element: (
+          <RutaPorRol roles={['administrador', 'vendedor']}>
+            <RegistrarVentaPage />
+          </RutaPorRol>
+        ),
       },
       {
         path: 'conciliacion',
-        element: <ConciliacionPage />,
+        element: (
+          <RutaPorRol roles={['administrador', 'almacenero', 'gerente']}>
+            <ConciliacionPage />
+          </RutaPorRol>
+        ),
       },
       {
         path: 'reportes',
-        element: <ReportesPage />,
+        element: (
+          <RutaPorRol roles={['administrador', 'gerente']}>
+            <ReportesPage />
+          </RutaPorRol>
+        ),
       },
       {
         path: '*',

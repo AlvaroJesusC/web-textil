@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import type { Producto, Categoria, UnidadMedida } from '@/types'
-import { X, Loader2, AlertCircle } from 'lucide-react'
+import { X, Loader2, AlertCircle, Package } from 'lucide-react'
 
 interface FormularioDatos {
   sku: string
@@ -94,39 +94,44 @@ const FormContenido: React.FC<FormContenidoProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+    <div className="bg-white rounded-2xl shadow-xl border border-[#E6E3DC] w-full max-w-lg overflow-hidden">
       {/* Cabecera */}
-      <div className="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-        <div>
-          <h3 className="font-bold text-slate-900 text-base">
-            {esEdicion ? 'Editar Producto Textil' : 'Registrar Nuevo Producto'}
-          </h3>
-          <p className="text-xs text-slate-500">
-            {esEdicion
-              ? `Modificando SKU: ${productoAEditar.sku}`
-              : 'Ingreso de nuevo material o prenda al catálogo'}
-          </p>
+      <div className="px-6 py-4 border-b border-[#E6E3DC] flex items-center justify-between bg-[#F2F0EA]/60">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-[#1B2A4A] text-white flex items-center justify-center shrink-0">
+            <Package className="w-4 h-4" />
+          </div>
+          <div>
+            <h3 className="font-extrabold text-[#1B2A4A] text-sm">
+              {esEdicion ? 'Editar Producto Textil' : 'Nuevo Producto en Catálogo'}
+            </h3>
+            <p className="text-[11px] text-slate-500 font-medium">
+              {esEdicion
+                ? `Actualizando especificaciones de SKU: ${productoAEditar.sku}`
+                : 'Ficha de ingreso de material o artículo textil'}
+            </p>
+          </div>
         </div>
         <button
           onClick={alCerrar}
-          className="text-slate-400 hover:text-slate-600 rounded-lg p-1 transition-colors"
+          className="text-slate-400 hover:text-[#1B2A4A] rounded-lg p-1.5 hover:bg-white transition-colors"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
       </div>
 
       {/* Formulario */}
       <form onSubmit={handleSubmit} className="p-6 space-y-4">
         {error && (
-          <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 flex items-start gap-2 text-rose-800 text-xs">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
+          <div className="p-3 rounded-xl bg-[#FEE2E2] border border-[#DC2626]/20 flex items-start gap-2 text-[#B91C1C] text-xs font-medium">
+            <AlertCircle className="w-4 h-4 shrink-0 text-[#DC2626] mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
               Código SKU *
             </label>
             <input
@@ -136,18 +141,18 @@ const FormContenido: React.FC<FormContenidoProps> = ({
               value={sku}
               onChange={(e) => setSku(e.target.value)}
               placeholder="Ej: TEL-005"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none uppercase font-mono disabled:bg-slate-100 disabled:text-slate-500"
+              className="w-full px-3 py-2 text-xs border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none uppercase font-mono font-semibold text-[#1B2A4A] disabled:bg-[#F2F0EA] disabled:text-slate-500 transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Categoría *
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+              Familia / Categoría *
             </label>
             <select
               value={categoriaId}
               onChange={(e) => setCategoriaId(Number(e.target.value))}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none bg-white"
+              className="w-full px-3 py-2 text-xs font-medium border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none bg-white text-[#1B2A4A] transition-all"
             >
               {categorias.map((cat) => (
                 <option key={cat.id} value={cat.id}>
@@ -159,7 +164,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+          <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
             Nombre del Producto *
           </label>
           <input
@@ -168,19 +173,19 @@ const FormContenido: React.FC<FormContenidoProps> = ({
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
             placeholder="Ej: Tela Denim Pesada 14oz"
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none"
+            className="w-full px-3 py-2 text-xs border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none text-[#1B2A4A] font-medium transition-all"
           />
         </div>
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
               Unidad *
             </label>
             <select
               value={unidad}
               onChange={(e) => setUnidad(e.target.value as UnidadMedida)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none bg-white"
+              className="w-full px-3 py-2 text-xs font-medium border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none bg-white text-[#1B2A4A] capitalize transition-all"
             >
               <option value="metro">Metro</option>
               <option value="cono">Cono</option>
@@ -190,8 +195,8 @@ const FormContenido: React.FC<FormContenidoProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Precio Unitario (S/) *
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+              Precio Unit. (S/) *
             </label>
             <input
               type="number"
@@ -201,12 +206,12 @@ const FormContenido: React.FC<FormContenidoProps> = ({
               value={precio}
               onChange={(e) => setPrecio(e.target.value)}
               placeholder="0.00"
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none tabular-nums"
+              className="w-full px-3 py-2 text-xs border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none font-bold tabular-nums text-[#1B2A4A] transition-all"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
               Stock Mínimo *
             </label>
             <input
@@ -215,14 +220,14 @@ const FormContenido: React.FC<FormContenidoProps> = ({
               required
               value={stockMinimo}
               onChange={(e) => setStockMinimo(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none tabular-nums"
+              className="w-full px-3 py-2 text-xs border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none font-bold tabular-nums text-[#1B2A4A] transition-all"
             />
           </div>
         </div>
 
         {!esEdicion && (
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
               Stock Inicial en Almacén
             </label>
             <input
@@ -230,42 +235,42 @@ const FormContenido: React.FC<FormContenidoProps> = ({
               min="0"
               value={stockActual}
               onChange={(e) => setStockActual(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none tabular-nums"
+              className="w-full px-3 py-2 text-xs border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none font-bold tabular-nums text-[#1B2A4A] transition-all"
             />
             <p className="text-[11px] text-slate-500 mt-1">
-              Cantidad disponible inmediatamente al momento de creación.
+              Cantidad física disponible inmediatamente para ventas y almacén.
             </p>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-            Descripción o Detalles Técnicos
+          <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            Descripción / Especificaciones
           </label>
           <textarea
             rows={2}
             value={descripcion}
             onChange={(e) => setDescripcion(e.target.value)}
             placeholder="Composición de hilado, gramaje, color o proveedor..."
-            className="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-800 focus:outline-none"
+            className="w-full px-3 py-2 text-xs border border-[#E6E3DC] rounded-lg focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none text-[#1B2A4A] transition-all"
           />
         </div>
 
-        <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-3">
+        <div className="pt-3 border-t border-[#E6E3DC] flex items-center justify-end gap-2.5">
           <button
             type="button"
             onClick={alCerrar}
-            className="px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-[#1B2A4A] bg-white border border-[#E6E3DC] hover:bg-[#F9F8F5] rounded-lg transition-all"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={enviando}
-            className="px-5 py-2 text-xs font-semibold text-white bg-blue-900 hover:bg-blue-950 rounded-lg shadow-xs flex items-center gap-2 disabled:opacity-50 transition-colors"
+            className="px-5 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm flex items-center gap-1.5 disabled:opacity-50 transition-all cursor-pointer"
           >
             {enviando && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-            <span>{esEdicion ? 'Actualizar Producto' : 'Guardar Producto'}</span>
+            <span>{esEdicion ? 'Actualizar Producto' : 'Guardar en Catálogo'}</span>
           </button>
         </div>
       </form>
@@ -283,7 +288,7 @@ export const ProductoFormModal: React.FC<ProductoFormModalProps> = ({
   if (!abierto) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1B2A4A]/50 backdrop-blur-xs p-4 overflow-y-auto">
       <FormContenido
         key={productoAEditar?.id ?? 'nuevo'}
         productoAEditar={productoAEditar}

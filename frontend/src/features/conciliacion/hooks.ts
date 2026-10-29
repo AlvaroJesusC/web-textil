@@ -86,6 +86,11 @@ export function useAjustarStockConteo() {
       queryClient.invalidateQueries({ queryKey: ['conteo', variables.id] })
       queryClient.invalidateQueries({ queryKey: ['conteos'] })
       queryClient.invalidateQueries({ queryKey: ['productos'] })
+      queryClient.invalidateQueries({ queryKey: ['productos-pos'] })
+      queryClient.invalidateQueries({ queryKey: ['productos-dashboard'] })
+      queryClient.invalidateQueries({ queryKey: ['kardex'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-alertas-stock'] })
+      queryClient.invalidateQueries({ queryKey: ['reportes-kpis'] })
     },
   })
 }
