@@ -109,7 +109,7 @@ export const IngresoStockModal: React.FC<IngresoStockModalProps> = ({
           )}
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Cantidad a ingresar ({producto.unidad}) *
             </label>
             <input
@@ -125,7 +125,7 @@ export const IngresoStockModal: React.FC<IngresoStockModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
                 Proveedor
               </label>
               <input
@@ -137,7 +137,7 @@ export const IngresoStockModal: React.FC<IngresoStockModalProps> = ({
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+              <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
                 Guía / Factura
               </label>
               <input
@@ -151,7 +151,7 @@ export const IngresoStockModal: React.FC<IngresoStockModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Observaciones / Motivo
             </label>
             <input
@@ -167,14 +167,14 @@ export const IngresoStockModal: React.FC<IngresoStockModalProps> = ({
             <button
               type="button"
               onClick={limpiarYCerrar}
-              className="px-4 py-2 text-xs font-semibold text-[#1B2A4A] bg-white border border-[#E6E3DC] hover:bg-[#F9F8F5] rounded-lg transition-all"
+              className="px-4 py-2 text-xs font-bold rounded-xl btn-superficie"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={enviando}
-              className="px-5 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm flex items-center gap-1.5 disabled:opacity-50 transition-all cursor-pointer"
+              className="px-5 py-2 text-xs font-bold rounded-xl btn-terracota flex items-center gap-1.5"
             >
               {enviando && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
               <span>Registrar Ingreso</span>

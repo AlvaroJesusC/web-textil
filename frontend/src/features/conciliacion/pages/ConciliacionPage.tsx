@@ -7,8 +7,6 @@ import {
   Lock,
   Search,
   CheckCircle2,
-  AlertTriangle,
-  Clock,
   Layers,
   History,
   RotateCcw,
@@ -43,21 +41,18 @@ export const ConciliacionPage: React.FC = () => {
     'todos' | 'conformes' | 'desviacion' | 'pendientes'
   >('todos')
 
-  // Consultas TanStack Query
   const { data: listaConteos = [], isLoading: cargandoLista } = useConteos()
   const idConteoEfectivo =
     idConteoSeleccionado ??
     (listaConteos.find((c) => c.estado === 'borrador')?.id ?? listaConteos[0]?.id ?? null)
   const { data: conteoActual, isLoading: cargandoConteo } = useConteo(idConteoEfectivo)
 
-  // Mutaciones
   const iniciarMutation = useIniciarConteo()
   const guardarMutation = useGuardarItemsConteo()
   const calcularMutation = useCalcularDiferencias()
   const cerrarMutation = useCerrarConteo()
   const ajustarMutation = useAjustarStockConteo()
 
-  // Mapa local para edición en tiempo real de conteos físicos
   const [cambiosLocales, setCambiosLocales] = useState<Record<number, string>>({})
   const [mensajeExito, setMensajeExito] = useState<string | null>(null)
 
@@ -100,7 +95,7 @@ export const ConciliacionPage: React.FC = () => {
 
     await guardarMutation.mutateAsync({ id: idConteoEfectivo, items })
     setCambiosLocales({})
-    mostrarToast('Conteos guardados en borrador con éxito.')
+    mostrarToast('Conteos físicos guardados en el acta actual.')
   }
 
   const calcularDiferencias = async () => {
@@ -109,7 +104,7 @@ export const ConciliacionPage: React.FC = () => {
       await guardarBorrador()
     }
     await calcularMutation.mutateAsync(idConteoEfectivo)
-    mostrarToast('Diferencias y semáforo calculados correctamente.')
+    mostrarToast('Tolerancia del 2% evaluada sobre todos los artículos.')
   }
 
   const cerrarConteo = async () => {
@@ -118,7 +113,7 @@ export const ConciliacionPage: React.FC = () => {
       await guardarBorrador()
     }
     await cerrarMutation.mutateAsync(idConteoEfectivo)
-    mostrarToast('Sesión de conteo consolidada para auditoría.')
+    mostrarToast('Acta de conteo físico consolidada y cerrada.')
   }
 
   const aplicarAjusteStock = async (motivo: string) => {
@@ -137,7 +132,6 @@ export const ConciliacionPage: React.FC = () => {
 
   const esBorrador = conteoActual?.estado === 'borrador'
 
-  // Filtrado de detalles en la tabla
   const detallesFiltrados = (conteoActual?.detalles || []).filter((det: DetalleConteo) => {
     const coincideTexto =
       det.producto_sku.toLowerCase().includes(terminoBusqueda.toLowerCase()) ||
@@ -153,66 +147,59 @@ export const ConciliacionPage: React.FC = () => {
     return true
   })
 
-  // Cantidad de productos con desviación pendientes de ajuste
   const productosParaAjustar = (conteoActual?.detalles || []).filter(
     (d) => d.conforme === false && !d.ajustado && d.stock_fisico !== null
   ).length
 
+  const pctGlobal = conteoActual ? Number(conteoActual.porcentaje_conformidad) : 0
+
   return (
-    <div className="flex-1 flex flex-col bg-[#F9F8F5]">
+    <div className="flex-1 flex flex-col">
       <Header
-        titulo="Conciliación de Stock y Auditoría Física"
-        subtitulo="Verificación de existencias reales en almacén con tolerancia de control del 2%"
+        titulo="Auditoría Física de Almacén (Regla del 2%)"
+        subtitulo="Contraste entre existencias del sistema y conteo en estantería con semáforo de conformidad"
       />
 
       <main className="p-6 space-y-5">
-        {/* Toast Notification */}
         {mensajeExito && (
-          <div className="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-[#1B2A4A] text-white shadow-lg border border-white/15 text-xs font-bold">
+          <div className="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl sidebar-textil text-white shadow-xl border border-white/15 text-xs font-bold">
             <CheckCircle2 className="w-4 h-4 text-emerald-400" />
             <span>{mensajeExito}</span>
           </div>
         )}
 
-        {/* Barra superior de herramientas y Selector de Sesiones */}
-        <div className="bg-white p-4 rounded-xl border border-[#E6E3DC] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+        {/* Selector de Actas de Conteo y Botón de Nueva Captura */}
+        <div className="card-textil p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
           <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-1 md:pb-0">
-            <span className="text-xs font-bold text-[#1B2A4A] uppercase tracking-wider flex items-center gap-1.5 shrink-0">
-              <History className="w-3.5 h-3.5 text-[#2452E8]" /> Sesiones:
+            <span className="text-xs font-bold text-slate-500 flex items-center gap-1.5 shrink-0 mr-1">
+              <History className="w-3.5 h-3.5 text-[#2452E8]" /> Actas registradas:
             </span>
             {cargandoLista ? (
-              <span className="text-xs text-slate-400 font-medium">Cargando...</span>
+              <span className="text-xs text-slate-400 font-medium">Cargando actas...</span>
             ) : listaConteos.length === 0 ? (
-              <span className="text-xs text-slate-500 italic">No hay conteos registrados.</span>
+              <span className="text-xs text-slate-400">Sin auditorías previas.</span>
             ) : (
               listaConteos.map((c) => {
                 const activo = c.id === idConteoEfectivo
+                const enCurso = c.estado === 'borrador'
                 return (
                   <button
                     key={c.id}
                     onClick={() => seleccionarSesion(c.id)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold border transition-all shrink-0 cursor-pointer ${
+                    className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-semibold shrink-0 ${
                       activo
-                        ? 'bg-[#1B2A4A] text-white border-[#1B2A4A] shadow-xs'
-                        : 'bg-[#F9F8F5] text-[#1B2A4A] border-[#E6E3DC] hover:bg-[#F2F0EA]'
+                        ? 'btn-indigo font-bold'
+                        : 'btn-superficie text-[#1B2A4A]'
                     }`}
                   >
-                    <span>#{c.id}</span>
                     <span
-                      className={`text-[10px] px-1.5 py-0.5 rounded font-bold uppercase ${
-                        c.estado === 'borrador'
-                          ? activo
-                            ? 'bg-[#D95D39] text-white'
-                            : 'bg-[#FEF3C7] text-[#B45309]'
-                          : activo
-                            ? 'bg-white/20 text-white'
-                            : 'bg-[#F2F0EA] text-slate-600'
+                      className={`w-2 h-2 rounded-full ${
+                        enCurso ? 'bg-[#D95D39]' : 'bg-emerald-400'
                       }`}
-                    >
-                      {c.estado}
-                    </span>
-                    <span className="text-[11px] tabular-nums">
-                      {Number(c.porcentaje_conformidad).toFixed(1)}%
+                    />
+                    <span>Acta #{c.id}</span>
+                    <span className="opacity-75 text-[11px] tabular-nums">
+                      ({Number(c.porcentaje_conformidad).toFixed(0)}%)
                     </span>
                   </button>
                 )
@@ -223,249 +210,252 @@ export const ConciliacionPage: React.FC = () => {
           {puedeOperar && (
             <button
               onClick={() => setModalIniciarAbierto(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm transition-all shrink-0 self-end md:self-auto cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl btn-terracota shrink-0 self-end md:self-auto"
             >
               <Plus className="w-4 h-4 stroke-[2.5]" />
-              <span>Nuevo Conteo Físico</span>
+              <span>Nueva Captura de Almacén</span>
             </button>
           )}
         </div>
 
-        {/* Panel Principal del Conteo Seleccionado */}
+        {/* Cuerpo del Acta Seleccionada */}
         {cargandoConteo ? (
-          <div className="bg-white rounded-xl border border-[#E6E3DC] p-12 text-center text-slate-500 shadow-sm">
+          <div className="card-textil rounded-2xl p-12 text-center text-slate-500">
             <Scale className="w-8 h-8 mx-auto text-[#2452E8] mb-2 animate-pulse" />
-            <p className="text-xs font-semibold text-[#1B2A4A]">Cargando auditoría física...</p>
+            <p className="text-xs font-semibold text-[#1B2A4A]">Cargando hoja de conteo...</p>
           </div>
         ) : !conteoActual ? (
-          <div className="bg-white rounded-xl border border-dashed border-[#E6E3DC] p-12 text-center shadow-sm">
+          <div className="bg-white rounded-2xl border border-dashed border-[#DDD8CC] p-12 text-center shadow-sm">
             <Layers className="w-9 h-9 text-slate-400 mx-auto mb-2.5" />
-            <h3 className="text-xs font-extrabold text-[#1B2A4A] uppercase tracking-wider">
-              No hay sesión de conteo seleccionada
+            <h3 className="text-sm font-extrabold text-[#1B2A4A]">
+              Ninguna sesión de conteo activa
             </h3>
             <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-4">
-              Inicie un nuevo conteo físico para capturar el stock del almacén o seleccione una sesión existente.
+              Inicie una captura para congelar el saldo actual del sistema y contrastarlo contra el conteo físico de rollos y conos.
             </p>
             {puedeOperar && (
               <button
                 onClick={() => setModalIniciarAbierto(true)}
-                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm transition-all cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl btn-terracota"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
-                <span>Iniciar Primer Conteo</span>
+                <span>Iniciar Primera Auditoría</span>
               </button>
             )}
           </div>
         ) : (
           <div className="space-y-5">
-            {/* Tarjeta de Resumen de la Sesión y Semáforo Global */}
-            <div className="bg-white rounded-xl border border-[#E6E3DC] shadow-sm overflow-hidden">
-              <div className="p-5 border-b border-[#E6E3DC] bg-[#F2F0EA]/60 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            {/* Ficha de Cabecera del Acta y Progreso de Exactitud */}
+            <div className="card-textil rounded-2xl border-t-[3px] border-t-[#1B2A4A] overflow-hidden">
+              <div className="p-5 border-b border-[#E5E0D5] flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2.5">
                     <h2 className="text-base font-extrabold text-[#1B2A4A]">
-                      Sesión de Conteo #{conteoActual.id}
+                      Acta de Conteo Físico #{conteoActual.id}
                     </h2>
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-bold uppercase ${
-                        conteoActual.estado === 'borrador'
-                          ? 'bg-[#FEF3C7] text-[#B45309]'
-                          : 'bg-[#DCFCE7] text-[#15803D]'
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${
+                        esBorrador
+                          ? 'bg-[#FEF3C7] text-[#B45309] border-[#D97706]/30'
+                          : 'bg-[#DCFCE7] text-[#15803D] border-[#15803D]/25'
                       }`}
                     >
-                      {conteoActual.estado === 'borrador' ? (
-                        <Clock className="w-3 h-3" />
-                      ) : (
-                        <Lock className="w-3 h-3" />
-                      )}
-                      {conteoActual.estado}
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${
+                          esBorrador ? 'bg-[#D97706]' : 'bg-[#15803D]'
+                        }`}
+                      />
+                      {esBorrador ? 'En captura abierta' : 'Acta cerrada'}
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 mt-1">
-                    Fecha de corte: {formatearFecha(conteoActual.fecha)} · Responsable:{' '}
-                    <span className="font-bold text-[#1B2A4A]">
-                      {conteoActual.responsable_nombre}
-                    </span>
-                    {conteoActual.observaciones && ` · "${conteoActual.observaciones}"`}
+                    Corte de inventario: <span className="tabular-nums">{formatearFecha(conteoActual.fecha)}</span> · Auditor responsable:{' '}
+                    <strong className="text-[#1B2A4A]">{conteoActual.responsable_nombre}</strong>
+                    {conteoActual.observaciones && ` · Nota: "${conteoActual.observaciones}"`}
                   </p>
                 </div>
 
-                {/* Botonera de Acción */}
+                {/* Botones de Flujo de Auditoría con Relieve */}
                 <div className="flex items-center gap-2 flex-wrap">
                   {esBorrador && puedeOperar && (
                     <>
                       <button
                         onClick={guardarBorrador}
                         disabled={guardarMutation.isPending || !hayCambiosLocales}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold border border-[#E6E3DC] bg-white hover:bg-[#F9F8F5] text-[#1B2A4A] disabled:opacity-40 transition-all cursor-pointer"
-                        title="Guarda las cantidades digitadas en borrador"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold btn-superficie"
                       >
                         <Save className="w-3.5 h-3.5 text-[#2452E8]" />
-                        <span>{hayCambiosLocales ? 'Guardar Cambios' : 'Guardado'}</span>
+                        <span>{hayCambiosLocales ? 'Guardar Avance' : 'Avance guardado'}</span>
                       </button>
 
                       <button
                         onClick={calcularDiferencias}
                         disabled={calcularMutation.isPending}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-[#2452E8] hover:bg-[#1E44C8] text-white shadow-sm transition-all cursor-pointer"
-                        title="Calcula % de diferencia y aplica el semáforo al 2%"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold btn-cobalto"
                       >
                         <Calculator className="w-3.5 h-3.5" />
-                        <span>Calcular Semáforo</span>
+                        <span>Evaluar Semáforo (2%)</span>
                       </button>
 
                       <button
                         onClick={cerrarConteo}
                         disabled={cerrarMutation.isPending}
-                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-bold bg-[#1B2A4A] hover:bg-[#243861] text-white shadow-sm transition-all cursor-pointer"
-                        title="Cierra el conteo y consolida auditoría"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold btn-indigo"
                       >
                         <Lock className="w-3.5 h-3.5" />
-                        <span>Cerrar Conteo</span>
+                        <span>Cerrar Acta</span>
                       </button>
                     </>
                   )}
 
-                  {/* Acción de Ajuste de Stock */}
                   {esAdmin && productosParaAjustar > 0 && (
                     <button
                       onClick={() => setModalAjustarAbierto(true)}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold bg-[#D95D39] hover:bg-[#C24D2B] text-white shadow-sm transition-all cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold btn-terracota"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span>Ajustar Stock ({productosParaAjustar})</span>
+                      <span>Sincronizar Kardex ({productosParaAjustar})</span>
                     </button>
                   )}
                 </div>
               </div>
 
-              {/* Fila de Indicadores de Conformidad con números grandes en Plus Jakarta Sans */}
-              <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#E6E3DC]/60 bg-white">
-                <div className="p-4">
-                  <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                    Total Evaluados
-                  </span>
-                  <span className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums mt-0.5 block">
-                    {conteoActual.total_items}
-                  </span>
-                </div>
-
-                <div className="p-4">
-                  <span className="text-[11px] font-bold text-[#15803D] uppercase tracking-wider flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#15803D]" /> Conformes (≤ 2%)
-                  </span>
-                  <span className="text-2xl font-extrabold text-[#15803D] tracking-tight tabular-nums mt-0.5 block">
-                    {conteoActual.items_conformes}
-                  </span>
-                </div>
-
-                <div className="p-4">
-                  <span className="text-[11px] font-bold text-[#DC2626] uppercase tracking-wider flex items-center gap-1">
-                    <AlertTriangle className="w-3.5 h-3.5 text-[#DC2626]" /> Desviación (&gt; 2%)
-                  </span>
-                  <span className="text-2xl font-extrabold text-[#B91C1C] tracking-tight tabular-nums mt-0.5 block">
-                    {conteoActual.items_no_conformes}
-                  </span>
-                </div>
-
-                <div className="p-4 bg-[#F9F8F5]/60">
-                  <span className="text-[11px] font-bold text-[#2452E8] uppercase tracking-wider block">
-                    Conformidad Global
-                  </span>
-                  <div className="flex items-baseline gap-2 mt-0.5">
-                    <span className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums">
-                      {Number(conteoActual.porcentaje_conformidad).toFixed(2)}%
+              {/* Resumen de Exactitud y Barra de Tolerancia */}
+              <div className="p-5 bg-[#FAF9F6] flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div className="grid grid-cols-3 gap-6 flex-1">
+                  <div>
+                    <span className="text-xs font-medium text-slate-500 block">
+                      Referencias en acta
                     </span>
-                    <span className="text-[11px]">
-                      {Number(conteoActual.porcentaje_conformidad) >= 95 ? (
-                        <span className="text-[#15803D] font-bold">Óptimo</span>
-                      ) : (
-                        <span className="text-[#D95D39] font-bold">Revisar Desvíos</span>
-                      )}
+                    <span className="text-2xl font-extrabold text-[#1B2A4A] tracking-tight tabular-nums mt-0.5 block">
+                      {conteoActual.total_items} SKUs
                     </span>
                   </div>
+
+                  <div>
+                    <span className="text-xs font-semibold text-[#15803D] block">
+                      Dentro de tolerancia (≤ 2%)
+                    </span>
+                    <span className="text-2xl font-extrabold text-[#15803D] tracking-tight tabular-nums mt-0.5 block">
+                      {conteoActual.items_conformes} conformes
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-xs font-semibold text-[#B91C1C] block">
+                      Descuadre crítico (&gt; 2%)
+                    </span>
+                    <span className="text-2xl font-extrabold text-[#B91C1C] tracking-tight tabular-nums mt-0.5 block">
+                      {conteoActual.items_no_conformes} observados
+                    </span>
+                  </div>
+                </div>
+
+                {/* Indicador de Exactitud Global con Barra */}
+                <div className="lg:w-72 bg-white p-3.5 rounded-xl border border-[#E5E0D5] shadow-xs">
+                  <div className="flex items-baseline justify-between">
+                    <span className="text-xs font-bold text-[#1B2A4A]">
+                      Exactitud de inventario
+                    </span>
+                    <span className="text-lg font-extrabold text-[#1B2A4A] tabular-nums">
+                      {pctGlobal.toFixed(1)}%
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 w-full bg-[#ECE8DF] rounded-full overflow-hidden shadow-inner">
+                    <div
+                      style={{ width: `${Math.min(100, pctGlobal)}%` }}
+                      className={`h-full rounded-full transition-all duration-300 ${
+                        pctGlobal >= 95 ? 'bg-[#15803D]' : 'bg-[#D95D39]'
+                      }`}
+                    />
+                  </div>
+                  <p className="text-[11px] text-slate-500 mt-1.5">
+                    {pctGlobal >= 95
+                      ? 'Nivel óptimo según norma interna (≤ 2% merma).'
+                      : 'Existen diferencias que requieren revisión o ajuste.'}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Barra de Filtros y Búsqueda */}
+            {/* Filtros de Hoja de Conteo */}
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <div className="relative flex-1 max-w-md">
                 <Search className="w-4 h-4 text-[#2452E8] absolute left-3.5 top-2.5" />
                 <input
                   type="text"
-                  placeholder="Buscar por SKU, producto o categoría..."
+                  placeholder="Filtrar hoja por SKU, nombre de tela o categoría..."
                   value={terminoBusqueda}
                   onChange={(e) => setTerminoBusqueda(e.target.value)}
-                  className="w-full pl-9 pr-3.5 py-2 text-xs rounded-lg border border-[#E6E3DC] focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none bg-white text-[#1B2A4A] transition-all"
+                  className="w-full pl-9 pr-3.5 py-2 text-xs rounded-xl input-textil"
                 />
               </div>
 
-              <div className="flex items-center gap-1 bg-white border border-[#E6E3DC] p-1 rounded-xl self-start sm:self-auto text-xs font-semibold text-[#1B2A4A] shadow-2xs">
+              <div className="inline-flex items-center gap-1 pista-segmentos p-1 rounded-xl self-start sm:self-auto text-xs font-semibold">
                 <button
                   onClick={() => setFiltroConformidad('todos')}
-                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     filtroConformidad === 'todos'
-                      ? 'bg-[#1B2A4A] font-bold text-white'
-                      : 'hover:bg-[#F9F8F5]'
+                      ? 'btn-indigo font-bold'
+                      : 'text-slate-600 hover:text-[#1B2A4A] hover:bg-white/60'
                   }`}
                 >
                   Todos ({conteoActual.detalles.length})
                 </button>
                 <button
                   onClick={() => setFiltroConformidad('conformes')}
-                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     filtroConformidad === 'conformes'
-                      ? 'bg-[#15803D] text-white font-bold'
-                      : 'hover:bg-[#DCFCE7]/50 text-[#15803D]'
+                      ? 'bg-[#15803D] text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:text-[#15803D] hover:bg-white/60'
                   }`}
                 >
                   Conformes ({conteoActual.items_conformes})
                 </button>
                 <button
                   onClick={() => setFiltroConformidad('desviacion')}
-                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     filtroConformidad === 'desviacion'
-                      ? 'bg-[#DC2626] text-white font-bold'
-                      : 'hover:bg-[#FEE2E2]/50 text-[#B91C1C]'
+                      ? 'bg-[#DC2626] text-white font-bold shadow-xs'
+                      : 'text-slate-600 hover:text-[#B91C1C] hover:bg-white/60'
                   }`}
                 >
-                  Desviación ({conteoActual.items_no_conformes})
+                  Con descuadre ({conteoActual.items_no_conformes})
                 </button>
                 <button
                   onClick={() => setFiltroConformidad('pendientes')}
-                  className={`px-3 py-1 rounded-lg transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     filtroConformidad === 'pendientes'
-                      ? 'bg-[#1B2A4A] text-white font-bold'
-                      : 'hover:bg-[#F9F8F5]'
+                      ? 'btn-indigo font-bold'
+                      : 'text-slate-600 hover:text-[#1B2A4A] hover:bg-white/60'
                   }`}
                 >
-                  Pendientes
+                  Sin contar
                 </button>
               </div>
             </div>
 
             {/* Tabla Comparativa de Conteo Físico */}
-            <div className="bg-white rounded-xl border border-[#E6E3DC] shadow-sm overflow-hidden">
+            <div className="card-textil rounded-2xl overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="bg-[#F2F0EA] border-b border-[#E6E3DC] text-[#1B2A4A] font-bold text-[11px] uppercase tracking-wider">
-                      <th className="py-3 px-4 w-28 whitespace-nowrap">SKU</th>
-                      <th className="py-3 px-4 whitespace-nowrap">Artículo Textil</th>
-                      <th className="py-3 px-4 whitespace-nowrap">Familia / Unidad</th>
-                      <th className="py-3 px-4 text-right whitespace-nowrap">Stock Sistema (Captura)</th>
-                      <th className="py-3 px-4 text-center whitespace-nowrap">Conteo Físico</th>
-                      <th className="py-3 px-4 text-right whitespace-nowrap">Diferencia</th>
-                      <th className="py-3 px-4 text-center whitespace-nowrap">Semáforo (≤ 2%)</th>
-                      <th className="py-3 px-4 text-center whitespace-nowrap">Ajuste</th>
+                    <tr className="bg-gradient-to-b from-[#F5F3EE] to-[#ECE8DF] border-b border-[#DED9CE] text-[#1B2A4A] font-bold text-[11px]">
+                      <th className="py-3.5 px-4 w-28 whitespace-nowrap">Código SKU</th>
+                      <th className="py-3.5 px-4 whitespace-nowrap">Artículo Textil</th>
+                      <th className="py-3.5 px-4 whitespace-nowrap">Familia / Unidad</th>
+                      <th className="py-3.5 px-4 text-right whitespace-nowrap">Saldo Sistema</th>
+                      <th className="py-3.5 px-4 text-center whitespace-nowrap">Conteo Físico</th>
+                      <th className="py-3.5 px-4 text-right whitespace-nowrap">Variación</th>
+                      <th className="py-3.5 px-4 text-center whitespace-nowrap">Evaluación (≤ 2%)</th>
+                      <th className="py-3.5 px-4 text-center whitespace-nowrap">Estado Kardex</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E6E3DC]/60">
+                  <tbody className="divide-y divide-[#E5E0D5]/70">
                     {detallesFiltrados.length === 0 ? (
                       <tr>
-                        <td colSpan={8} className="py-10 text-center text-slate-400 italic text-xs">
-                          No se encontraron artículos que coincidan con los filtros.
+                        <td colSpan={8} className="py-10 text-center text-slate-400 text-xs">
+                          No hay artículos que coincidan con el filtro seleccionado.
                         </td>
                       </tr>
                     ) : (
@@ -476,28 +466,28 @@ export const ConciliacionPage: React.FC = () => {
                         return (
                           <tr
                             key={det.id}
-                            className={`hover:bg-[#F9F8F5] transition-colors h-11 ${
-                              det.conforme === false ? 'bg-[#FEE2E2]/25' : ''
+                            className={`group fila-interactiva h-12 ${
+                              det.conforme === false ? 'bg-[#FEE2E2]/20' : ''
                             }`}
                           >
-                            <td className="py-2.5 px-4 font-mono font-semibold text-[#1B2A4A] text-xs">
-                              {det.producto_sku}
+                            <td className="py-2.5 px-4 whitespace-nowrap">
+                              <span className="font-mono font-bold text-[#1B2A4A] bg-[#F2F0EA] group-hover:bg-[#1B2A4A] group-hover:text-white px-2 py-0.5 rounded-md transition-colors text-xs">
+                                {det.producto_sku}
+                              </span>
                             </td>
-                            <td className="py-2.5 px-4 font-bold text-[#1B2A4A]">
+                            <td className="py-2.5 px-4 font-bold text-[#1B2A4A] group-hover:text-[#2452E8] transition-colors">
                               {det.producto_nombre}
                             </td>
-                            <td className="py-2.5 px-4 text-slate-600">
+                            <td className="py-2.5 px-4 text-slate-600 whitespace-nowrap">
                               <span className="font-medium text-[#1B2A4A]">
                                 {det.categoria_nombre}
                               </span>
-                              <span className="block text-[11px] text-slate-500 capitalize">
-                                Por {det.unidad}
-                              </span>
+                              <span className="text-slate-400"> · {det.unidad}s</span>
                             </td>
-                            <td className="py-2.5 px-4 text-right font-bold text-[#1B2A4A] tabular-nums">
-                              {det.stock_sistema}
+                            <td className="py-2.5 px-4 text-right font-bold text-[#1B2A4A] tabular-nums whitespace-nowrap">
+                              {det.stock_sistema} {det.unidad}s
                             </td>
-                            <td className="py-2 px-4 text-center">
+                            <td className="py-2 px-4 text-center whitespace-nowrap">
                               {esBorrador && puedeOperar ? (
                                 <input
                                   type="text"
@@ -508,49 +498,52 @@ export const ConciliacionPage: React.FC = () => {
                                     manejarCambioFisico(det.producto_id, e.target.value)
                                   }
                                   placeholder="0"
-                                  className="w-20 text-center font-bold text-xs px-2.5 py-1.5 rounded-lg border border-[#E6E3DC] focus:border-[#2452E8] focus:ring-2 focus:ring-[#2452E8]/20 focus:outline-none bg-white text-[#1B2A4A] tabular-nums transition-all"
+                                  aria-label={`Conteo físico de ${det.producto_nombre}`}
+                                  className="w-20 text-center font-bold text-xs px-2.5 py-1.5 rounded-xl input-textil tabular-nums"
                                 />
                               ) : (
                                 <span className="font-bold text-xs text-[#1B2A4A] tabular-nums">
-                                  {det.stock_fisico ?? '-'}
+                                  {det.stock_fisico !== null ? `${det.stock_fisico} ${det.unidad}s` : '-'}
                                 </span>
                               )}
                             </td>
-                            <td className="py-2.5 px-4 text-right tabular-nums text-xs">
+                            <td className="py-2.5 px-4 text-right tabular-nums text-xs whitespace-nowrap">
                               {diffUnidades !== null && diffUnidades !== undefined ? (
                                 <span
                                   className={`font-bold ${
                                     diffUnidades === 0
-                                      ? 'text-slate-500'
+                                      ? 'text-slate-400'
                                       : diffUnidades > 0
                                         ? 'text-[#D97706]'
                                         : 'text-[#DC2626]'
                                   }`}
                                 >
-                                  {diffUnidades > 0 ? `+${diffUnidades}` : diffUnidades}
+                                  {diffUnidades > 0 ? `+${diffUnidades}` : diffUnidades}{' '}
+                                  {det.unidad}s
                                 </span>
                               ) : (
-                                <span className="text-slate-400">-</span>
+                                <span className="text-slate-300">-</span>
                               )}
                             </td>
-                            <td className="py-2.5 px-4 text-center">
+                            <td className="py-2.5 px-4 text-center whitespace-nowrap">
                               <SemaforoIndicador
                                 conforme={det.conforme}
                                 porcentaje={det.porcentaje_diferencia}
                                 diferencia={det.diferencia}
                               />
                             </td>
-                            <td className="py-2.5 px-4 text-center">
+                            <td className="py-2.5 px-4 text-center whitespace-nowrap">
                               {det.ajustado ? (
-                                <span className="inline-block px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#2452E8]/10 text-[#2452E8]">
-                                  Sincronizado
+                                <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#2452E8]">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  Ajustado
                                 </span>
                               ) : det.conforme === false && det.stock_fisico !== null ? (
                                 <span className="text-[11px] text-[#D95D39] font-bold">
-                                  Pendiente
+                                  Requiere ajuste
                                 </span>
                               ) : (
-                                <span className="text-slate-300">-</span>
+                                <span className="text-slate-300">—</span>
                               )}
                             </td>
                           </tr>
@@ -565,14 +558,13 @@ export const ConciliacionPage: React.FC = () => {
         )}
       </main>
 
-      {/* Modales */}
       <IniciarConteoModal
         abierto={modalIniciarAbierto}
         onCerrar={() => setModalIniciarAbierto(false)}
         onConfirmar={async (obs) => {
           const res = await iniciarMutation.mutateAsync(obs)
           seleccionarSesion(res.id)
-          mostrarToast(`Nuevo conteo #${res.id} iniciado con éxito.`)
+          mostrarToast(`Acta de conteo #${res.id} creada y lista para registro.`)
         }}
         estaCargando={iniciarMutation.isPending}
       />

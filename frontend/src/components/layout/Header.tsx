@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { Plus, Scale, Calendar } from 'lucide-react'
 import { useAuth } from '@/features/auth'
 
 interface HeaderProps {
@@ -9,13 +9,20 @@ interface HeaderProps {
 }
 
 const TITULOS_PESTANA: Record<string, string> = {
-  '/': 'Dashboard · Textilería',
-  '/inventario': 'Inventario · Textilería',
-  '/ventas/nueva': 'Caja POS · Textilería',
-  '/ventas': 'Ventas · Textilería',
-  '/conciliacion': 'Conciliación · Textilería',
-  '/reportes': 'Reportes · Textilería',
+  '/': 'Resumen de Tienda · Textilería Lima',
+  '/inventario': 'Catálogo e Inventario · Textilería Lima',
+  '/ventas/nueva': 'Caja y Corte POS · Textilería Lima',
+  '/ventas': 'Libro de Ventas · Textilería Lima',
+  '/conciliacion': 'Auditoría Física · Textilería Lima',
+  '/reportes': 'Métricas Comerciales · Textilería Lima',
 }
+
+const FECHA_CORTA = new Date().toLocaleDateString('es-PE', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+})
 
 export const Header: React.FC<HeaderProps> = ({ titulo, subtitulo }) => {
   const navigate = useNavigate()
@@ -23,36 +30,52 @@ export const Header: React.FC<HeaderProps> = ({ titulo, subtitulo }) => {
   const { tieneRol } = useAuth()
 
   useEffect(() => {
-    document.title = TITULOS_PESTANA[pathname] || `${titulo || 'Sistema'} · Textilería`
+    document.title = TITULOS_PESTANA[pathname] || `${titulo || 'Sistema'} · Textilería Lima`
   }, [pathname, titulo])
 
-  // Mostrar el botón "+ Nueva Venta" solo en el Historial de Ventas (/ventas),
-  // evitando duplicarlo en el Dashboard, en la propia Caja POS o competir con botones de Almacén.
-  const mostrarBotonNuevaVenta =
-    pathname === '/ventas' && tieneRol('administrador', 'vendedor')
+  const enPos = pathname === '/ventas/nueva'
+  const enConciliacion = pathname === '/conciliacion'
+  const puedeVender = tieneRol('administrador', 'vendedor')
+  const puedeAuditar = tieneRol('administrador', 'almacenero')
 
   return (
-    <header className="h-16 bg-white border-b border-[#E6E3DC] px-6 flex items-center justify-between sticky top-0 z-10 shrink-0 shadow-2xs">
+    <header className="h-16 bg-white/95 backdrop-blur-md border-b border-[#E5E0D5] px-6 flex items-center justify-between sticky top-0 z-20 shrink-0 shadow-[0_1px_3px_rgba(27,42,74,0.03)]">
       <div className="min-w-0">
-        <h2 className="text-base font-extrabold text-[#1B2A4A] tracking-tight leading-tight truncate">
-          {titulo || 'Sistema Textil'}
-        </h2>
+        <div className="flex items-center gap-3">
+          <h2 className="text-base font-extrabold text-[#1B2A4A] tracking-tight leading-tight truncate">
+            {titulo || 'Sistema Textil'}
+          </h2>
+          <span className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#F2F0EA] border border-[#E5E0D5] text-[11px] font-semibold text-slate-600">
+            <Calendar className="w-3 h-3 text-[#D95D39]" />
+            <span>{FECHA_CORTA}</span>
+          </span>
+        </div>
         {subtitulo && (
           <p className="text-xs text-slate-500 mt-0.5 truncate font-medium">{subtitulo}</p>
         )}
       </div>
 
-      {mostrarBotonNuevaVenta && (
-        <div className="flex items-center gap-3 shrink-0">
+      <div className="flex items-center gap-2.5 shrink-0">
+        {pathname === '/' && puedeAuditar && !enConciliacion && (
+          <button
+            onClick={() => navigate('/conciliacion')}
+            className="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 rounded-xl btn-indigo text-xs font-bold"
+          >
+            <Scale className="w-3.5 h-3.5 text-[#FFD0C2]" />
+            <span>Conteo Físico</span>
+          </button>
+        )}
+
+        {(pathname === '/' || pathname === '/ventas') && puedeVender && !enPos && (
           <button
             onClick={() => navigate('/ventas/nueva')}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#D95D39] hover:bg-[#C24D2B] text-white text-xs font-bold shadow-sm transition-all duration-150 cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl btn-terracota text-xs font-bold"
           >
             <Plus className="w-4 h-4 stroke-[2.5]" />
-            <span>Nueva Venta</span>
+            <span>Registrar Venta (POS)</span>
           </button>
-        </div>
-      )}
+        )}
+      </div>
     </header>
   )
 }

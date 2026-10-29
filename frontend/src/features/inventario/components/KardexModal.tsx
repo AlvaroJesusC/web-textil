@@ -69,7 +69,7 @@ export const KardexModal: React.FC<KardexModalProps> = ({ abierto, producto, alC
           ) : (
             <div className="border border-[#E6E3DC] rounded-xl overflow-hidden shadow-2xs">
               <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-[#F2F0EA] border-b border-[#E6E3DC] text-[#1B2A4A] font-bold text-[11px] uppercase tracking-wider">
+                <thead className="bg-[#F2F0EA] border-b border-[#E6E3DC] text-[#1B2A4A] font-bold text-[11px]">
                   <tr>
                     <th className="py-2.5 px-3.5">Fecha</th>
                     <th className="py-2.5 px-3.5">Tipo</th>

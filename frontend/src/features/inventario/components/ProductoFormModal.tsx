@@ -131,7 +131,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
 
         <div className="grid grid-cols-2 gap-3.5">
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Código SKU *
             </label>
             <input
@@ -146,7 +146,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Familia / Categoría *
             </label>
             <select
@@ -164,7 +164,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
             Nombre del Producto *
           </label>
           <input
@@ -179,7 +179,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
 
         <div className="grid grid-cols-3 gap-3">
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Unidad *
             </label>
             <select
@@ -195,7 +195,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Precio Unit. (S/) *
             </label>
             <input
@@ -211,7 +211,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Stock Mínimo *
             </label>
             <input
@@ -227,7 +227,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
 
         {!esEdicion && (
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Stock Inicial en Almacén
             </label>
             <input
@@ -244,7 +244,7 @@ const FormContenido: React.FC<FormContenidoProps> = ({
         )}
 
         <div>
-          <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
             Descripción / Especificaciones
           </label>
           <textarea
@@ -260,14 +260,14 @@ const FormContenido: React.FC<FormContenidoProps> = ({
           <button
             type="button"
             onClick={alCerrar}
-            className="px-4 py-2 text-xs font-semibold text-[#1B2A4A] bg-white border border-[#E6E3DC] hover:bg-[#F9F8F5] rounded-lg transition-all"
+            className="px-4 py-2 text-xs font-bold rounded-xl btn-superficie"
           >
             Cancelar
           </button>
           <button
             type="submit"
             disabled={enviando}
-            className="px-5 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm flex items-center gap-1.5 disabled:opacity-50 transition-all cursor-pointer"
+            className="px-5 py-2 text-xs font-bold rounded-xl btn-terracota flex items-center gap-1.5"
           >
             {enviando && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
             <span>{esEdicion ? 'Actualizar Producto' : 'Guardar en Catálogo'}</span>

@@ -59,7 +59,7 @@ export const IniciarConteoModal: React.FC<IniciarConteoModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Observaciones / Turno (Opcional)
             </label>
             <input
@@ -78,14 +78,14 @@ export const IniciarConteoModal: React.FC<IniciarConteoModalProps> = ({
               type="button"
               onClick={onCerrar}
               disabled={estaCargando}
-              className="px-4 py-2 text-xs font-semibold text-[#1B2A4A] bg-white border border-[#E6E3DC] hover:bg-[#F9F8F5] rounded-lg transition-all"
+              className="px-4 py-2 text-xs font-bold rounded-xl btn-superficie"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={estaCargando}
-              className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm disabled:opacity-50 transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-5 py-2 text-xs font-bold rounded-xl btn-terracota"
             >
               {estaCargando ? (
                 <>

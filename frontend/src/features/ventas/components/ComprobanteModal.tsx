@@ -163,7 +163,7 @@ export const ComprobanteModal: React.FC<ComprobanteModalProps> = ({
         <div className="p-4 bg-[#F2F0EA]/60 border-t border-[#E6E3DC] flex items-center justify-between gap-2">
           <button
             onClick={handleImprimir}
-            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-[#1B2A4A] hover:bg-[#F9F8F5] bg-white border border-[#E6E3DC] rounded-lg shadow-2xs transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl btn-superficie"
           >
             <Printer className="w-3.5 h-3.5 text-[#2452E8]" />
             <span>Imprimir Ticket</span>
@@ -179,7 +179,7 @@ export const ComprobanteModal: React.FC<ComprobanteModalProps> = ({
             {puedeRegistrarVenta && (
               <button
                 onClick={alNuevaVenta}
-                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-[#D95D39] hover:bg-[#C24D2B] rounded-lg shadow-sm transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold rounded-xl btn-terracota"
               >
                 <Plus className="w-4 h-4 stroke-[2.5]" />
                 <span>Nueva Venta</span>

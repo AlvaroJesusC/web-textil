@@ -1,5 +1,6 @@
 import React from 'react'
-import { AlertCircle, AlertOctagon, CheckCircle2 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { CheckCircle2 } from 'lucide-react'
 import type { AlertaStockItem } from '@/types'
 
 interface TablaAlertasStockProps {
@@ -11,21 +12,23 @@ export const TablaAlertasStock: React.FC<TablaAlertasStockProps> = ({
   alertas,
   estaCargando,
 }) => {
+  const navigate = useNavigate()
+
   if (estaCargando) {
     return (
-      <div className="p-8 text-center text-xs text-[#5A6578]">
-        Consultando alertas de inventario crítico...
+      <div className="p-8 text-center text-xs text-slate-500">
+        Consultando niveles críticos de almacén...
       </div>
     )
   }
 
   if (alertas.length === 0) {
     return (
-      <div className="p-8 text-center bg-[#F9F8F5] rounded-xl border border-[#E6E3DC] flex flex-col items-center justify-center m-4">
+      <div className="p-8 text-center bg-[#FAF9F6] rounded-xl border border-[#E5E0D5] flex flex-col items-center justify-center m-4">
         <CheckCircle2 className="w-6 h-6 text-[#15803D] mb-1.5" />
-        <p className="text-xs font-bold text-[#1B2A4A]">Stock Óptimo en Todos los Productos</p>
-        <p className="text-[11px] text-[#5A6578] mt-0.5">
-          No hay artículos por debajo de su stock mínimo ni existencias en cero.
+        <p className="text-xs font-bold text-[#1B2A4A]">Abastecimiento Conforme</p>
+        <p className="text-[11px] text-slate-500 mt-0.5">
+          Todos los artículos superan su umbral mínimo de seguridad.
         </p>
       </div>
     )
@@ -35,65 +38,60 @@ export const TablaAlertasStock: React.FC<TablaAlertasStockProps> = ({
     <div className="overflow-x-auto">
       <table className="w-full text-left border-collapse text-xs">
         <thead>
-          <tr className="bg-[#F2F0EA] border-b border-[#E6E3DC] text-[#1B2A4A] font-bold text-[11px] uppercase tracking-wider">
-            <th className="py-3 px-4 whitespace-nowrap">Estado</th>
-            <th className="py-3 px-4 w-28 whitespace-nowrap">SKU</th>
-            <th className="py-3 px-4 whitespace-nowrap">Artículo Textil</th>
-            <th className="py-3 px-4 whitespace-nowrap">Familia</th>
-            <th className="py-3 px-4 text-right whitespace-nowrap">Stock Actual</th>
-            <th className="py-3 px-4 text-right whitespace-nowrap">Stock Mínimo</th>
-            <th className="py-3 px-4 text-center whitespace-nowrap">Prioridad</th>
+          <tr className="bg-gradient-to-b from-[#F5F3EE] to-[#ECE8DF] border-b border-[#DED9CE] text-[#1B2A4A] font-bold text-[11px]">
+            <th className="py-3.5 px-4 w-28 whitespace-nowrap">Código SKU</th>
+            <th className="py-3.5 px-4 whitespace-nowrap">Artículo Textil</th>
+            <th className="py-3.5 px-4 whitespace-nowrap">Familia</th>
+            <th className="py-3.5 px-4 text-right whitespace-nowrap">Saldo Actual</th>
+            <th className="py-3.5 px-4 text-right whitespace-nowrap">Mínimo Requerido</th>
+            <th className="py-3.5 px-4 text-right whitespace-nowrap">Faltante Mín.</th>
+            <th className="py-3.5 px-4 text-center whitespace-nowrap">Condición</th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-[#E6E3DC]/60">
+        <tbody className="divide-y divide-[#E5E0D5]/70">
           {alertas.map((prod) => {
             const esAgotado = prod.estado_stock === 'agotado' || prod.stock_actual === 0
+            const faltante = Math.max(0, prod.stock_minimo - prod.stock_actual)
 
             return (
               <tr
                 key={prod.producto_id}
-                className={`hover:bg-[#F9F8F5] transition-colors h-11 ${
-                  esAgotado ? 'bg-[#FEE2E2]/25' : 'bg-[#FEF3C7]/20'
+                onClick={() => navigate(`/inventario?q=${encodeURIComponent(prod.sku)}`)}
+                className={`group fila-interactiva h-12 cursor-pointer ${
+                  esAgotado ? 'bg-[#FEE2E2]/20' : ''
                 }`}
               >
                 <td className="py-2.5 px-4 whitespace-nowrap">
-                  {esAgotado ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-[#FEE2E2] text-[#B91C1C] border border-red-200 uppercase whitespace-nowrap">
-                      <AlertOctagon className="w-3 h-3 text-[#DC2626] shrink-0" /> Agotado
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-[#FEF3C7] text-[#B45309] border border-amber-200 uppercase whitespace-nowrap">
-                      <AlertCircle className="w-3 h-3 text-[#D97706] shrink-0" /> Stock Bajo
-                    </span>
-                  )}
+                  <span className="font-mono font-bold text-[#1B2A4A] bg-[#F2F0EA] group-hover:bg-[#1B2A4A] group-hover:text-white px-2 py-0.5 rounded-md transition-colors text-xs">
+                    {prod.sku}
+                  </span>
                 </td>
-                <td className="py-2.5 px-4 font-mono font-semibold text-[#1B2A4A] text-xs whitespace-nowrap">
-                  {prod.sku}
-                </td>
-                <td className="py-2.5 px-4 font-semibold text-[#1B2A4A]">
+                <td className="py-2.5 px-4 font-bold text-[#1B2A4A] group-hover:text-[#2452E8] transition-colors">
                   {prod.nombre}
                 </td>
-                <td className="py-2.5 px-4 text-[#5A6578] whitespace-nowrap">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-[#F9F8F5] text-[#1B2A4A] border border-[#E6E3DC] whitespace-nowrap">
-                    {prod.categoria}
-                  </span>
+                <td className="py-2.5 px-4 text-slate-600 font-medium whitespace-nowrap">
+                  {prod.categoria}
                 </td>
-                <td className="py-2.5 px-4 text-right font-bold tabular-nums whitespace-nowrap">
+                <td className="py-2.5 px-4 text-right font-extrabold tabular-nums whitespace-nowrap">
                   <span className={esAgotado ? 'text-[#B91C1C]' : 'text-[#B45309]'}>
-                    {prod.stock_actual}
-                  </span>{' '}
-                  <span className="text-[10px] font-normal text-[#5A6578] capitalize">
-                    {prod.unidad}(s)
+                    {prod.stock_actual} {prod.unidad}s
                   </span>
                 </td>
-                <td className="py-2.5 px-4 text-right font-semibold text-[#5A6578] tabular-nums whitespace-nowrap">
-                  {prod.stock_minimo} {prod.unidad}(s)
+                <td className="py-2.5 px-4 text-right font-semibold text-slate-600 tabular-nums whitespace-nowrap">
+                  {prod.stock_minimo} {prod.unidad}s
+                </td>
+                <td className="py-2.5 px-4 text-right font-bold text-[#1B2A4A] tabular-nums whitespace-nowrap">
+                  {faltante > 0 ? `+${faltante} ${prod.unidad}s` : `Reponer lote`}
                 </td>
                 <td className="py-2.5 px-4 text-center whitespace-nowrap">
                   {esAgotado ? (
-                    <span className="text-[11px] font-bold text-[#B91C1C]">Urgente</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#FEE2E2] text-[#B91C1C]">
+                      Agotado (0)
+                    </span>
                   ) : (
-                    <span className="text-[11px] font-semibold text-[#B45309]">Reabastecer</span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#FEF3C7] text-[#B45309]">
+                      Bajo mínimo
+                    </span>
                   )}
                 </td>
               </tr>

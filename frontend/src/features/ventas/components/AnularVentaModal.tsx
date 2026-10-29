@@ -85,7 +85,7 @@ export const AnularVentaModal: React.FC<AnularVentaModalProps> = ({
           )}
 
           <div>
-            <label className="block text-xs font-bold text-[#1B2A4A] uppercase tracking-wider mb-1.5">
+            <label className="block text-xs font-bold text-[#1B2A4A] mb-1.5">
               Motivo Obligatorio de Anulación *
             </label>
             <textarea

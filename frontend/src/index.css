@@ -29,18 +29,17 @@
 
   body {
     background-color: var(--color-neutral);
+    background-image: radial-gradient(ellipse 85% 45% at 50% -10%, rgba(217, 93, 57, 0.055), transparent 70%);
     color: var(--color-primary);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Cifras tabulares obligatorias para precios, cantidades y KPIs */
   .tabular-nums {
     font-variant-numeric: tabular-nums;
   }
 
-  /* Barras de desplazamiento cálidas y discretas */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -49,10 +48,204 @@
     background: #F2F0EA;
   }
   ::-webkit-scrollbar-thumb {
-    background: #D1CEC4;
+    background: #CDC8BC;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #A8A396;
+    background: #9E9889;
   }
+}
+
+/* ==========================================================================
+   SISTEMA VISUAL TÁCTIL · IDENTIDAD TEXTIL MODERNA (BOTONES, TARJETAS Y UX)
+   ========================================================================== */
+
+/* Textura sutil de trama textil para el Sidebar Índigo */
+.sidebar-textil {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.014) 0px,
+      rgba(255, 255, 255, 0.014) 1px,
+      transparent 1px,
+      transparent 9px
+    ),
+    linear-gradient(180deg, #1E2F53 0%, #172542 55%, #111C33 100%);
+}
+
+/* Botón Principal: Terracota Teja (#D95D39) con relieve táctil y brillo cálido */
+.btn-terracota {
+  background: linear-gradient(180deg, #E36642 0%, #D3522E 100%);
+  color: #FFFFFF;
+  border: 1px solid #B84220;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 2px 5px rgba(217, 93, 57, 0.26),
+    0 1px 2px rgba(27, 42, 74, 0.12);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.btn-terracota:hover:not(:disabled) {
+  background: linear-gradient(180deg, #EA704C 0%, #DA5934 100%);
+  border-color: #A83A1B;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.38),
+    0 6px 16px -2px rgba(217, 93, 57, 0.42),
+    0 2px 4px rgba(27, 42, 74, 0.12);
+}
+.btn-terracota:active:not(:disabled) {
+  transform: translateY(0px) scale(0.985);
+  background: linear-gradient(180deg, #C84B28 0%, #D3522E 100%);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.btn-terracota:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Botón Secundario Oscuro: Índigo Telar (#1B2A4A) con bisel superior */
+.btn-indigo {
+  background: linear-gradient(180deg, #253963 0%, #192745 100%);
+  color: #FFFFFF;
+  border: 1px solid #111C33;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 2px 5px rgba(27, 42, 74, 0.2);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.btn-indigo:hover:not(:disabled) {
+  background: linear-gradient(180deg, #2D4577 0%, #203259 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 6px 14px -2px rgba(27, 42, 74, 0.32);
+}
+.btn-indigo:active:not(:disabled) {
+  transform: translateY(0px) scale(0.985);
+}
+.btn-indigo:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Botón Acción Analítica / Cálculo: Azul Cobalto (#2452E8) */
+.btn-cobalto {
+  background: linear-gradient(180deg, #3462F2 0%, #214BD9 100%);
+  color: #FFFFFF;
+  border: 1px solid #1B3EB8;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.26),
+    0 2px 5px rgba(36, 82, 232, 0.24);
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.btn-cobalto:hover:not(:disabled) {
+  background: linear-gradient(180deg, #426DF6 0%, #2853E2 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.34),
+    0 6px 16px -2px rgba(36, 82, 232, 0.38);
+}
+.btn-cobalto:active:not(:disabled) {
+  transform: translateY(0px) scale(0.985);
+}
+.btn-cobalto:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Botón Superficie / Outline: Blanco Pima con borde cálido y elevación limpia */
+.btn-superficie {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F7F5F0 100%);
+  color: #1B2A4A;
+  border: 1px solid #DDD8CC;
+  box-shadow:
+    inset 0 1px 0 #FFFFFF,
+    0 1px 2px rgba(27, 42, 74, 0.05);
+  transition: all 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.btn-superficie:hover:not(:disabled) {
+  background: #FFFFFF;
+  border-color: #BDB5A4;
+  transform: translateY(-1px);
+  box-shadow:
+    inset 0 1px 0 #FFFFFF,
+    0 4px 10px -2px rgba(27, 42, 74, 0.1);
+}
+.btn-superficie:active:not(:disabled) {
+  transform: translateY(0px) scale(0.985);
+  background: #F2F0EA;
+}
+.btn-superficie:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Superficie de tarjeta con sombra multicapa suave */
+.card-textil {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E0D5;
+  box-shadow:
+    0 1px 2px rgba(27, 42, 74, 0.03),
+    0 4px 14px -2px rgba(27, 42, 74, 0.045);
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Tarjeta interactiva con respuesta táctil al pasar el cursor */
+.card-interactiva {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E0D5;
+  box-shadow:
+    0 1px 2px rgba(27, 42, 74, 0.03),
+    0 4px 12px -2px rgba(27, 42, 74, 0.04);
+  transition: all 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.card-interactiva:hover {
+  border-color: #2452E8;
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 24px -6px rgba(27, 42, 74, 0.1),
+    0 4px 10px -3px rgba(36, 82, 232, 0.07);
+}
+.card-interactiva:active {
+  transform: translateY(0px) scale(0.992);
+}
+
+/* Filas de tabla con guía lateral Terracota al hacer hover */
+.fila-interactiva {
+  transition: background-color 140ms ease, box-shadow 140ms ease;
+}
+.fila-interactiva:hover {
+  background-color: #F6F3EC;
+  box-shadow: inset 3px 0 0 #D95D39;
+}
+
+/* Contenedor de pestañas / segmentos con efecto bajo-relieve */
+.pista-segmentos {
+  background-color: #ECE8DF;
+  border: 1px solid #DFDAD0;
+  box-shadow: inset 0 1px 2px rgba(27, 42, 74, 0.06);
+}
+
+/* Inputs estilizados con sombra interna sutil y anillo Cobalto */
+.input-textil {
+  background-color: #FAF9F6;
+  border: 1px solid #DDD8CC;
+  color: #1B2A4A;
+  box-shadow: inset 0 1px 2px rgba(27, 42, 74, 0.035);
+  transition: all 150ms ease;
+}
+.input-textil:hover:not(:disabled):not(:focus) {
+  border-color: #C4BCAE;
+  background-color: #FFFFFF;
+}
+.input-textil:focus {
+  background-color: #FFFFFF;
+  border-color: #2452E8;
+  box-shadow: 0 0 0 3px rgba(36, 82, 232, 0.14);
+  outline: none;
 }

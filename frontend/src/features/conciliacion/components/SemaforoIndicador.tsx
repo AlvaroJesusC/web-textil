@@ -10,13 +10,12 @@ interface SemaforoIndicadorProps {
 export const SemaforoIndicador: React.FC<SemaforoIndicadorProps> = ({
   conforme,
   porcentaje,
-  diferencia,
 }) => {
   if (conforme === null || porcentaje === null || porcentaje === undefined) {
     return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold bg-[#F2F0EA] text-slate-600 whitespace-nowrap">
-        <HelpCircle className="w-3 h-3 text-slate-400 shrink-0" />
-        <span>Pendiente</span>
+      <span className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-400 whitespace-nowrap">
+        <HelpCircle className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+        <span>Sin evaluar</span>
       </span>
     )
   }
@@ -26,36 +25,26 @@ export const SemaforoIndicador: React.FC<SemaforoIndicadorProps> = ({
 
   if (conforme) {
     return (
-      <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#DCFCE7] text-[#15803D] whitespace-nowrap">
+      <div className="inline-flex items-center gap-2 whitespace-nowrap">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#DCFCE7] text-[#15803D]">
           <CheckCircle2 className="w-3 h-3 text-[#15803D] shrink-0" />
-          <span>≤ 2% Conforme</span>
+          <span>Conforme</span>
         </span>
-        <span className="text-xs font-bold text-[#15803D] tabular-nums whitespace-nowrap">
+        <span className="text-xs font-bold text-[#15803D] tabular-nums">
           {pctFormateado}%
-          {diferencia !== undefined && diferencia !== null && (
-            <span className="text-slate-400 font-normal ml-1">
-              ({diferencia > 0 ? `+${diferencia}` : diferencia})
-            </span>
-          )}
         </span>
       </div>
     )
   }
 
   return (
-    <div className="inline-flex items-center gap-1.5 whitespace-nowrap">
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[11px] font-bold bg-[#FEE2E2] text-[#B91C1C] whitespace-nowrap">
+    <div className="inline-flex items-center gap-2 whitespace-nowrap">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold bg-[#FEE2E2] text-[#B91C1C]">
         <AlertTriangle className="w-3 h-3 text-[#DC2626] shrink-0" />
-        <span>&gt; 2% Descuadre</span>
+        <span>Descuadre (&gt; 2%)</span>
       </span>
-      <span className="text-xs font-bold text-[#B91C1C] tabular-nums whitespace-nowrap">
+      <span className="text-xs font-extrabold text-[#B91C1C] tabular-nums">
         {pctFormateado}%
-        {diferencia !== undefined && diferencia !== null && (
-          <span className="text-[#DC2626] font-medium ml-1">
-            ({diferencia > 0 ? `+${diferencia}` : diferencia})
-          </span>
-        )}
       </span>
     </div>
   )

@@ -9,7 +9,7 @@ import {
   BarChart3,
   LogOut,
   Scissors,
-  CheckCircle2,
+  ChevronRight,
 } from 'lucide-react'
 import { useAuth } from '@/features/auth'
 import { cn } from '@/lib/utils'
@@ -17,156 +17,171 @@ import { cn } from '@/lib/utils'
 export const Sidebar: React.FC = () => {
   const { usuario, logout, tieneRol } = useAuth()
 
-  const navItems = [
+  const grupoMostrador = [
     {
       to: '/',
-      label: 'Dashboard',
+      label: 'Resumen de Tienda',
       icon: LayoutDashboard,
       mostrar: true,
     },
     {
+      to: '/ventas/nueva',
+      label: 'Caja y Corte (POS)',
+      icon: ShoppingCart,
+      mostrar: tieneRol('administrador', 'vendedor'),
+    },
+    {
+      to: '/ventas',
+      label: 'Libro de Ventas',
+      icon: Receipt,
+      mostrar: tieneRol('administrador', 'vendedor', 'gerente'),
+    },
+  ]
+
+  const grupoAlmacen = [
+    {
       to: '/inventario',
-      label: 'Inventario de Telas',
+      label: 'Catálogo de Telas y Avíos',
       icon: Package,
       mostrar: true,
     },
     {
-      to: '/ventas/nueva',
-      label: 'Caja / Nueva Venta',
-      icon: ShoppingCart,
-      mostrar: tieneRol('administrador', 'vendedor'),
-      badge: 'POS',
-    },
-    {
-      to: '/ventas',
-      label: 'Historial de Ventas',
-      icon: Receipt,
-      mostrar: tieneRol('administrador', 'vendedor', 'gerente'),
-    },
-    {
       to: '/conciliacion',
-      label: 'Conciliación de Stock',
+      label: 'Auditoría Física (2%)',
       icon: Scale,
       mostrar: tieneRol('administrador', 'almacenero', 'gerente'),
-      badge: '2%',
     },
     {
       to: '/reportes',
-      label: 'Reportes y Métricas',
+      label: 'Métricas y Rotación',
       icon: BarChart3,
       mostrar: tieneRol('administrador', 'gerente'),
     },
   ]
 
   const rolEtiqueta: Record<string, string> = {
-    administrador: 'Administrador',
-    vendedor: 'Vendedor Mostrador',
-    almacenero: 'Almacenero',
-    gerente: 'Gerente General',
+    administrador: 'Administrador General',
+    vendedor: 'Despacho y Mostrador',
+    almacenero: 'Control de Almacén',
+    gerente: 'Gerencia Comercial',
+  }
+
+  const iniciales = (usuario?.nombre || 'OP')
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+
+  const renderItem = (item: { to: string; label: string; icon: React.ElementType }) => {
+    const Icon = item.icon
+    return (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        end
+        className={({ isActive }) =>
+          cn(
+            'group relative flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-200',
+            isActive
+              ? 'bg-gradient-to-r from-[#D95D39]/25 via-white/12 to-white/5 text-white font-bold border-l-[3px] border-[#D95D39] shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_2px_8px_rgba(0,0,0,0.18)]'
+              : 'text-slate-300/90 hover:bg-white/8 hover:text-white hover:translate-x-1'
+          )
+        }
+      >
+        {({ isActive }) => (
+          <>
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={cn(
+                  'w-7 h-7 rounded-lg flex items-center justify-center shrink-0 transition-all duration-200',
+                  isActive
+                    ? 'bg-[#D95D39] text-white shadow-[0_2px_8px_rgba(217,93,57,0.45)]'
+                    : 'bg-white/5 text-slate-300 group-hover:bg-white/12 group-hover:text-white group-hover:scale-105'
+                )}
+              >
+                <Icon className="w-3.5 h-3.5" />
+              </div>
+              <span className="truncate">{item.label}</span>
+            </div>
+            <ChevronRight
+              className={cn(
+                'w-3.5 h-3.5 shrink-0 transition-all duration-200',
+                isActive
+                  ? 'text-[#D95D39] opacity-100 translate-x-0'
+                  : 'text-slate-400 opacity-0 -translate-x-1 group-hover:opacity-70 group-hover:translate-x-0'
+              )}
+            />
+          </>
+        )}
+      </NavLink>
+    )
   }
 
   return (
-    <aside className="w-64 bg-[#1B2A4A] text-white flex flex-col border-r border-white/10 select-none h-full shrink-0 shadow-md">
-      {/* Brand Header */}
-      <div className="p-4 border-b border-white/10 flex items-center gap-3 shrink-0">
-        <div className="w-10 h-10 rounded-xl bg-[#D95D39] flex items-center justify-center text-white shadow-sm shrink-0">
-          <Scissors className="w-5 h-5 -rotate-45 text-white" />
+    <aside className="w-64 sidebar-textil text-white flex flex-col border-r border-white/10 select-none h-full shrink-0 shadow-xl">
+      {/* Cabecera de Marca con Relieve Cálido */}
+      <div className="px-5 py-4 border-b border-white/10 flex items-center gap-3.5 shrink-0">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-b from-[#E56A46] to-[#CF4F2B] border border-white/20 flex items-center justify-center text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_4px_12px_rgba(217,93,57,0.35)] shrink-0">
+          <Scissors className="w-4 h-4 -rotate-45 text-white" />
         </div>
         <div className="min-w-0">
           <h1 className="text-sm font-extrabold tracking-tight text-white truncate">
             Textilería Lima
           </h1>
-          <p className="text-[11px] text-slate-300 truncate font-medium">
-            Ventas e Inventario Textil
+          <p className="text-[11px] text-slate-300/80 truncate">
+            Sede Gamarra · ERP Textil
           </p>
         </div>
       </div>
 
-      {/* Operador / Usuario Conectado */}
-      <div className="p-3.5 mx-3 my-3 rounded-xl bg-white/8 border border-white/12 shrink-0">
-        <div className="flex items-center justify-between mb-1.5">
-          <span className="text-xs font-semibold text-white truncate">
-            {usuario?.nombre || 'Operador'}
-          </span>
-          <span
-            className="inline-block w-2 h-2 rounded-full bg-emerald-400 shadow-xs"
-            title="En línea"
-          ></span>
+      {/* Navegación Principal con Micro-interacciones */}
+      <nav className="flex-1 px-3 py-5 space-y-6 overflow-y-auto">
+        <div>
+          <p className="px-3 pb-2 text-[11px] font-semibold text-slate-400/90">
+            Mostrador y Despacho
+          </p>
+          <div className="space-y-1.5">
+            {grupoMostrador.filter((item) => item.mostrar).map(renderItem)}
+          </div>
         </div>
-        <div className="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider bg-[#D95D39]/20 text-[#FFD0C2] border border-[#D95D39]/40">
-          {usuario ? rolEtiqueta[usuario.rol] || usuario.rol : 'Cargando...'}
-        </div>
-      </div>
 
-      {/* Navegación Principal */}
-      <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-        <div className="px-2 pt-1 pb-1.5 text-[10px] font-bold tracking-wider text-slate-300/70 uppercase">
-          Módulos Operativos
+        <div>
+          <p className="px-3 pb-2 text-[11px] font-semibold text-slate-400/90">
+            Almacén y Control
+          </p>
+          <div className="space-y-1.5">
+            {grupoAlmacen.filter((item) => item.mostrar).map(renderItem)}
+          </div>
         </div>
-        {navItems
-          .filter((item) => item.mostrar)
-          .map((item) => {
-            const Icon = item.icon
-            return (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-medium transition-all duration-150',
-                    isActive
-                      ? 'bg-white/12 text-white font-bold border-l-4 border-[#D95D39] shadow-xs'
-                      : 'text-slate-300 hover:bg-white/6 hover:text-white'
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <div className="flex items-center gap-2.5">
-                      <Icon
-                        className={cn(
-                          'w-4 h-4 shrink-0 transition-colors',
-                          isActive ? 'text-[#D95D39]' : 'text-slate-300'
-                        )}
-                      />
-                      <span className="truncate">{item.label}</span>
-                    </div>
-                    {item.badge && (
-                      <span
-                        className={cn(
-                          'text-[10px] font-bold px-1.5 py-0.5 rounded-md transition-colors',
-                          item.badge === 'POS'
-                            ? 'bg-[#D95D39] text-white'
-                            : 'bg-white/15 text-white border border-white/20'
-                        )}
-                      >
-                        {item.badge}
-                      </span>
-                    )}
-                  </>
-                )}
-              </NavLink>
-            )
-          })}
       </nav>
 
-      {/* Pie de Barra Lateral */}
-      <div className="p-3.5 border-t border-white/10 shrink-0 space-y-2.5">
-        <div className="flex items-center justify-between px-2 text-[11px] text-slate-300">
-          <span className="flex items-center gap-1.5 text-emerald-300 font-medium">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>API Conectada</span>
-          </span>
-          <span className="font-mono text-[10px] text-slate-400">v1.0</span>
+      {/* Ficha de Operador en Turno y Cierre de Sesión */}
+      <div className="p-3.5 m-3 rounded-xl bg-white/6 border border-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] shrink-0">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-b from-[#2B4270] to-[#1B2A4A] border border-white/20 flex items-center justify-center text-xs font-extrabold text-white shadow-xs shrink-0">
+              {iniciales}
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-white truncate">
+                {usuario?.nombre || 'Operador'}
+              </p>
+              <p className="text-[11px] text-[#FFD0C2]/90 truncate font-medium">
+                {usuario ? rolEtiqueta[usuario.rol] || usuario.rol : 'Sesión activa'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={logout}
+            title="Cerrar sesión"
+            aria-label="Cerrar sesión"
+            className="p-2 text-slate-300 hover:text-white hover:bg-rose-500/30 hover:border-rose-400/40 border border-transparent rounded-lg transition-all duration-150 shrink-0 cursor-pointer active:scale-95"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
-        <button
-          onClick={logout}
-          className="w-full flex items-center justify-center gap-2 px-3 py-2 text-xs font-semibold text-rose-200 hover:text-white hover:bg-rose-500/20 rounded-lg border border-rose-400/25 transition-all duration-150"
-        >
-          <LogOut className="w-3.5 h-3.5" />
-          <span>Cerrar Sesión</span>
-        </button>
       </div>
     </aside>
   )
